@@ -1,22 +1,30 @@
 #pragma once
 #include "COMMON/OglForCLI.h"
+#include "RigidObject.h"
+#include <vector>
+
+using namespace std;
 
 #pragma unmanaged 
-
 
 class EventManager
 {
 private:
+  //ä÷êî
   EventManager();
 
+  //ïœêî
   bool m_btn_right, m_btn_left, m_btn_middle;
+  vector<RigidObject*> m_object;
  
 public: 
+  //ä÷êî
   static EventManager* GetInst(){
     static EventManager p;
     return &p;
   }
 
+  //MainFormÇ©ÇÁÇÃÉCÉxÉìÉg
   void BtnDownLeft  (int x, int y, OglForCLI *ogl);
   void BtnDownMiddle(int x, int y, OglForCLI *ogl);
   void BtnDownRight (int x, int y, OglForCLI *ogl);
@@ -24,8 +32,11 @@ public:
   void BtnUpMiddle  (int x, int y, OglForCLI *ogl);
   void BtnUpRight   (int x, int y, OglForCLI *ogl);
   void MouseMove    (int x, int y, OglForCLI *ogl);
+  void ClickGenerateBtn();
   
+
   void DrawScene();
+  void Step();
 };
 
 

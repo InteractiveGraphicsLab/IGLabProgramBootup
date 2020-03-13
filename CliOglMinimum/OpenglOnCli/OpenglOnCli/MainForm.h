@@ -24,6 +24,8 @@ namespace OpenglOnCli {
 	private:
 		MainForm(void);
     OglForCLI *m_ogl;  
+  private: System::Windows::Forms::Button^  GenerateButton;
+
 
   private: 
     static MainForm^ m_singleton;
@@ -67,6 +69,7 @@ namespace OpenglOnCli {
 		void InitializeComponent(void)
 		{
       this->m_main_panel = (gcnew System::Windows::Forms::Panel());
+      this->GenerateButton = (gcnew System::Windows::Forms::Button());
       this->SuspendLayout();
       // 
       // m_main_panel
@@ -77,7 +80,7 @@ namespace OpenglOnCli {
       this->m_main_panel->AutoSize = true;
       this->m_main_panel->Location = System::Drawing::Point(12, 12);
       this->m_main_panel->Name = L"m_main_panel";
-      this->m_main_panel->Size = System::Drawing::Size(451, 406);
+      this->m_main_panel->Size = System::Drawing::Size(451, 407);
       this->m_main_panel->TabIndex = 0;
       this->m_main_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::m_main_panel_Paint);
       this->m_main_panel->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::m_main_panel_MouseDown);
@@ -85,11 +88,22 @@ namespace OpenglOnCli {
       this->m_main_panel->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::m_main_panel_MouseUp);
       this->m_main_panel->Resize += gcnew System::EventHandler(this, &MainForm::m_main_panel_Resize);
       // 
+      // GenerateButton
+      // 
+      this->GenerateButton->Location = System::Drawing::Point(388, 425);
+      this->GenerateButton->Name = L"GenerateButton";
+      this->GenerateButton->Size = System::Drawing::Size(75, 23);
+      this->GenerateButton->TabIndex = 1;
+      this->GenerateButton->Text = L"‹…‚ð‘‚â‚·";
+      this->GenerateButton->UseVisualStyleBackColor = true;
+      this->GenerateButton->Click += gcnew System::EventHandler(this, &MainForm::GenerateButton_Click);
+      // 
       // MainForm
       // 
       this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
       this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-      this->ClientSize = System::Drawing::Size(475, 430);
+      this->ClientSize = System::Drawing::Size(475, 451);
+      this->Controls->Add(this->GenerateButton);
       this->Controls->Add(this->m_main_panel);
       this->Name = L"MainForm";
       this->Text = L"MainForm";
@@ -107,7 +121,8 @@ namespace OpenglOnCli {
   private: System::Void m_main_panel_Resize(System::Object^  sender, System::EventArgs^  e);
   private: System::Void MainForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e);
   private: System::Void MainForm_KeyUp(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e);
-  };
+  private: System::Void GenerateButton_Click(System::Object^  sender, System::EventArgs^  e);
+};
 
   inline void MainForm_RedrawPanel(){
     MainForm::GetInst()->RedrawMainPanel();

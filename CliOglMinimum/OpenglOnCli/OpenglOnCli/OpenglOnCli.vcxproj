@@ -140,6 +140,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RigidObject.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,9 @@
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="OpenglOnCli.cpp" />
+    <ClCompile Include="RigidObject.cpp" />
+    <ClCompile Include="RigidPlane.cpp" />
+    <ClCompile Include="RigidSphere.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

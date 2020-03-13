@@ -34,11 +34,25 @@ public:
 };
 
 
+static void CALLBACK MyTimerProc(
+  HWND hWnd,           // handle of CWnd that called SetTimer
+  UINT nMsg,           // WM_TIMER
+  UINT_PTR nIDEvent,   // timer identification
+  DWORD dwTime         // system time
+)
+{
+  EventManager::GetInst()->Step();
+}
+
+
+
+
 MainForm::MainForm(void)
 {
   m_ogl = 0;
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_main_panel->Handle.ToPointer()));
+  SetTimer((HWND)m_main_panel->Handle.ToPointer(), 1, 10, &MyTimerProc);
 }
 
 
@@ -90,20 +104,35 @@ System::Void MainForm::MainForm_KeyDown(System::Object^  sender, System::Windows
 
 System::Void MainForm::MainForm_KeyUp(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)
 {
+
 }
 
-
+System::Void MainForm::GenerateButton_Click(System::Object^  sender, System::EventArgs^  e)
+{
+  EventManager::GetInst()->ClickGenerateBtn();
+}
 
 
 
 
 void MainForm::RedrawMainPanel()
 {
+  static bool isFirst = true;
+
+  if (isFirst)
+  {
+    isFirst = false;
+
+    m_ogl->SetBgColor(0.8f, 0.8f, 0.8f, 0.5f);
+    m_ogl->SetCam(EVec3f(0, 10, -30), EVec3f(0, 0, 0), EVec3f(0, 1, 0));
+  }
+
   float  fovY     = 45.0;
   float  nearDist = 0.1f;
   float  farDist  = 1000.0f;
   m_ogl->OnDrawBegin(m_main_panel->Width, m_main_panel->Height,   
                      fovY, nearDist, farDist);
+  
   EventManager::GetInst()->DrawScene();
 
 
