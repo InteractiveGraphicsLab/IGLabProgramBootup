@@ -3,6 +3,8 @@
 
 #include "MainForm.h"
 #include "EventManager.h"
+#include "COMMON/OglForCLI.h"
+#include "COMMON/tmath.h"
 
 
 using namespace OpenglOnCli;
@@ -11,14 +13,6 @@ using namespace OpenglOnCli;
 #pragma comment( lib, "glu32.lib" )
 #pragma comment( lib, "gdi32.lib" )
 #pragma comment( lib, "User32.lib" )
-
-
-
-
-
-
-
-
 
 
 

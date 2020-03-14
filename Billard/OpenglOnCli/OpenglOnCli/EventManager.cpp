@@ -38,12 +38,14 @@ SolidBall::~SolidBall( )
 
 void SolidBall::Step( float h )
 {
-  static EVec3f Gravity = EVec3f(0,-10,0);
+  static EVec3f Gravity = EVec3f(0,-30,0);
   
   // a = G 
   // dv/dt = a  --> dv = a dt
   // dx/dt = v  --> dx = v dt
-  m_velocity += h * Gravity   ;
+  if (m_position.y() < m_radius)m_velocity.y()=0.0f;
+  else m_velocity += h * Gravity   ;
+  
   m_position += h * m_velocity; 
   
 }
@@ -368,14 +370,14 @@ void EventManager::DrawScene()
   glEnable( GL_CULL_FACE );
   glDisable(GL_CULL_FACE );
   glBegin(GL_TRIANGLES );
-  glNormal3f(0,0,1);
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
+  glNormal3f(0,1,0);
+  glVertex3f(-FLOOR_WIDTH,0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH,0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH,0, FLOOR_LENGTH);
 
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
-  glVertex3f(-FLOOR_WIDTH,  FLOOR_LENGTH,0);
+  glVertex3f(-FLOOR_WIDTH, 0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH, 0, FLOOR_LENGTH);
+  glVertex3f(-FLOOR_WIDTH, 0, FLOOR_LENGTH);
   glEnd();
  
   for ( auto &it : m_balls ) it.Draw();
@@ -394,13 +396,13 @@ void EventManager::DrawScene()
 void EventManager::Step()
 {
   //todoˆ—
-  std::cout << "step";
+  //std::cout << "step";
 
   for ( auto &it : m_balls ) 
   {
     it.Step( 0.01 );
     //ˆÚ“®ŒvŽZ OK
-    //‰ñ“]‚à   TODO ˆäK
+    //‰ñ“]‚à TODO ˆäK
   }
 
   //Œð·”»’è 
