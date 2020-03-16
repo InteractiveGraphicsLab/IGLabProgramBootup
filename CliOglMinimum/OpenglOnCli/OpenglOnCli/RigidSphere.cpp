@@ -64,62 +64,6 @@ void RigidSphere::DrawObject()
   glPopMatrix();
 }
 
-//void RigidSphere::DrawObject()
-//{
-//  //’¸“_‚ÌŒvŽZ
-//  const int reso_i = 32, reso_j = 16;
-//  EVec3f *norms = new EVec3f[reso_i * reso_j];
-//  EVec3f *verts = new EVec3f[reso_i * reso_j];
-//  
-//  for (int i = 0; i < reso_i; ++i)
-//  {
-//    for (int j = 0; j < reso_i; ++j)
-//    {
-//      norms[j + i * reso_j] = GetPosOnSphere(M_PI * i / (reso_i - 1.0f) - M_PI / 2.0f,
-//        2 * M_PI * j / (reso_j - 1.0f));
-//      verts[j + i * reso_j] = m_radius * norms[j + i * reso_j];
-//    }
-//  }
-//
-//  //•`‰æˆ—
-//  //const static float diff[4] = { 1.0f, 0.2f, 0, 0.3f };
-//  //const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
-//  //const static float spec[4] = { 1,1,1,0.3f };
-//  //const static float shin[1] = { 64.0f };
-//
-//  //glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-//  //glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-//  //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi);
-//  //glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
-//
-//
-//  glPushMatrix();
-//  glTranslatef(m_pos[0], m_pos[1], m_pos[2]);
-//  glBegin(GL_TRIANGLES);
-//  for (int i = 0; i < reso_i - 1; ++i)
-//  {
-//    for (int j = 0; j < reso_j - 1; ++j)
-//    {
-//      int idx0 = reso_j * i + j, idx1 = reso_j * i + j + 1;
-//      int idx2 = reso_j * (i + 1) + j, idx3 = reso_j * (i + 1) + j + 1;
-//      glNormal3fv(norms[idx0].data()); glVertex3fv(verts[idx0].data());
-//      glNormal3fv(norms[idx2].data()); glVertex3fv(verts[idx2].data());
-//      glNormal3fv(norms[idx3].data()); glVertex3fv(verts[idx3].data());
-//
-//      glNormal3fv(norms[idx0].data()); glVertex3fv(verts[idx0].data());
-//      glNormal3fv(norms[idx3].data()); glVertex3fv(verts[idx3].data());
-//      glNormal3fv(norms[idx1].data()); glVertex3fv(verts[idx1].data());
-//    }
-//  }
-//  glEnd();
-//  glPopMatrix();
-//
-//  delete[] verts;
-//  delete[] norms;
-//  std::cout << "Drawphere" << std::endl;
-//
-//}
-
 bool RigidSphere::isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir)
 {
   const EVec3f dir = rayDir.normalized();

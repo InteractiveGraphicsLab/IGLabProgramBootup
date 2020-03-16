@@ -1,6 +1,7 @@
 #pragma once
 #include "COMMON/OglForCLI.h"
 #include "RigidObject.h"
+#include "CollisionCalculator.h"
 #include <vector>
 
 using namespace std;
@@ -19,6 +20,7 @@ private:
   int m_pickObjID;
   float m_dt;
   vector<RigidObject*> m_object;
+  CollisionCalculator *m_calcCollision;
  
 public: 
   //ä÷êî

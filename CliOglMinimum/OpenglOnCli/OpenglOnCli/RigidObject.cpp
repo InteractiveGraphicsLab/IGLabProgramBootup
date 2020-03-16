@@ -28,7 +28,6 @@ void RigidObject::StepSimulation(const EVec3f &force,const float &dt)
   this->m_pos  += m_velo * dt;
 }
 
-
 //copy
 void RigidObject::Copy(const RigidObject &src)
 {
@@ -98,6 +97,11 @@ EVec3f RigidObject::GetNorm()
 {
   cout << "not plane" << endl;
   return EVec3f(0, 0, 0);
+}
+
+vector<EVec3f> RigidObject::GetVertex()
+{
+  return {};
 }
 
 //set

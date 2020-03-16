@@ -8,6 +8,10 @@ RigidPlane::RigidPlane(const ObjectType &type, const float &width, const float &
   this->m_width = width;
   this->m_length = length;
   this->m_norm = EVec3f(0, 1, 0);
+  this->m_verts.push_back(EVec3f(-this->m_width / 2, 0, -this->m_length / 2));
+  this->m_verts.push_back(EVec3f( this->m_width / 2, 0, -this->m_length / 2));
+  this->m_verts.push_back(EVec3f( this->m_width / 2, 0,  this->m_length / 2));
+  this->m_verts.push_back(EVec3f(-this->m_width / 2, 0,  this->m_length / 2));
 };
 
 //other
@@ -30,13 +34,13 @@ void RigidPlane::DrawObject()
   glNormal3f(0,1,0);
   
   //todo]xz•½–ÊˆÈŠO‚É‚à‘Î‰ž‚³‚¹‚é
-  glVertex3f(-this->m_width, 0, -this->m_length);
-  glVertex3f( this->m_width, 0, -this->m_length);
-  glVertex3f( this->m_width, 0,  this->m_length);
+  glVertex3fv(this->m_verts[0].data());
+  glVertex3fv(this->m_verts[1].data());
+  glVertex3fv(this->m_verts[2].data());
 
-  glVertex3f(-this->m_width, 0, -this->m_length);
-  glVertex3f( this->m_width, 0,  this->m_length);
-  glVertex3f(-this->m_width, 0,  this->m_length);
+  glVertex3fv(this->m_verts[0].data());
+  glVertex3fv(this->m_verts[2].data());
+  glVertex3fv(this->m_verts[3].data());
   glEnd();
 }
 
@@ -108,13 +112,16 @@ float RigidPlane::GetWidth()
 {
   return this->m_width;
 }
-
 float RigidPlane::GetLength()
 {
   return this->m_length;
 }
-
 EVec3f RigidPlane::GetNorm()
 {
   return m_norm;
 }
+vector<EVec3f> RigidPlane::GetVertex()
+{
+  return this->m_verts;
+}
+

@@ -12,6 +12,8 @@
 class RigidPlane;
 class RigidSphere;
 
+using namespace std;
+
 //Šù’èƒNƒ‰ƒX
 class RigidObject
 {
@@ -51,6 +53,7 @@ public:
   EVec3f GetRotVelo();
   ObjectType GetObjectType();
   EVec3f GetForce();
+  virtual vector<EVec3f> GetVertex();
 
   //for sphere
   virtual float GetRadius();
@@ -101,6 +104,7 @@ class RigidPlane :public RigidObject
 {
 private:
   float m_width, m_length;
+  vector<EVec3f> m_verts;
   EVec3f m_norm;
 
 public:
@@ -119,5 +123,7 @@ public:
   float GetWidth();
   float GetLength();
   EVec3f GetNorm();
+  vector<EVec3f> GetVertex();
+
 };
 #pragma managed
