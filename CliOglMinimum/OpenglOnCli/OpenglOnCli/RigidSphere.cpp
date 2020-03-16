@@ -120,60 +120,81 @@ void RigidSphere::DrawObject()
 //
 //}
 
-bool RigidSphere::isPickedObject()
+bool RigidSphere::isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir)
 {
-  return true;
+  const EVec3f dir = rayDir.normalized();
+  const EVec3f a = dir.dot(this->m_pos - rayPos)*dir + rayPos;
+  //const EVec3f a = (rayPos - this->m_pos).dot(rayDir.normalized())*rayDir.normalized() + rayPos;
+  const float distance = (a - m_pos).norm();
+  cout << distance << endl;
+  return distance <= m_radius ? true : false;
 }
 
 //collision
+void RigidSphere::CollisionDetection(RigidObject *collisionPartner, const float &dt)
+{
+  switch (collisionPartner->GetObjectType())
+  {
+  case Plane:
+  {
+    //衝突判定
+    bool isCollision = false;
+    EVec3f norm_p = collisionPartner->GetNorm();
+    EVec3f pos_p = collisionPartner->GetPosition(), pos_s = this->GetPosition();
 
-//球-球
-//void RigidSphere::CollisionDetection(RigidSphere &collisionPartner)
-//{
-//  //衝突判定
-//  bool isCollision = false;
-//  const float rad_src1 = this->GetRadius(), rad_src2 = collisionPartner.GetRadius();
-//  const EVec3f pos_src1 = this->GetPosition(), pos_src2 = collisionPartner.GetPosition();
-//  
-//  float distance = (pos_src1 - pos_src2).norm();
-//  if (distance <= rad_src1 + rad_src2) isCollision = true;
-//
-//  if (isCollision == false) return;
-//
-//  //衝突計算
-//  const float e = 0.5;
-//  const EVec3f velo_src1 = this->GetVelocity(), velo_src2 = collisionPartner.GetVelocity();
-//  const float mass_src1 = this->GetMass(), mass_src2 = collisionPartner.GetMass();
-//
-//  EVec3f newVelo_src1 = velo_src1 - (1 + e) * (mass_src2 / (mass_src1 + mass_src2)) * (velo_src1 - velo_src2);
-//  EVec3f newVelo_src2 = velo_src2 - (1 + e) * (mass_src1 / (mass_src1 + mass_src2)) * (velo_src1 - velo_src2);
-//  this->SetVelocity(newVelo_src1);
-//  collisionPartner.SetVelocity(newVelo_src2);
-//}
-//
-////球-平面
-//void RigidSphere::CollisionDetection(RigidPlane &collisionPartner)
-//{
-//  //衝突判定
-//  bool isCollision = false;
-//  EVec3f norm_p = collisionPartner.GetNorm();
-//  EVec3f pos_p = collisionPartner.GetPosition(), pos_s = this->GetPosition();
-//
-//  //平面に対して垂直方向しか見てない→横方向もみる[todo]
-//  float distance = abs( norm_p.dot((pos_s - pos_p)) ) / norm_p.norm();
-//  if (distance <= this->GetRadius()) isCollision = true;
-//
-//  if (isCollision == false) return;
-//
-//  //衝突計算（plane_massはsphere_massより十分重いとする）
-//  float e = 0.5;
-//  EVec3f v_s = this->GetVelocity(), v_p = collisionPartner.GetVelocity();
-//
-//  EVec3f newVelo_plane = v_p;
-//  EVec3f newVelo_sphere = v_s + (1 + e) * (v_p - v_s);
-//  collisionPartner.SetVelocity(newVelo_plane);
-//  this->SetVelocity(newVelo_sphere);
-//}
+    //平面に対して垂直方向しか見てない→横方向もみる[todo]
+    float distance = abs(norm_p.dot((pos_s - pos_p))) / norm_p.norm();
+    if (distance <= this->GetRadius()) isCollision = true;
+
+    if (isCollision == false) return;
+
+    //法線軸の速度のベクトルの大きさが0.1より小さかったら垂直抗力を加える
+    float a = abs(norm_p.dot((this->GetVelocity()))) / norm_p.norm();
+    if (a < 0.1)
+    {
+      this->SetForce(this->GetForce() + this->GetMass() *EVec3f(0, 9.8, 0));
+      //EVec3f v = norm_p.dot((this->GetVelocity())) * norm_p;
+      //this->SetForce(this->GetForce() + this->GetMass() * v / dt);
+    }
+    //衝突計算（plane_massはsphere_massより十分重いとする）
+    float e = 0.8;
+    EVec3f v_s = this->GetVelocity(), v_p = collisionPartner->GetVelocity();
+
+    EVec3f newVelo_plane = v_p;
+    EVec3f newVelo_sphere = (1 + e) * v_p - e * v_s;
+    collisionPartner->SetVelocity(newVelo_plane);
+    this->SetVelocity(newVelo_sphere.norm() < 0.0001 ? EVec3f(0, 0, 0) : newVelo_sphere);
+
+    break;
+  }
+  case Sphere:
+  {
+    //衝突判定
+    bool isCollision = false;
+    const float rad_src1 = this->GetRadius(), rad_src2 = collisionPartner->GetRadius();
+    const EVec3f pos_src1 = this->GetPosition(), pos_src2 = collisionPartner->GetPosition();
+
+    float distance = (pos_src1 - pos_src2).norm();
+    if (distance <= rad_src1 + rad_src2) isCollision = true;
+
+    if (isCollision == false) return;
+
+    //衝突計算
+    const float e = 0.8;
+    const EVec3f velo_src1 = this->GetVelocity(), velo_src2 = collisionPartner->GetVelocity();
+    const float mass_src1 = this->GetMass(), mass_src2 = collisionPartner->GetMass();
+
+    EVec3f newVelo_src1 = (velo_src1 * (mass_src1 - e * mass_src2) + mass_src2 * velo_src2 * (1 + e)) / (mass_src1 + mass_src2);
+    EVec3f newVelo_src2 = ((1 + e) * velo_src1 * mass_src1 + velo_src2 * (mass_src2 - e * mass_src1)) / (mass_src1 + mass_src2);
+    this->SetVelocity(newVelo_src1);
+    collisionPartner->SetVelocity(newVelo_src2);
+    break;
+  }
+  default:
+    break;
+  }
+
+}
 
 //for copy
 RigidSphere::RigidSphere(const RigidSphere &src) :RigidObject(src)

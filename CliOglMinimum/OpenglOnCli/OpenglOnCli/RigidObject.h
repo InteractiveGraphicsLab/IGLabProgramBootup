@@ -9,6 +9,9 @@
 #include <math.h>
 #include <vector>
 
+class RigidPlane;
+class RigidSphere;
+
 //Šù’èƒNƒ‰ƒX
 class RigidObject
 {
@@ -31,17 +34,14 @@ public:
 
   //other
   virtual void DrawObject() = 0;
-  virtual bool isPickedObject() = 0;
-  virtual void StepSimulation(const EVec3f &force);
+  virtual bool isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir) = 0;
+  virtual void StepSimulation(const EVec3f &force, const float &dt);
 
   //for copy
   RigidObject(const RigidObject &src) { Copy(src); };
   void Copy(const RigidObject &src);
 
-  //virtual void CollisionDetection() = 0;
-  //virtual void CollisionDetection(RigidPlane &collisionPartner) = 0;
-  //virtual void CollisionDetection(RigidSphere &collisionPartner) = 0;
-
+  virtual void CollisionDetection(RigidObject *collisionPartner, const float &dt) = 0;
 
   //get
   float  GetMass();
@@ -50,12 +50,22 @@ public:
   EVec3f GetRotation();
   EVec3f GetRotVelo();
   ObjectType GetObjectType();
+  EVec3f GetForce();
+
+  //for sphere
+  virtual float GetRadius();
+
+  //for plane
+  virtual float  GetWidth();
+  virtual float  GetLength();
+  virtual EVec3f GetNorm();
 
   //set
   void SetPosition(const EVec3f &position);
   void SetVelocity(const EVec3f &velocity);
   void SetRotation(const EVec3f &rotation);
   void SetRotVelo (const EVec3f &rotVelocity);
+  void SetForce   (const EVec3f &force);
 };
 
 
@@ -75,9 +85,8 @@ public:
   //other
   EVec3f GetPosOnSphere(const float &phi, const float &theta);
   void DrawObject();
-  bool isPickedObject();
-  //void CollisionDetection(RigidPlane  &collisionPartner);
-  //void CollisionDetection(RigidSphere &collisionPartner);
+  bool isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir);
+  void CollisionDetection(RigidObject  *collisionPartner, const float &dt);
 
   //for copy
   RigidSphere(const RigidSphere &src);
@@ -99,10 +108,9 @@ public:
 
   //other
   void DrawObject();
-  bool isPickedObject();
-  void StepSimulation(const EVec3f &force);
-  //void CollisionDetection(RigidSphere &CollisionPartner);
-  //void CollisionDetection(RigidPlane &CollisionPartner);
+  bool isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir);
+  void StepSimulation(const EVec3f &force, const float &dt);
+  void CollisionDetection(RigidObject *collisionPartner, const float &dt);
 
   //copy
   RigidPlane(const RigidPlane &src);

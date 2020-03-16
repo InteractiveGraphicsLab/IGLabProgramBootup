@@ -15,6 +15,9 @@ private:
 
   //•Ï”
   bool m_btn_right, m_btn_left, m_btn_middle;
+  EVec3f m_cursorPos, m_cursorDir;
+  int m_pickObjID;
+  float m_dt;
   vector<RigidObject*> m_object;
  
 public: 

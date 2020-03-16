@@ -68,9 +68,13 @@ EventManager::EventManager()
   q.Trace();
   a.Trace();
 
-  m_object.push_back(new RigidPlane(RigidObject::Plane, 8, 14, 1, EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  m_object.push_back(new RigidPlane(RigidObject::Plane, 8, 14, 1, EVec3f(0, 0, 0),   EVec3f(0, 0, 0)));
+  m_object.push_back(new RigidSphere(RigidObject::Sphere, 2, 1,   EVec3f(0, 10, 0),  EVec3f(0, 0, 0)));
 
   m_btn_right = m_btn_left = m_btn_middle = false;
+  m_cursorPos = m_cursorDir = EVec3f(0, 0, 0);
+  m_dt = 0.1;
+  m_pickObjID = -1;
 }
 
 
@@ -78,7 +82,17 @@ EventManager::EventManager()
 void EventManager::BtnDownLeft  (int x, int y, OglForCLI *ogl)
 {
   m_btn_left = true;
-  ogl->BtnDown_Trans( EVec2i(x,y) );
+
+  ogl->GetCursorRay(EVec2i(x, y), m_cursorPos, m_cursorDir);
+  for (int i = 0; i < (int)m_object.size(); ++i)
+  {
+    if (m_object[i]->isPickedObject(m_cursorPos, m_cursorDir)==true)
+    {
+      this->m_pickObjID = i;
+    }
+  }
+  
+  if(m_pickObjID ==-1) ogl->BtnDown_Trans(EVec2i(x, y));
 } 
 
 void EventManager::BtnDownMiddle(int x, int y, OglForCLI *ogl)
@@ -99,6 +113,13 @@ void EventManager::BtnUpLeft  (int x, int y, OglForCLI *ogl)
 {
   m_btn_left = false;
   ogl->BtnUp();
+
+  if (m_pickObjID == -1) return;
+
+  ////ˆø‚Á’£‚èˆ—orƒpƒ`ƒ“ƒRˆ—À‘•
+  //this->m_object[m_pickObjID]->SetForce()
+
+  m_pickObjID = -1;
 }
 
 void EventManager::BtnUpMiddle(int x, int y, OglForCLI *ogl)
@@ -117,7 +138,14 @@ void EventManager::MouseMove    (int x, int y, OglForCLI *ogl)
 {
   if ( !m_btn_right && !m_btn_middle && !m_btn_left) return;
 
-  ogl->MouseMove( EVec2i(x,y) );
+  if (m_pickObjID != -1)
+  {
+    ogl->GetCursorRay(EVec2i(x, y), m_cursorPos, m_cursorDir);
+  }
+  else
+  {
+    ogl->MouseMove(EVec2i(x, y));
+  }
 }
 
 void EventManager::ClickGenerateBtn()
@@ -157,26 +185,20 @@ void EventManager::DrawScene(){
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHT2);
 
-
-  //const static float diff[4] = { 1.0f, 0.2f, 0, 0.3f };
-  //const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
-  //const static float diffG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
-  //const static float ambiG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
-  //const static float spec[4] = { 1,1,1,0.3f };
-  //const static float shin[1] = { 64.0f };
-  //glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-  //glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffG);
-  //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambiG);
-  //glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
-
-
-  ////ƒrƒŠƒ„[ƒh‘ä‚ğ•`‰æ
-  //DrawBilliardTable();
-
   //RigidObjectŒQ‚ğ•`‰æ
   for (int i = 0; i < (int)m_object.size(); ++i)
   {
     m_object[i]->DrawObject();
+  }
+
+  //’Í‚ñ‚Åˆø‚Á’£‚Á‚½Û‚Ì•R‚Ì•`‰æ
+  if (m_pickObjID != -1)
+  {
+    glBegin(GL_LINES);
+    glColor3f(0.5, 0.5, 0.5);
+    glVertex3fv(m_cursorPos.data());
+    glVertex3fv(m_object[m_pickObjID]->GetPosition().data());
+    glEnd();
   }
 }
 
@@ -186,26 +208,32 @@ void EventManager::Step()
   //todoˆ—
   //std::cout << "step";
 
+  //  //Œğ·”»’è 
+  //for (int i = 0; i < (int)m_object.size(); ++i)
+  //{
+  //  for (int j = i + 1; j < (int)m_object.size(); ++j)
+  //  {
+  //    m_object[i]->CollisionDetection(m_object[j], m_dt);
+  //  }
+  //}
+  for (int i = (int)m_object.size()-1; i >=0 ; --i)
+  {
+    for (int j = i -1; j >=0 ; --j)
+    {
+      m_object[i]->CollisionDetection(m_object[j], m_dt);
+    }
+  }
+  
   for (int i = 0; i < (int)m_object.size(); ++i)
   {
-    m_object[i]->StepSimulation(EVec3f(0, 0, 0));
+    m_object[i]->StepSimulation(EVec3f(0, 0, 0), this->m_dt);
     //ˆÚ“®ŒvZ OK
     //‰ñ“]‚à   TODO ˆäK
   }
   
 
-  ////Œğ·”»’è 
-  //for (int i = 0; i < (int)m_balls.size(); ++i)
-  //{
-  //  for (int j = i + 1; j < (int)m_balls.size(); ++j)
-  //  {
-  //    m_balls[i];
-  //    m_balls[j];
-  //  }
-  //}
 
   OpenglOnCli::MainForm_RedrawPanel();
-
 }
 
 

@@ -3,6 +3,8 @@
 
 #pragma unmanaged
 
+using namespace std;
+
 RigidObject::RigidObject(const ObjectType &type, const float &mass, const EVec3f &position, const EVec3f &velocity)
 {
   this->m_type    = type;
@@ -15,11 +17,11 @@ RigidObject::RigidObject(const ObjectType &type, const float &mass, const EVec3f
 }
 
 //other
-void RigidObject::StepSimulation(const EVec3f &force)
+void RigidObject::StepSimulation(const EVec3f &force,const float &dt)
 {
-  float dt = 0.01;
   EVec3f gravity = EVec3f(0, -9.8, 0);
-  EVec3f toalForce = force + m_force + gravity;
+  EVec3f toalForce = force + m_force + this->m_mass * gravity;
+  m_force = EVec3f(0, 0, 0);
 
   EVec3f a = toalForce / this->m_mass;
   this->m_velo += a * dt;
@@ -69,6 +71,34 @@ RigidObject::ObjectType RigidObject::GetObjectType()
   return this->m_type;
 }
 
+EVec3f RigidObject::GetForce()
+{
+  return m_force;
+}
+
+float RigidObject::GetRadius()
+{
+  cout << "not sphere" << endl;
+  return 0;
+}
+
+float  RigidObject::GetWidth()
+{
+  cout << "not plane" << endl;
+  return 0;
+}
+
+float  RigidObject::GetLength()
+{
+  cout << "not plane" << endl;
+  return 0;
+}
+
+EVec3f RigidObject::GetNorm()
+{
+  cout << "not plane" << endl;
+  return EVec3f(0, 0, 0);
+}
 
 //set
 void RigidObject::SetPosition(const EVec3f &position)
@@ -90,5 +120,11 @@ void RigidObject::SetRotVelo(const EVec3f &rotVelocity)
 {
   this->m_rotVelo = rotVelocity;
 }
+
+void RigidObject::SetForce(const EVec3f &force)
+{
+  m_force = force;
+}
+
 
 #pragma managed

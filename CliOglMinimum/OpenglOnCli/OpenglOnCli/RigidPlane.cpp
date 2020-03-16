@@ -40,40 +40,61 @@ void RigidPlane::DrawObject()
   glEnd();
 }
 
-bool RigidPlane::isPickedObject()
+bool RigidPlane::isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir)
 {
+
   return false;
 }
 
-void RigidPlane::StepSimulation(const EVec3f &force)
+void RigidPlane::StepSimulation(const EVec3f &force, const float &dt)
 {
   //このプログラムではPlaneは不動
 }
 
-////平面-平面
-//void RigidPlane::CollisionDetection(RigidPlane &CollisionPartner)
-//{
-//  //何もしない
-//}
-//
-////平面-球
-//void RigidPlane::CollisionDetection(RigidSphere &CollisionPartner)
-//{
-//  //衝突判定
-//  bool isCollision = false;
-//
-//  if (isCollision == false) return;
-//
-//  //衝突計算（plane_massはsphere_massより十分重いとする）
-//  float e = 0.5;
-//  EVec3f v_s = CollisionPartner.GetVelocity(), v_p = this->GetVelocity();
-//
-//  EVec3f newVelo_plane = v_p;
-//  EVec3f newVelo_sphere = v_s + (1 + e) * (v_p - v_s);
-//  this->SetVelocity(newVelo_plane);
-//  CollisionPartner.SetVelocity(newVelo_sphere);
-//}
+void RigidPlane::CollisionDetection(RigidObject *collisionPartner, const float &dt)
+{
+  switch (collisionPartner->GetObjectType())
+  {
+  case Plane:
+    break;
 
+  case Sphere:
+  {
+    //衝突判定
+    bool isCollision = false;
+    EVec3f norm_p = this->GetNorm();
+    EVec3f pos_p = this->GetPosition(), pos_s = collisionPartner->GetPosition();
+
+    //平面に対して垂直方向しか見てない→横方向もみる[todo]
+    float distance = abs(norm_p.dot((pos_s - pos_p))) / norm_p.norm();
+    if (distance <= collisionPartner->GetRadius()) isCollision = true;
+
+    if (isCollision == false) return;
+
+    //法線軸の速度のベクトルの大きさが0.1より小さかったら垂直抗力を加える
+    float a = abs(norm_p.dot((collisionPartner->GetVelocity()))) / norm_p.norm();
+    if (a < 0.1)
+    {
+      collisionPartner->SetForce(collisionPartner->GetForce() + collisionPartner->GetMass() *EVec3f(0, 9.8, 0));
+      //EVec3f v = norm_p.dot((this->GetVelocity())) * norm_p;
+      //this->SetForce(this->GetForce() + this->GetMass() * v / dt);
+    }
+    //衝突計算（plane_massはsphere_massより十分重いとする）
+    float e = 0.8;
+    EVec3f v_s = collisionPartner->GetVelocity(), v_p = this->GetVelocity();
+
+    EVec3f newVelo_plane = v_p;
+    EVec3f newVelo_sphere = (1 + e) * v_p - e * v_s;
+
+    this->SetVelocity(newVelo_plane);
+    collisionPartner->SetVelocity(newVelo_sphere.norm() < 0.0001 ? EVec3f(0, 0, 0) : newVelo_sphere);
+    break;
+  }
+
+  default:
+    break;
+  }
+}
 
 //for copy
 RigidPlane::RigidPlane(const RigidPlane &src) :RigidObject(src)
