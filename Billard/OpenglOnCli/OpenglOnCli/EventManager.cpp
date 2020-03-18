@@ -17,17 +17,14 @@
 // 
 
 
-//クラス名.h
-//クラス名.cpp
-
-SolidBall::SolidBall( EVec3f pos )
+SolidBall::SolidBall( EVec3f pos , EVec3f vel)
 {
-  m_radius    = 3    ; //cm
-  m_mass      = 170  ; //g
+  m_radius    = 0.03f * 2; //m
+  m_mass      = 0.17f;     //kg
   m_position  = pos  ;
-  m_velocity  = EVec3f(0,0,0);
-  m_angle     = EVec3f(0,0,0);
-  m_anglevelo = EVec3f(0,0,0);
+  m_velocity  = vel;
+  m_angle     = EVec3f(0.0f, 0.0f, 0.0f);
+  m_anglevelo = EVec3f(0.0f, 0.0f, 0.0f);
 }
 
 SolidBall::~SolidBall( )
@@ -35,11 +32,11 @@ SolidBall::~SolidBall( )
 }
 
 
-
 void SolidBall::Step( float h )
 {
-  static EVec3f Gravity = EVec3f(0,-10,0);
-  
+  static EVec3f Gravity = EVec3f(0,0,-10);
+  //static EVec3f Gravity = EVec3f(0, 0, 0);
+
   // a = G 
   // dv/dt = a  --> dv = a dt
   // dx/dt = v  --> dx = v dt
@@ -48,10 +45,53 @@ void SolidBall::Step( float h )
   
 }
 
+bool SolidBall::isGrasped(const EVec3f& cursorPos, const EVec3f& cursorDir)
+{
+  EVec3f dir = cursorDir.normalized();
+  EVec3f l = cursorPos - GetPos() + dir.dot(GetPos() - cursorPos) * dir;
+  
+  if (l.norm() < GetRadius())
+  {
+    return true;
+  }
+  return false;
+}
+
+bool SolidBall::isCollisionTable()
+{
+  EVec3f widthVec  = EVec3f(1, 0, 0);
+  EVec3f lengthVec = EVec3f(0, 1, 0);
+  EVec3f wallHVec  = EVec3f(0, 0, 1);
+  float distanceX = std::abs(widthVec.dot(GetPos()));
+  float distanceY = std::abs(lengthVec.dot(GetPos()));
+  float distanceZ = std::abs(wallHVec.dot(GetPos()));
+  //std::cout << distanceX << "\n";
+  //std::cout << distanceY << "\n";
+  //std::cout << distanceZ << "\n";
+
+  if ( distanceX <= FLOOR_WIDTH + GetRadius()
+    && distanceY <= FLOOR_LENGTH + GetRadius()
+    && distanceZ <= m_radius)
+  {
+    //std::cout << "collision table\n";
+    return true;
+  }
+  return false;
+}
+
+bool SolidBall::isCollisionBall(SolidBall& ball)
+{
+  const EVec3f disPos = m_position - ball.GetPos();
+  const float disLen = disPos.norm();
+
+  if (disLen <= m_radius + ball.GetRadius()) {
+    return true;
+  }
+  return false;
+}
 
 
-
-static EVec3f GetPosOnSphere( const float &phi, const float &theta)
+static EVec3f GetPosOnBall( const float &phi, const float &theta)
 {
   return EVec3f( std::cos(phi) * std::cos(theta), 
                  std::sin(phi),
@@ -59,8 +99,7 @@ static EVec3f GetPosOnSphere( const float &phi, const float &theta)
 }
 
 
-
-static void DrawSphere(int reso_i, int reso_j, float radius)
+static void DrawBall(int reso_i, int reso_j, float radius)
 {
   EVec3f *norms = new EVec3f[reso_i * reso_j];
   EVec3f *verts = new EVec3f[reso_i * reso_j];
@@ -70,7 +109,7 @@ static void DrawSphere(int reso_i, int reso_j, float radius)
     for ( int j = 0; j < reso_j; ++j )
     {
 
-      norms[j + i * reso_j ] = GetPosOnSphere( M_PI * i / (reso_i - 1.0f) - M_PI / 2.0f,    
+      norms[j + i * reso_j ] = GetPosOnBall( M_PI * i / (reso_i - 1.0f) - M_PI / 2.0f,    
                                            2 * M_PI * j / (reso_j - 1.0f) );
       verts[j + i * reso_j] = radius * norms[ j + i * reso_j ];
     }
@@ -83,6 +122,7 @@ static void DrawSphere(int reso_i, int reso_j, float radius)
     { 
       int idx0 = reso_j*  i   + j, idx1 = reso_j*  i  + j+1;
       int idx2 = reso_j*(i+1) + j, idx3 = reso_j*(i+1)+ j+1;
+      glColor3f(0.5, 0.5, 0.5);
       glNormal3fv( norms[ idx0 ].data() ); glVertex3fv( verts[ idx0 ].data() );
       glNormal3fv( norms[ idx2 ].data() ); glVertex3fv( verts[ idx2 ].data() );
       glNormal3fv( norms[ idx3 ].data() ); glVertex3fv( verts[ idx3 ].data() );
@@ -98,7 +138,6 @@ static void DrawSphere(int reso_i, int reso_j, float radius)
   delete[] verts;
   delete[] norms;
 }
-  
 
 
 void SolidBall::Draw( )
@@ -110,103 +149,9 @@ void SolidBall::Draw( )
   glPushMatrix();
   glTranslatef( m_position[0], m_position[1], m_position[2] );
   //glMultiMat3d(m.data());
-  DrawSphere(  20, 20, m_radius );
+  DrawBall(  20, 20, m_radius );
   glPopMatrix();
 }
-
-
-//.h
-class MyVec3
-{
-private:
-  float m_data[3];
-  int *m_test;
-     
-public :
-  MyVec3(float x = 0, float y = 0, float z = 0) 
-  {
-    m_data[0] = x;
-    m_data[1] = y;
-    m_data[2] = z;
-    m_test = new int[5];
-  }
-
-  ~MyVec3()
-  {
-    delete[] m_test;
-  }
-
-  MyVec3(const MyVec3 &src)
-  { 
-    this->m_data[0] = src.m_data[0];
-    this->m_data[1] = src.m_data[1];
-    this->m_data[2] = src.m_data[2];
-    m_counter++;
-  }
-  
-  MyVec3 operator+(const MyVec3 v)
-  {
-    MyVec3 p;
-    p.m_data[0] = this->m_data[0] + v.m_data[0];
-    p.m_data[1] = this->m_data[1] + v.m_data[1];
-    p.m_data[2] = this->m_data[2] + v.m_data[2];
-    return p;
-  }
-  
-  void Trace();
-  void Trace(int a)
-  {
-    printf("aaaakkkk");
-  }
-
-  static int m_counter;
-  static void StaticFunc(){
-    //m_publ = 0;
-    m_counter = 0;
-  }
-
-  static void SetCountZero(){
-    m_counter = 0;
-  }
-
-  void func();
-  
-
-};
-
-// classとは
-// フィールド変数(private/public)，
-// フィールド関数(private/public)
-// static 変数 static 関数
-// constructor
-
-int MyVec3::m_counter = 0;
-
-
-
-
-//.cpp
-void MyVec3::Trace(){
-  printf("aaaa %f %f %f\n", m_data[0], m_data[1], m_data[2]);
-}
-
-
-void MyVec3::func()
-{
-
-}
-
-
-void func( int a, int &b, int *c )
-{
-  //値渡し，参照渡し，ポインタ渡し
-  a = 10;
-  b = 10;
-  if( c != 0) *c = 10;
-}
-
-
-
 
 
 
@@ -214,88 +159,55 @@ void func( int a, int &b, int *c )
 EventManager::EventManager()
 {
   std::cout << "EventManager constructor\n";
-  //
-  //MyVec3 v1(1,2,3), v2(3,4,5);
-  //v1.Trace();
-  //v2.Trace();
-  //MyVec3 v3 = v1 + v2; //オペレータオーバーロード
-  //v3.Trace();
-  //v3.Trace(1);
-  //
-  ////v1.m_priv = 10; 無理
-  // 
-  //v1.StaticFunc();
-  //MyVec3::StaticFunc();
-
-  ////MyVec3 p(1,2,3);
-  ////MyVec3 q(1,2,3);
-  ////auto a = p + q;
-  ////p.Trace();
-  ////q.Trace();
-  ////a.Trace();
-  //
-  ////スコープ
-  //{
-  //  float a = 10;
-  //  MyVec3 *aaa = new MyVec3();
- 
-  //  delete aaa;
-  //}
-  //
-  //std::vector<int> array_int;
-  //array_int.push_back(1);
-  //array_int.push_back(2);
-  //array_int.push_back(3);
-  //array_int.push_back(0);
-  //array_int.push_back(13);
-  //array_int.push_back(11);
-  //array_int.push_back(10);
-  //
-  //std::list<int> list_int;
-  //list_int.push_back(1);
-  //list_int.push_back(10);
-  //list_int.push_back(122);
-  //list_int.push_back(133);
-  //list_int.push_back(144);
-  //list_int.push_back(155);
-  //list_int.push_back(1);
-  //
-  //array_int[4];
-  //list_int.pop_front();
-
-  //int a1 =1, a2 = 1, a3 = 1;
-  //func(a1,a2,&a3);
-  ////a1 == 1, a2 == 10, a3 == 10 
-  //  
+    
   m_btn_right = m_btn_left = m_btn_middle = false;
+  m_GraspedBall = -1;
+
+  m_balls.push_back(SolidBall(EVec3f(0,  0.1, 5), EVec3f(0, 0, 0)));
+  m_balls.push_back(SolidBall(EVec3f(0, -0.1, 5), EVec3f(0, 0, 0)));
+  //m_balls.push_back(SolidBall(EVec3f(0, 0, 0), EVec3f(0, 1, 0)));
+
+
+  //for (float i = -1; i < 2; ++i)
+  //{
+  //  for (float j = -1; j < 2; ++j)
+  //  {
+  //    m_balls.push_back(SolidBall(EVec3f(i / 10, j / 10, 1), EVec3f(0, 0, 0)));
+  //  }
+  //}
+
 }
-
-
-
-
-
-
-
-
 
 
 static EVec3f cursor_p, cursor_d;
 
-
 void EventManager::BtnDownLeft  (int x, int y, OglForCLI *ogl)
 {
   m_btn_left = true;
-  ogl->BtnDown_Trans( EVec2i(x,y) );
   
   ogl->GetCursorRay( EVec2i(x,y), cursor_p, cursor_d);
-  m_balls.push_back(SolidBall( EVec3f(0,30,0) ) );
+  for (int i = 0; i < m_balls.size(); ++i)
+  {
+    if (m_balls[i].isGrasped(cursor_p, cursor_d) == true)
+    {
+      m_GraspedBall = i;
+    }
+  }
+  
+  if (m_GraspedBall == -1)
+  {
+    ogl->BtnDown_Trans(EVec2i(x, y));
+  }
+
 } 
+
 
 void EventManager::BtnDownMiddle(int x, int y, OglForCLI *ogl)
 {
   m_btn_middle = true;
   ogl->BtnDown_Zoom( EVec2i(x,y) );
 }
+
 
 void EventManager::BtnDownRight (int x, int y, OglForCLI *ogl)
 {
@@ -304,12 +216,22 @@ void EventManager::BtnDownRight (int x, int y, OglForCLI *ogl)
 }
 
 
-
 void EventManager::BtnUpLeft  (int x, int y, OglForCLI *ogl)
 {
   m_btn_left = false;
   ogl->BtnUp();
+
+  if (m_GraspedBall != -1)
+  {
+    ogl->GetCursorRay( EVec2i(x,y), cursor_p, cursor_d);
+    float depth = (cursor_p - m_balls[m_GraspedBall].GetPos()).norm();
+    EVec3f target = cursor_p + cursor_d * depth;
+    m_shotF = - (target - m_balls[m_GraspedBall].GetPos());
+    m_balls[m_GraspedBall].SetVel(m_balls[m_GraspedBall].GetVel() + m_shotF / m_balls[m_GraspedBall].GetMass());
+  }
+  m_GraspedBall = -1;
 }
+
 
 void EventManager::BtnUpMiddle(int x, int y, OglForCLI *ogl)
 {
@@ -317,104 +239,196 @@ void EventManager::BtnUpMiddle(int x, int y, OglForCLI *ogl)
   ogl->BtnUp();
 }
 
+
 void EventManager::BtnUpRight (int x, int y, OglForCLI *ogl)
 {
   m_btn_right = false;
   ogl->BtnUp();
 }
 
+
 void EventManager::MouseMove    (int x, int y, OglForCLI *ogl)
 {
   if ( !m_btn_right && !m_btn_middle && !m_btn_left) return;
 
-  ogl->MouseMove( EVec2i(x,y) );
+  if (m_GraspedBall == -1)
+  {
+    ogl->MouseMove(EVec2i(x, y));
+  }
+  else
+  {
+    ogl->GetCursorRay(EVec2i(x, y), cursor_p, cursor_d);
+  }
+
 }
 
 
 
+void EventManager::DrawBilliardTable()
+{
+  //render billboard floor 
+  glEnable(GL_CULL_FACE);
+  glDisable(GL_CULL_FACE);
+  glBegin(GL_TRIANGLES);
+  glNormal3f(0, 0, 1);
+  glColor3f(0.3, 0.6, 0.3);
 
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, 0);
 
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, 0);
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, 0);
+  //glEnd();
 
+  ////render billboard wall
+  glColor3f(0.8, 0.8, 0.8);
+
+  //下
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+
+  //上
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, 0);
+
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, 0);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, 0);
+
+  //右
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, 0);
+
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(FLOOR_WIDTH, FLOOR_LENGTH, 0);
+  glVertex3f(FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+
+  //左
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, WALL_HEIGHT);
+  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH, 0);
+  glVertex3f(-FLOOR_WIDTH, FLOOR_LENGTH, 0);
+
+  glEnd();
+}
 
 
 void EventManager::DrawScene()
 {
-  //ここにレンダリングルーチンを書く
-  glBegin(GL_LINES );
-  glColor3d(1,0,0); glVertex3d(0,0,0); glVertex3d(10,0,0);
-  glColor3d(0,1,0); glVertex3d(0,0,0); glVertex3d(0,10,0);
-  glColor3d(0,0,1); glVertex3d(0,0,0); glVertex3d(0,0,10);
-  glEnd();
-
- 
-  const static float diff[4] = { 1.0f, 0.2f, 0, 0.3f };
-  const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
-  const static float spec[4] = { 1,1,1,0.3f };
-  const static float shin[1] = { 64.0f };
-  const static float diffG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
-  const static float ambiG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
-  
+  const static float diff[4] = { 0.3f, 0.7f, 0.3f, 0.3f };
+  const static float ambi[4] = { 0.3f, 0.7f, 0.3f, 0.3f };
+  const static float spec[4] = { 0.1f, 0.3f, 0.3f, 0.3f };
+  const static float shin[1] = { 20.0f };
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-  glEnable(GL_LIGHT2);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR , spec);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE  , diffG);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT  , ambiG);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE  , diff);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT  , ambi);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
-  
-  //render floor 
-  glEnable( GL_CULL_FACE );
-  glDisable(GL_CULL_FACE );
-  glBegin(GL_TRIANGLES );
-  glNormal3f(0,0,1);
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
 
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
-  glVertex3f(-FLOOR_WIDTH,  FLOOR_LENGTH,0);
-  glEnd();
+  DrawBilliardTable();
  
   for ( auto &it : m_balls ) it.Draw();
 
-  glLineWidth(10);
-  glBegin(GL_LINES );
-  EVec3f tmp = cursor_p + 100*cursor_d;
-  glVertex3fv ( cursor_p.data() );
-  glVertex3fv ( tmp.data() );
-  glEnd();
+  if (m_GraspedBall != -1)
+  {
+    glLineWidth(4);
+    glBegin(GL_LINES);
+    glColor3f(1, 1, 1);
+    glVertex3fv(cursor_p.data());
+    glVertex3fv(m_balls[m_GraspedBall].GetPos().data());
+    glEnd();
+  }
 }
-
-
 
 
 void EventManager::Step()
 {
   //todo処理
-  std::cout << "step";
+  //std::cout << "step";
+  const float stepTime = 0.01f;
 
   for ( auto &it : m_balls ) 
   {
-    it.Step( 0.01 );
+    it.Step( stepTime );
     //移動計算 OK
     //回転も   TODO 井尻
   }
 
   //交差判定 
-  for ( int i=0; i < (int)m_balls.size(); ++i )
+  for ( int i = 0; i < (int)m_balls.size(); ++i )
   {
-    for ( int j=i+1; j < (int)m_balls.size(); ++j )
+    //floor_ball
+    if (m_balls[i].isCollisionTable())
     {
-      m_balls[i];
-      m_balls[j];
+      //std::cout << "collision table\n";
+      CollideTable(m_balls[i]);
+    }
+
+    for ( int j = i + 1; j < (int)m_balls.size(); ++j )
+    {
+      if (m_balls[i].isCollisionBall(m_balls[j]))
+      {
+        CollideBall(m_balls[i], m_balls[j]);
+      }
     }  
   }
 
   OpenglOnCli::MainForm_RedrawPanel();
+}
 
 
 
+void EventManager::CollideTable(SolidBall& ball)
+{
+  const float elast = 0.8f;
+
+  EVec3f widthVec = EVec3f(1, 0, 0);
+  EVec3f lengthVec = EVec3f(0, 1, 0);
+  EVec3f wallHVec = EVec3f(0, 0, 1);
+  EVec3f wallHVel = wallHVec * wallHVec.dot(ball.GetVel());
+  ball.SetVel(ball.GetVel() - (1.0f + elast) * wallHVel);
+
+  float distanceZ = wallHVec.dot(ball.GetPos());
+
+  ball.SetPos(ball.GetPos() + (ball.GetRadius() - distanceZ) * wallHVec);
+}
+
+
+void EventManager::CollideBall(SolidBall& ball1, SolidBall& ball2)
+{
+  const float elast = 0.8f; 
+  EVec3f pos1 = ball1.GetPos();
+  EVec3f pos2 = ball2.GetPos();
+  const EVec3f vel1 = ball1.GetVel();
+  const EVec3f vel2 = ball2.GetVel();
+  const float mass1 = ball1.GetMass();
+  const float mass2 = ball2.GetMass();
+
+  ball1.SetVel(((1 + elast) * mass2 * vel2 + (mass1 - elast * mass2) * vel1) / (mass1 + mass2));
+  ball2.SetVel(((1 + elast) * mass1 * vel1 + (mass2 - elast * mass1) * vel2) / (mass1 + mass2));
+
+  //めり込み対応       
+  const EVec3f distance = pos1 - pos2;
+  const EVec3f distanceNormalized = distance.normalized();
+  float tmp = 0.01f;
+  for (int i = 0; i < 3; ++i) {
+    pos1[i] += tmp * distanceNormalized[i];
+    pos2[i] -= tmp * distanceNormalized[i];
+  }
+  ball1.SetPos(pos1);
+  ball2.SetPos(pos2);
 }

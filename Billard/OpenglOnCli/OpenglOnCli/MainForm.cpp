@@ -15,13 +15,6 @@ using namespace OpenglOnCli;
 
 
 
-
-
-
-
-
-
-
 //double buffering用のハック
 //https://www.codeproject.com/Questions/226895/Double-buffered-painting-of-a-panel
 public ref class MyPanel :  public System::Windows::Forms::Panel
@@ -110,15 +103,14 @@ System::Void MainForm::MainForm_KeyUp(System::Object^  sender, System::Windows::
 
 
 
-
 void MainForm::RedrawMainPanel()
 {
-  float  fovY     = 45.0;
+  float  fovY     = 20;
   float  nearDist = 0.1f;
   float  farDist  = 1000.0f;
   m_ogl->OnDrawBegin(m_main_panel->Width, m_main_panel->Height,   
                      fovY, nearDist, farDist);
   EventManager::GetInst()->DrawScene();
-
+  //std::cout << "aa\n";
   m_ogl->OnDrawEnd();
 }
