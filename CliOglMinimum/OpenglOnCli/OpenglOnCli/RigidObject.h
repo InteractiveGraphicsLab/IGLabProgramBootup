@@ -43,7 +43,6 @@ public:
   RigidObject(const RigidObject &src) { Copy(src); };
   void Copy(const RigidObject &src);
 
-  virtual void CollisionDetection(RigidObject *collisionPartner, const float &dt) = 0;
 
   //get
   float  GetMass();
@@ -89,7 +88,6 @@ public:
   EVec3f GetPosOnSphere(const float &phi, const float &theta);
   void DrawObject();
   bool isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir);
-  void CollisionDetection(RigidObject  *collisionPartner, const float &dt);
 
   //for copy
   RigidSphere(const RigidSphere &src);
@@ -114,7 +112,6 @@ public:
   void DrawObject();
   bool isPickedObject(const EVec3f &rayPos, const EVec3f &rayDir);
   void StepSimulation(const EVec3f &force, const float &dt);
-  void CollisionDetection(RigidObject *collisionPartner, const float &dt);
 
   //copy
   RigidPlane(const RigidPlane &src);

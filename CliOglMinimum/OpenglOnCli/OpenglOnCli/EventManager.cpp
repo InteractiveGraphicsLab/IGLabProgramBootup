@@ -9,11 +9,11 @@
 EventManager::EventManager()
 {
   this->m_object.push_back(new RigidPlane(RigidObject::Plane, 8, 14, 1, EVec3f(0, 0, 0),   EVec3f(0, 0, 0)));
-  this->m_object.push_back(new RigidSphere(RigidObject::Sphere, 2, 1,   EVec3f(8, 10, 0),  EVec3f(0, 0, 0)));
+  this->m_object.push_back(new RigidSphere(RigidObject::Sphere, 2, 1,   EVec3f(0, 10, 0),  EVec3f(0, 0, 0)));
 
   this->m_btn_right = this->m_btn_left = this->m_btn_middle = false;
   this->m_cursorPos = this->m_cursorDir = EVec3f(0, 0, 0);
-  this->m_dt = 0.1;
+  this->m_dt = 00.1;
   this->m_pickObjID = -1;
   this->m_calcCollision = new CollisionCalculator(this->m_dt);
 }
@@ -52,6 +52,12 @@ void EventManager::BtnUpLeft  (int x, int y, OglForCLI *ogl)
   ogl->BtnUp();
 
   if (this->m_pickObjID == -1) return;
+  
+  ogl->GetCursorRay(EVec2i(x, y), this->m_cursorPos, this->m_cursorDir);
+  EVec3f obj_pos = this->m_object[m_pickObjID]->GetPosition();
+  float depth = (obj_pos - this->m_cursorPos).norm();
+  EVec3f power = obj_pos - (this->m_cursorPos + this->m_cursorDir * depth);
+  this->m_object[m_pickObjID]->SetForce(power*10);
 
   this->m_pickObjID = -1;
 }
@@ -84,7 +90,7 @@ void EventManager::MouseMove    (int x, int y, OglForCLI *ogl)
 //MainFormƒ{ƒ^ƒ“ƒCƒxƒ“ƒg
 void EventManager::ClickGenerateBtn()
 {
-  this->m_object.push_back(new RigidSphere(RigidObject::Sphere, 2, 1, EVec3f(0, 10, 0), EVec3f(0, 0, 0)));
+  this->m_object.push_back(new RigidSphere(RigidObject::Sphere, 2, 1, EVec3f(0, 25, 0), EVec3f(0, 0, 0)));
 }
 
 //•`‰æˆ—
@@ -111,35 +117,27 @@ void EventManager::DrawScene(){
   //’Í‚ñ‚Åˆø‚Á’£‚Á‚½Û‚Ì•R‚Ì•`‰æ
   if (m_pickObjID != -1)
   {
+    glEnable(GL_LINE_STIPPLE);
+    glLineStipple(1, 0xF0F0);
     glBegin(GL_LINES);
     glColor3f(0.5, 0.5, 0.5);
     glVertex3fv(m_cursorPos.data());
     glVertex3fv(m_object[m_pickObjID]->GetPosition().data());
     glEnd();
+    glDisable(GL_LINE_STIPPLE);
   }
 }
 
 
 void EventManager::Step()
 {
-  //todoˆ—
-  //std::cout << "step";
-
-  //  //Œğ·”»’è 
-  //for (int i = 0; i < (int)m_object.size(); ++i)
-  //{
-  //  for (int j = i + 1; j < (int)m_object.size(); ++j)
-  //  {
-  //    m_object[i]->CollisionDetection(m_object[j], m_dt);
-  //  }
-  //}
-  //for (int i = (int)m_object.size()-1; i >=0 ; --i)
-  //{
-  //  for (int j = i -1; j >=0 ; --j)
-  //  {
-  //    m_object[i]->CollisionDetection(m_object[j], m_dt);
-  //  }
-  //}
+  //ŒvZ
+  for (int i = 0; i < (int)m_object.size(); ++i)
+  {
+    m_object[i]->StepSimulation(EVec3f(0, 0, 0), this->m_dt);
+  }
+  
+  //Œğ·”»’è 
   for (int i = 0; i < (int)m_object.size(); ++i)
   {
     for (int j = i + 1; j < (int)m_object.size(); ++j)
@@ -148,13 +146,6 @@ void EventManager::Step()
     }
   }
 
-  for (int i = 0; i < (int)m_object.size(); ++i)
-  {
-    m_object[i]->StepSimulation(EVec3f(0, 0, 0), this->m_dt);
-    //ˆÚ“®ŒvZ OK
-    //‰ñ“]‚à   TODO ˆäK
-  }
-  
   OpenglOnCli::MainForm_RedrawPanel();
 }
 

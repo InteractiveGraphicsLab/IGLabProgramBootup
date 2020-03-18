@@ -52,7 +52,7 @@ MainForm::MainForm(void)
   m_ogl = 0;
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_main_panel->Handle.ToPointer()));
-  SetTimer((HWND)m_main_panel->Handle.ToPointer(), 1, 10, &MyTimerProc);
+  SetTimer((HWND)m_main_panel->Handle.ToPointer(), 1, 30, &MyTimerProc);
 }
 
 
