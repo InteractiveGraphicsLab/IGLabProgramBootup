@@ -22,8 +22,12 @@ private:
   EVec3f m_angle    ;
   EVec3f m_anglevelo;
 
+  //simulation 1step‚É‚¨‚¢‚Ä•t‰Á‚³‚ê‚½—Í‚Æƒgƒ‹ƒN
+  EVec3f m_force_onestep;
+  EVec3f m_torque_onestep;
+
 public: 
-  SolidBall( EVec3f pos );
+  SolidBall( EVec3f pos, EVec3f velo, EVec3f angle, EVec3f anglevelo );
   ~SolidBall();
   SolidBall( const SolidBall &src) { Copy(src); }
   SolidBall &operator=(const SolidBall &src){ Copy(src); return *this;}
@@ -36,6 +40,8 @@ public:
     this->m_velocity  = src.m_velocity;
     this->m_angle     = src.m_angle;
     this->m_anglevelo = src.m_anglevelo;  
+    this->m_force_onestep = src.m_force_onestep;
+    this->m_torque_onestep = src.m_torque_onestep;
   }
   
   void Draw();

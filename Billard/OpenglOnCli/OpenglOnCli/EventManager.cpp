@@ -20,32 +20,63 @@
 //クラス名.h
 //クラス名.cpp
 
-SolidBall::SolidBall( EVec3f pos )
+SolidBall::SolidBall( EVec3f pos, EVec3f velo , EVec3f angle, EVec3f anglevelo )
 {
   m_radius    = 3    ; //cm
   m_mass      = 170  ; //g
   m_position  = pos  ;
-  m_velocity  = EVec3f(0,0,0);
-  m_angle     = EVec3f(0,0,0);
-  m_anglevelo = EVec3f(0,0,0);
+  m_velocity  = velo ;
+  m_angle     = angle;
+  m_anglevelo = anglevelo;
+  m_force_onestep = EVec3f(0,0,0);
+  m_torque_onestep = EVec3f(0,0,0);
 }
 
 SolidBall::~SolidBall( )
 {
+
 }
 
 
 
 void SolidBall::Step( float h )
 {
-  static EVec3f Gravity = EVec3f(0,-10,0);
+  static EVec3f Gravity = EVec3f(0,-100, 0);
+  m_force_onestep += m_mass * Gravity;
+
+  //step volocify 
+  // F = m x a   -->  a = F/m 
+  EVec3f accel = (1/m_mass) * m_force_onestep;
   
-  // a = G 
-  // dv/dt = a  --> dv = a dt
-  // dx/dt = v  --> dx = v dt
-  m_velocity += h * Gravity   ;
-  m_position += h * m_velocity; 
+  //dv = a x dt,  v = v + dv
+  m_velocity = m_velocity + h * accel;
+
+  //dx = v * dt, x = x + dx
+  m_position = m_position + h * m_velocity;    
+
+  //step rotation 
+
+  //角加速度 a, トルク N, 慣性モーメントテンソル I,  
+  //半径rの球なら I = diag(r^2,r^2,r^2)
+  // a = I^-1 x N  
+  EVec3f angleaccel = m_torque_onestep / (m_mass * m_radius * m_radius);
+
+  //角速度 = 角速度 + 角加速度 x dt
+  m_anglevelo = m_anglevelo + angleaccel * h;
   
+  //角度 = 角度 + 角速度 x dt
+  m_angle = m_angle + m_anglevelo * h;
+
+  
+  //床との交差判定
+
+  if ( m_position[1] - m_radius < FLOOR_Y )
+  {
+    m_position[1] = m_radius; //引っ張り戻して
+    m_velocity[1] *= -0.9f;    //跳ね返らせる
+  } 
+
+  m_velocity *= 0.99999f;//減衰 
 }
 
 
@@ -103,14 +134,46 @@ static void DrawSphere(int reso_i, int reso_j, float radius)
 
 void SolidBall::Draw( )
 {
-  //todo 
   // m_angle --> Matrxi3x3 m
+  const static float diff[4] = { 1.0f, 0.2f, 0, 0.3f };
+  const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
+  const static float spec[4] = { 1,1,1,0.3f };
+  const static float shin[1] = { 64.0f };
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR , spec);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE  , diff);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT  , ambi);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
+  glEnable( GL_LIGHTING );
+  
 
   //半径rの球を各
   glPushMatrix();
   glTranslatef( m_position[0], m_position[1], m_position[2] );
+
+  if (m_angle.norm() > 0.001){
+    EMat3f R;
+    R = Eigen::AngleAxisf(m_angle.norm(), m_angle.normalized());
+    float A[16];
+
+    A[0] = R(0, 0); A[4] = R(0, 1); A[8] = R(0, 2); A[12] = 0;
+    A[1] = R(1, 0); A[5] = R(1, 1); A[9] = R(1, 2); A[13] = 0;
+    A[2] = R(2, 0); A[6] = R(2, 1); A[10] = R(2, 2); A[14] = 0;
+    A[3] = 0; A[7] = 0; A[11] = 0; A[15] = 1;
+
+    glMultMatrixf(A);
+  }
+
   //glMultiMat3d(m.data());
   DrawSphere(  20, 20, m_radius );
+
+  glDisable( GL_LIGHTING );
+  glLineWidth(2.0);
+  glBegin(GL_LINES );
+  glColor3d(1,0,0); glVertex3d(0,0,0); glVertex3d(5,0,0);
+  glColor3d(0,1,0); glVertex3d(0,0,0); glVertex3d(0,5,0);
+  glColor3d(0,0,1); glVertex3d(0,0,0); glVertex3d(0,0,5);
+  glEnd();
+  
   glPopMatrix();
 }
 
@@ -288,7 +351,10 @@ void EventManager::BtnDownLeft  (int x, int y, OglForCLI *ogl)
   ogl->BtnDown_Trans( EVec2i(x,y) );
   
   ogl->GetCursorRay( EVec2i(x,y), cursor_p, cursor_d);
-  m_balls.push_back(SolidBall( EVec3f(0,30,0) ) );
+
+  EVec3f v( rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX );
+  EVec3f a( rand()/(float)RAND_MAX, rand()/(float)RAND_MAX, rand()/(float)RAND_MAX );
+  m_balls.push_back( SolidBall( EVec3f(0,30,0), 10 * v, EVec3f(0,0,0), a ) );
 } 
 
 void EventManager::BtnDownMiddle(int x, int y, OglForCLI *ogl)
@@ -340,6 +406,8 @@ void EventManager::MouseMove    (int x, int y, OglForCLI *ogl)
 void EventManager::DrawScene()
 {
   //ここにレンダリングルーチンを書く
+  glDisable( GL_LIGHTING );
+  glLineWidth(2.0);
   glBegin(GL_LINES );
   glColor3d(1,0,0); glVertex3d(0,0,0); glVertex3d(10,0,0);
   glColor3d(0,1,0); glVertex3d(0,0,0); glVertex3d(0,10,0);
@@ -351,8 +419,8 @@ void EventManager::DrawScene()
   const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
   const static float spec[4] = { 1,1,1,0.3f };
   const static float shin[1] = { 64.0f };
-  const static float diffG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
-  const static float ambiG[4] = { 0.2f, 0.8f, 0.2f, 0.3f };
+  const static float diffG[4] = { 0.4f, 1.0f, 0.4f, 0.3f };
+  const static float ambiG[4] = { 0.4f, 1.0f, 0.4f, 0.3f };
   
   
   glEnable(GL_LIGHTING);
@@ -369,20 +437,22 @@ void EventManager::DrawScene()
   glDisable(GL_CULL_FACE );
   glBegin(GL_TRIANGLES );
   glNormal3f(0,0,1);
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
+  glVertex3f(-FLOOR_WIDTH, 0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH, 0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH, 0,  FLOOR_LENGTH);
 
-  glVertex3f(-FLOOR_WIDTH, -FLOOR_LENGTH,0);
-  glVertex3f( FLOOR_WIDTH,  FLOOR_LENGTH,0);
-  glVertex3f(-FLOOR_WIDTH,  FLOOR_LENGTH,0);
+  glVertex3f(-FLOOR_WIDTH, 0, -FLOOR_LENGTH);
+  glVertex3f( FLOOR_WIDTH, 0,  FLOOR_LENGTH);
+  glVertex3f(-FLOOR_WIDTH, 0,  FLOOR_LENGTH);
   glEnd();
  
   for ( auto &it : m_balls ) it.Draw();
 
+  //for debug
+  glDisable(GL_LIGHTING );
   glLineWidth(10);
   glBegin(GL_LINES );
-  EVec3f tmp = cursor_p + 100*cursor_d;
+  EVec3f tmp = cursor_p + 100 * cursor_d;
   glVertex3fv ( cursor_p.data() );
   glVertex3fv ( tmp.data() );
   glEnd();
@@ -394,16 +464,15 @@ void EventManager::DrawScene()
 void EventManager::Step()
 {
   //todo処理
-  std::cout << "step";
+  std::cout << "*";
 
   for ( auto &it : m_balls ) 
   {
-    it.Step( 0.01 );
-    //移動計算 OK
-    //回転も   TODO 井尻
+    it.Step( 0.02 );
   }
 
   //交差判定 
+  /*
   for ( int i=0; i < (int)m_balls.size(); ++i )
   {
     for ( int j=i+1; j < (int)m_balls.size(); ++j )
@@ -412,9 +481,7 @@ void EventManager::Step()
       m_balls[j];
     }  
   }
-
+  */
   OpenglOnCli::MainForm_RedrawPanel();
-
-
 
 }
