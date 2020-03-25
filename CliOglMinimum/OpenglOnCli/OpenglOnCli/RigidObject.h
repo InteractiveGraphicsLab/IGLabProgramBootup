@@ -43,7 +43,6 @@ public:
   RigidObject(const RigidObject &src) { Copy(src); };
   void Copy(const RigidObject &src);
 
-
   //get
   float  GetMass();
   EVec3f GetPosition();
