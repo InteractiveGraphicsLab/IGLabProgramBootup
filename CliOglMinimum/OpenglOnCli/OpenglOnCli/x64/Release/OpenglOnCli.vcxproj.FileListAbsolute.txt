@@ -1,0 +1,2 @@
+C:\Users\kohei\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\CliOglMinimum\OpenglOnCli\OpenglOnCli\x64\Release\OpenglOnCli.MainForm.resources
+C:\Users\kohei\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\CliOglMinimum\OpenglOnCli\OpenglOnCli\x64\Release\OpenglOnCli.vcxproj.GenerateResource.cache

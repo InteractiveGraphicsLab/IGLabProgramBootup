@@ -34,6 +34,7 @@ SolidBall::~SolidBall( )
 
 void SolidBall::Step( float h )
 {
+  float elast = 0.8;
   static EVec3f Gravity = EVec3f(0,0,-10);
   //static EVec3f Gravity = EVec3f(0, 0, 0);
 
@@ -43,6 +44,30 @@ void SolidBall::Step( float h )
   m_velocity += h * Gravity   ;
   m_position += h * m_velocity; 
   
+
+  if (m_position[0] - m_radius < -FLOOR_WIDTH)
+  {
+    m_velocity[0] *= -elast;
+    m_position[0] = -FLOOR_WIDTH + m_radius;
+  }
+  if (m_position[0] + m_radius >  FLOOR_WIDTH)
+  {
+    m_velocity[0] *= -elast;
+    m_position[0] =  FLOOR_WIDTH - m_radius;
+
+  }
+  if (m_position[1] - m_radius < -FLOOR_LENGTH)
+  {
+    m_velocity[1] *= -elast;
+    m_position[1] = -FLOOR_LENGTH + m_radius;
+  }
+  if (m_position[1] + m_radius > FLOOR_LENGTH)
+  {
+    m_velocity[1] *= -elast;
+    m_position[1] =  FLOOR_LENGTH - m_radius;
+
+  }
+
 }
 
 bool SolidBall::isGrasped(const EVec3f& cursorPos, const EVec3f& cursorDir)
@@ -62,15 +87,15 @@ bool SolidBall::isCollisionTable()
   EVec3f widthVec  = EVec3f(1, 0, 0);
   EVec3f lengthVec = EVec3f(0, 1, 0);
   EVec3f wallHVec  = EVec3f(0, 0, 1);
-  float distanceX = std::abs(widthVec.dot(GetPos()));
-  float distanceY = std::abs(lengthVec.dot(GetPos()));
-  float distanceZ = std::abs(wallHVec.dot(GetPos()));
+  float distanceX = std::abs(widthVec.dot(m_position));
+  float distanceY = std::abs(lengthVec.dot(m_position));
+  float distanceZ = std::abs(wallHVec.dot(m_position));
   //std::cout << distanceX << "\n";
   //std::cout << distanceY << "\n";
   //std::cout << distanceZ << "\n";
 
-  if ( distanceX <= FLOOR_WIDTH + GetRadius()
-    && distanceY <= FLOOR_LENGTH + GetRadius()
+  if ( distanceX <= FLOOR_WIDTH + m_radius
+    && distanceY <= FLOOR_LENGTH + m_radius
     && distanceZ <= m_radius)
   {
     //std::cout << "collision table\n";
