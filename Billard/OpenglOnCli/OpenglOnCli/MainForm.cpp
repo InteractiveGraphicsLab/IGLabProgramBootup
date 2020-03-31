@@ -46,6 +46,7 @@ MainForm::MainForm(void)
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_main_panel->Handle.ToPointer()));
   SetTimer( (HWND)m_main_panel->Handle.ToPointer(), 1, 10, &MyTimerProc);
+
 }
 
 
@@ -110,6 +111,15 @@ void MainForm::RedrawMainPanel()
   float  farDist  = 1000.0f;
   m_ogl->OnDrawBegin(m_main_panel->Width, m_main_panel->Height,   
                      fovY, nearDist, farDist);
+
+  float light0[4] = { 1000,1000,-1000,1 };
+  float light1[4] = { -1000,1000,-1000,1 };
+  float light2[4] = { 1000,-1000,-1000,1 };
+  glLightfv(GL_LIGHT0, GL_POSITION, light0);
+  glLightfv(GL_LIGHT1, GL_POSITION, light1);
+  glLightfv(GL_LIGHT2, GL_POSITION, light2);
+
+  glEnable(GL_DEPTH_TEST);
   EventManager::GetInst()->DrawScene();
   //std::cout << "aa\n";
   m_ogl->OnDrawEnd();

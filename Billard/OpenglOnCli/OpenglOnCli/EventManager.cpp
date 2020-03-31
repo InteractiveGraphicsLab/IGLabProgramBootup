@@ -17,14 +17,16 @@
 // 
 
 
-SolidBall::SolidBall( EVec3f pos , EVec3f vel)
+SolidBall::SolidBall( EVec3f pos , EVec3f vel, EVec3f angle, EVec3f anglevelo)
 {
   m_radius    = 0.03f * 2; //m
   m_mass      = 0.17f;     //kg
   m_position  = pos  ;
   m_velocity  = vel;
-  m_angle     = EVec3f(0.0f, 0.0f, 0.0f);
-  m_anglevelo = EVec3f(0.0f, 0.0f, 0.0f);
+  m_angle     = angle;
+  m_anglevel  = anglevelo;
+  m_force_onestep = EVec3f(0, 0, 0);
+  m_torque_onestep = EVec3f(0, 0, 0);
 }
 
 SolidBall::~SolidBall( )
@@ -36,14 +38,30 @@ void SolidBall::Step( float h )
 {
   float elast = 0.8;
   static EVec3f Gravity = EVec3f(0,0,-10);
-  //static EVec3f Gravity = EVec3f(0, 0, 0);
 
-  // a = G 
-  // dv/dt = a  --> dv = a dt
-  // dx/dt = v  --> dx = v dt
-  m_velocity += h * Gravity   ;
-  m_position += h * m_velocity; 
-  
+  m_force_onestep += m_mass * Gravity;
+
+  //std::cout << m_force_onestep << "\n";
+  //std::cout << m_torque_onestep << "\n";
+
+  // F = m x a   -->  a = F/m 
+  EVec3f accel = (1 / m_mass) * m_force_onestep;
+  //dv = a x dt,  v = v + dv
+  m_velocity += h * accel;
+  //dx = v * dt, x = x + dx
+  m_position += h * m_velocity;
+
+  //äpâ¡ë¨ìx a, ÉgÉãÉN N, äµê´ÉÇÅ[ÉÅÉìÉgÉeÉìÉ\Éã I,  
+  //îºåarÇÃãÖÇ»ÇÁ I = diag(r^2,r^2,r^2)
+  // a = I^-1 x N  
+  EVec3f angleaccel = m_torque_onestep / (m_mass * m_radius * m_radius) * h;
+
+  //äpë¨ìx = äpë¨ìx + äpâ¡ë¨ìx x dt
+  m_anglevel = m_anglevel + angleaccel * h;
+
+  //äpìx = äpìx + äpë¨ìx x dt
+  m_angle = m_angle + m_anglevel * h;
+
 
   if (m_position[0] - m_radius < -FLOOR_WIDTH)
   {
@@ -68,6 +86,13 @@ void SolidBall::Step( float h )
 
   }
 
+  if (m_position[2] - m_radius < 0)
+  {
+    m_position[2] = m_radius; //à¯Ç¡í£ÇËñﬂÇµÇƒ
+    m_velocity[2] *= -elast;    //íµÇÀï‘ÇÁÇπÇÈ
+  }
+
+  m_velocity *= 0.99f;//å∏êä 
 }
 
 bool SolidBall::isGrasped(const EVec3f& cursorPos, const EVec3f& cursorDir)
@@ -169,12 +194,45 @@ void SolidBall::Draw( )
 {
   //todo 
   // m_angle --> Matrxi3x3 m
+  const static float diff[4] = { 1.0f, 0.2f, 0, 0.3f };
+  const static float ambi[4] = { 1.0f, 0.2f, 0, 0.3f };
+  const static float spec[4] = { 1,1,1,0.3f };
+  const static float shin[1] = { 64.0f };
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
+  glEnable(GL_LIGHTING);
+
 
   //îºåarÇÃãÖÇäe
   glPushMatrix();
   glTranslatef( m_position[0], m_position[1], m_position[2] );
   //glMultiMat3d(m.data());
+
+  if (m_angle.norm() > 0.001) {
+    EMat3f R;
+    R = Eigen::AngleAxisf(m_angle.norm(), m_angle.normalized());
+    float A[16];
+
+    A[0] = R(0, 0); A[4] = R(0, 1); A[8] = R(0, 2); A[12] = 0;
+    A[1] = R(1, 0); A[5] = R(1, 1); A[9] = R(1, 2); A[13] = 0;
+    A[2] = R(2, 0); A[6] = R(2, 1); A[10] = R(2, 2); A[14] = 0;
+    A[3] = 0; A[7] = 0; A[11] = 0; A[15] = 1;
+
+    glMultMatrixf(A);
+  }
+
   DrawBall(  20, 20, m_radius );
+
+  glDisable(GL_LIGHTING);
+  //glLineWidth(2.0);
+  //glBegin(GL_LINES);
+  //glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(5, 0, 0);
+  //glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 5, 0);
+  //glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 5);
+  glEnd();
+
   glPopMatrix();
 }
 
@@ -188,9 +246,13 @@ EventManager::EventManager()
   m_btn_right = m_btn_left = m_btn_middle = false;
   m_GraspedBall = -1;
 
-  m_balls.push_back(SolidBall(EVec3f(0,  0.1, 5), EVec3f(0, 0, 0)));
-  m_balls.push_back(SolidBall(EVec3f(0, -0.1, 5), EVec3f(0, 0, 0)));
-  //m_balls.push_back(SolidBall(EVec3f(0, 0, 0), EVec3f(0, 1, 0)));
+  m_balls.push_back(SolidBall(EVec3f(0,  0.1, 5), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(SolidBall(EVec3f(0, -0.1, 5), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+
+  EVec3f v(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX);
+  EVec3f a(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX);
+  m_balls.push_back(SolidBall(EVec3f(0, 0.2, 5), 10 * v, EVec3f(0, 0, 0), a));
+
 
 
   //for (float i = -1; i < 2; ++i)
@@ -252,7 +314,10 @@ void EventManager::BtnUpLeft  (int x, int y, OglForCLI *ogl)
     float depth = (cursor_p - m_balls[m_GraspedBall].GetPos()).norm();
     EVec3f target = cursor_p + cursor_d * depth;
     m_shotF = - (target - m_balls[m_GraspedBall].GetPos());
+    m_shotF[2] = 0;
     m_balls[m_GraspedBall].SetVel(m_balls[m_GraspedBall].GetVel() + m_shotF / m_balls[m_GraspedBall].GetMass());
+    //m_balls[m_GraspedBall].SetForce(m_shotF);
+    m_balls[m_GraspedBall].SetTorque(m_balls[m_GraspedBall].GetVel() * 0.001);
   }
   m_GraspedBall = -1;
 }
@@ -357,8 +422,12 @@ void EventManager::DrawScene()
   const static float spec[4] = { 0.1f, 0.3f, 0.3f, 0.3f };
   const static float shin[1] = { 20.0f };
   
+  glDisable(GL_LIGHTING);
+  glLineWidth(2.0);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT2);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR , spec);
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE  , diff);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT  , ambi);
@@ -377,6 +446,10 @@ void EventManager::DrawScene()
     glVertex3fv(m_balls[m_GraspedBall].GetPos().data());
     glEnd();
   }
+
+
+  ////for debug
+  //glDisable(GL_LIGHTING);
 }
 
 
@@ -393,7 +466,7 @@ void EventManager::Step()
     //âÒì]Ç‡   TODO à‰êK
   }
 
-  //åç∑îªíË 
+
   for ( int i = 0; i < (int)m_balls.size(); ++i )
   {
     //floor_ball
@@ -419,17 +492,31 @@ void EventManager::Step()
 
 void EventManager::CollideTable(SolidBall& ball)
 {
-  const float elast = 0.8f;
+  const float friction = 0.99999f;
+  //const float friction = 0.8f;
 
-  EVec3f widthVec = EVec3f(1, 0, 0);
-  EVec3f lengthVec = EVec3f(0, 1, 0);
-  EVec3f wallHVec = EVec3f(0, 0, 1);
-  EVec3f wallHVel = wallHVec * wallHVec.dot(ball.GetVel());
-  ball.SetVel(ball.GetVel() - (1.0f + elast) * wallHVel);
+  EVec3f vel =  ball.GetVel();
+  ball.SetVel(vel * friction);
 
-  float distanceZ = wallHVec.dot(ball.GetPos());
+  EVec3f angleVel = ball.GetAngleVel();
+  angleVel *= friction;
+  ball.SetAngleVel(angleVel);
 
-  ball.SetPos(ball.GetPos() + (ball.GetRadius() - distanceZ) * wallHVec);
+
+  EVec3f angle = ball.GetAngle();
+  ball.SetAngle(angle - angleVel * (float)M_PI / 180);
+
+
+
+  //float u = 1.0f;
+  EVec3f temp = ball.GetVel();
+  temp[2] = 0;
+  //temp = temp.normalized() * -1 * u * m_objects[i]->getMass() * 9.8f;
+  temp = ball.GetMass() * temp * -1;
+  ball.SetTorque( EVec3f(0, 0, -1 * ball.GetRadius()).cross(temp));
+
+  if (std::isnan(ball.GetTorque()[2]))ball.SetTorque(EVec3f(0, 0, 0));
+
 }
 
 
