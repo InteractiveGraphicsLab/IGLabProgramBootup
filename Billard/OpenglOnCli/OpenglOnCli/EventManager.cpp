@@ -19,7 +19,7 @@
 
 SolidBall::SolidBall( EVec3f pos , EVec3f vel, EVec3f angle, EVec3f anglevelo)
 {
-  m_radius    = 0.03f * 2; //m
+  m_radius    = 0.05f * 2; //m
   m_mass      = 0.17f;     //kg
   m_position  = pos  ;
   m_velocity  = vel;
@@ -92,7 +92,7 @@ void SolidBall::Step( float h )
     m_velocity[2] *= -elast;    //íµÇÀï‘ÇÁÇπÇÈ
   }
 
-  m_velocity *= 0.99f;//å∏êä 
+  m_velocity *= 0.999f;//å∏êä 
 }
 
 bool SolidBall::isGrasped(const EVec3f& cursorPos, const EVec3f& cursorDir)
@@ -253,16 +253,6 @@ EventManager::EventManager()
   EVec3f a(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX);
   m_balls.push_back(SolidBall(EVec3f(0, 0.2, 5), 10 * v, EVec3f(0, 0, 0), a));
 
-
-
-  //for (float i = -1; i < 2; ++i)
-  //{
-  //  for (float j = -1; j < 2; ++j)
-  //  {
-  //    m_balls.push_back(SolidBall(EVec3f(i / 10, j / 10, 1), EVec3f(0, 0, 0)));
-  //  }
-  //}
-
 }
 
 
@@ -317,7 +307,7 @@ void EventManager::BtnUpLeft  (int x, int y, OglForCLI *ogl)
     m_shotF[2] = 0;
     m_balls[m_GraspedBall].SetVel(m_balls[m_GraspedBall].GetVel() + m_shotF / m_balls[m_GraspedBall].GetMass());
     //m_balls[m_GraspedBall].SetForce(m_shotF);
-    m_balls[m_GraspedBall].SetTorque(m_balls[m_GraspedBall].GetVel() * 0.001);
+    //m_balls[m_GraspedBall].SetTorque(m_balls[m_GraspedBall].GetVel() * 0.001);
   }
   m_GraspedBall = -1;
 }
@@ -351,6 +341,22 @@ void EventManager::MouseMove    (int x, int y, OglForCLI *ogl)
   }
 
 }
+
+void EventManager::Button_1()
+{
+  for (float i = -1; i < 2; ++i)
+  {
+    m_balls.push_back(SolidBall(EVec3f(i / 10, i / 10, 1), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  }
+
+}
+
+void EventManager::Button_2()
+{
+  m_balls.clear();
+}
+
+
 
 
 
@@ -448,8 +454,6 @@ void EventManager::DrawScene()
   }
 
 
-  ////for debug
-  //glDisable(GL_LIGHTING);
 }
 
 
@@ -506,23 +510,12 @@ void EventManager::CollideTable(SolidBall& ball)
   EVec3f angle = ball.GetAngle();
   ball.SetAngle(angle - angleVel * (float)M_PI / 180);
 
-
-
-  //float u = 1.0f;
-  EVec3f temp = ball.GetVel();
-  temp[2] = 0;
-  //temp = temp.normalized() * -1 * u * m_objects[i]->getMass() * 9.8f;
-  temp = ball.GetMass() * temp * -1;
-  ball.SetTorque( EVec3f(0, 0, -1 * ball.GetRadius()).cross(temp));
-
-  if (std::isnan(ball.GetTorque()[2]))ball.SetTorque(EVec3f(0, 0, 0));
-
 }
 
 
 void EventManager::CollideBall(SolidBall& ball1, SolidBall& ball2)
 {
-  const float elast = 0.8f; 
+  const float elast = 0.7f; 
   EVec3f pos1 = ball1.GetPos();
   EVec3f pos2 = ball2.GetPos();
   const EVec3f vel1 = ball1.GetVel();

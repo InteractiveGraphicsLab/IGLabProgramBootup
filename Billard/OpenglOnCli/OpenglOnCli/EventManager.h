@@ -86,7 +86,9 @@ public:
   void BtnUpMiddle  (int x, int y, OglForCLI *ogl);
   void BtnUpRight   (int x, int y, OglForCLI *ogl);
   void MouseMove    (int x, int y, OglForCLI *ogl);
-  
+  void Button_1     ();
+  void Button_2     ();
+
   void DrawBilliardTable();
   void DrawScene();
 

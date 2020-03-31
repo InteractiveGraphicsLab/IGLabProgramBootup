@@ -100,8 +100,15 @@ System::Void MainForm::MainForm_KeyUp(System::Object^  sender, System::Windows::
 {
 }
 
+System::Void MainForm::button1_Click(System::Object^ sender, System::EventArgs^ e)
+{
+   EventManager::GetInst()->Button_1();
+}
 
-
+System::Void MainForm::button2_Click(System::Object^ sender, System::EventArgs^ e)
+{
+  EventManager::GetInst()->Button_2();
+}
 
 
 void MainForm::RedrawMainPanel()
