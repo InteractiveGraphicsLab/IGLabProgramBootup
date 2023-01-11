@@ -1,0 +1,8 @@
+C:\Repositories\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.AssemblyReference.cache
+C:\Repositories\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.SuggestedBindingRedirects.cache
+C:\Repositories\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
+C:\Repositories\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache
+C:\Repositories\IGLabProgramBootup\ObjViewer\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.AssemblyReference.cache
+C:\Repositories\IGLabProgramBootup\ObjViewer\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.SuggestedBindingRedirects.cache
+C:\Repositories\IGLabProgramBootup\ObjViewer\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
+C:\Repositories\IGLabProgramBootup\ObjViewer\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache
