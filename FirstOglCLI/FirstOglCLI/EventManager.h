@@ -18,10 +18,11 @@ public:
     };
 
     void Step();
+    void Draw();
     void DrawSphere();
-    EVec3f GetPos();
-    EVec3f GetVelo();
-    EVec3f SetPos();
+    //EVec3f GetPos();
+    //EVec3f GetVelo();
+    //EVec3f SetPos();
 };
 
 class EventManager
