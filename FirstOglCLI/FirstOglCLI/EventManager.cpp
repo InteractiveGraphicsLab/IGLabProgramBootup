@@ -42,40 +42,6 @@ void Ball::SetVelo(EVec3f& velo)
     m_velo = velo;
 }
 
-void Ball::Collision_Ball(Ball& trgt)
-{
-    float hantei = (trgt.m_pos[0] - m_pos[0]) * (trgt.m_pos[0] - m_pos[0]) + (trgt.m_pos[2] - m_pos[2]) * (trgt.m_pos[2] - m_pos[2]);
-    EVec3f tmp_velo;
-
-    if (hantei <= ((m_radi + trgt.m_radi) * (m_radi + trgt.m_radi)))
-    {
-        //Õ“ËŒã‚Ì‘¬“x
-        std::cout << "Õ“Ë\n";
-        tmp_velo = trgt.m_velo;
-        trgt.SetVelo(m_velo);
-        m_velo = tmp_velo;
-
-        //Õ“ËŒã‚ÌˆÊ’u’²®
-        if (m_velo[0] > 0)
-            m_pos[0] += (m_radi / 2);
-        if (m_velo[0] < 0)
-            m_pos[0] -= (m_radi / 2);
-        if (m_velo[2] > 0)
-            m_pos[2] += (m_radi / 2);
-        if (m_velo[2] < 0)
-            m_pos[2] -= (m_radi / 2);
-
-        if (trgt.m_velo[0] > 0)
-            trgt.m_pos[0] += (trgt.m_radi / 2);
-        if (trgt.m_velo[0] < 0)
-            trgt.m_pos[0] -= (trgt.m_radi / 2);
-        if (m_velo[2] > 0)
-            trgt.m_pos[2] += (trgt.m_radi / 2);
-        if (m_velo[2] < 0)
-            trgt.m_pos[2] -= (trgt.m_radi / 2);
-    }
-}
-
 void Ball::Step()
 {
     float dt = 0.33;
@@ -292,17 +258,57 @@ void EventManager::DrawScene()
   }
 
   //‹…“¯Žm‚ÌÕ“Ë”»’è
-  for (int i = 0; i < m_balls.size(); ++i) {
-      for (int j = 0; j < m_balls.size(); ++j) {
-          if (i == j) continue;
-          m_balls[i].Collision_Ball(m_balls[j]);
-      }
-  }
+  Collision();
 
   //‹…‚Ì•`‰æ
   for (int i = 0; i < m_balls.size(); ++i) {
       m_balls[i].Draw();
   }
+
+}
+
+void EventManager::Collision()
+{
+    for (int i = 0; i < m_balls.size()-1; ++i) {
+        for (int j = i + 1; j < m_balls.size(); ++j) {
+            float hantei = (m_balls[j].GetPos()[0] - m_balls[i].GetPos()[0]) * (m_balls[j].GetPos()[0] - m_balls[i].GetPos()[0]) 
+                         + (m_balls[j].GetPos()[2] - m_balls[i].GetPos()[2]) * (m_balls[j].GetPos()[2] - m_balls[i].GetPos()[2]);
+
+            if (hantei <= ( (m_balls[i].GetRadi() + m_balls[j].GetRadi()) * (m_balls[i].GetRadi() + m_balls[j].GetRadi()) ))
+            {
+                EVec3f tmp_velo;
+
+                //Õ“ËŒã‚Ì‘¬“x
+                std::cout << "Õ“Ë\n";
+                tmp_velo = m_balls[i].GetVelo();
+                m_balls[i].SetVelo(m_balls[j].GetVelo());
+                m_balls[j].SetVelo(tmp_velo);
+
+                //Õ“ËŒã‚ÌˆÊ’u’²®
+                if (m_balls[i].GetVelo()[0] > 0) {
+                    EVec3f tmp_pos = m_balls[i].GetPos();
+                    tmp_pos[0] += (m_balls[i].GetRadi() / 2);
+                    m_balls[i].SetPos(tmp_pos);
+                }
+                if (m_balls[i].GetVelo()[0] < 0) {
+                    EVec3f tmp_pos = m_balls[i].GetPos();
+                    tmp_pos[0] -= (m_balls[i].GetRadi() / 2);
+                    m_balls[i].SetPos(tmp_pos);
+                }
+                if (m_balls[i].GetVelo()[2] > 0) {
+                    EVec3f tmp_pos = m_balls[i].GetPos();
+                    tmp_pos[2] += (m_balls[i].GetRadi() / 2);
+                    m_balls[i].SetPos(tmp_pos);
+                }
+                if (m_balls[i].GetVelo()[2] < 0) {
+                    EVec3f tmp_pos = m_balls[i].GetPos();
+                    tmp_pos[2] -= (m_balls[i].GetRadi() / 2);
+                    m_balls[i].SetPos(tmp_pos);
+                }
+
+            }
+        }
+    }
 
 }
 

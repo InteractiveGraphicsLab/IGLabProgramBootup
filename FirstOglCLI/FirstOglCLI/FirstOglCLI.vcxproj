@@ -125,7 +125,7 @@
     <Link>
       <AdditionalDependencies>glew32.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>C:\Users\rikui\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\3rdparty\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\al20033\OneDrive\ドキュメント\Github\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\3rdparty\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

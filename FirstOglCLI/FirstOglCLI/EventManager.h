@@ -17,7 +17,6 @@ public:
     float GetRadi();
     void SetPos(EVec3f& pos);
     void SetVelo(EVec3f& velo);
-    void Collision_Ball(Ball& trgt);
     void Step();
     void Draw();
     void DrawSphere();
@@ -39,6 +38,7 @@ public:
   }
   void DrawTable(); //ÉrÉäÉÑÅ[Éhë‰çÏê¨
   void DrawScene();
+  void Collision();
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);
   void RBtnDown(int x, int y, OglForCLI* ogl);
