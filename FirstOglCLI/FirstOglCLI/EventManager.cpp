@@ -257,7 +257,7 @@ void EventManager::DrawScene()
       m_balls[i].Step();
   }
 
-  //‹…“¯m‚ÌÕ“Ë”»’è
+  //‹…‚ÌÕ“Ë”»’è
   Collision();
 
   //‹…‚Ì•`‰æ
