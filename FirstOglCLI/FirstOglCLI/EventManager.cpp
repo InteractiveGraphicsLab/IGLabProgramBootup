@@ -3,66 +3,255 @@
 
 EventManager::EventManager()
 {
-  m_isL = m_isR = m_isM = false;
+    m_isL = m_isR = m_isM = false;
+
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 3, 0), EVec3f(0.2f, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(2, 3, 0), EVec3f(0, 0, 0)));
+    //m_balls.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
+    //m_balls.push_back(Ball(1, EVec3f(1, 10, 0), EVec3f(0, 3, 3)));
+
+    m_cuboids.push_back(Cuboid(EVec3f(-10.7f, 2, 0), EVec3f(0.5f, 2, 10), EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(10.7f, 2, 0), EVec3f(0.5f, 2, 10), EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, 2, -10.7f), EVec3f(10, 2, 0.5f), EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, 2, 10.7f), EVec3f(10, 2, 0.5f), EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, -0.5f, 0), EVec3f(10, 0.5f, 10), EVec3f(0, 0, 0)));
 }
 
 void EventManager::DrawScene()
 {
-  glLineWidth(2.0f);
-  glDisable(GL_LIGHTING);//電気を消す
 
-  //OpenGLで3本の直線を描く
-  glBegin(GL_LINES);
-  glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
-  glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
-  glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
-  glEnd();
+    glLineWidth(2.0f);
+    glDisable(GL_LIGHTING);//電気を消す
+
+    //OpenGLで3本の直線を描く
+    glBegin(GL_LINES);
+    glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
+    glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
+    glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
+    glEnd();
+
+    for (int i = 0; i < m_balls.size(); ++i)
+    {
+        m_balls[i].Draw();
+    }
+    for (int i = 0; i < m_cuboids.size(); ++i)
+    {
+        m_cuboids[i].Draw();
+    }
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isL = true;
-  ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
+    m_isL = true;
+    ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isM = true;
-  ogl->BtnDown_Zoom(EVec2i(x, y));
+    m_isM = true;
+    ogl->BtnDown_Zoom(EVec2i(x, y));
 }
 
 void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isR = true;
-  ogl->BtnDown_Rot(EVec2i(x, y));
+    m_isR = true;
+    ogl->BtnDown_Rot(EVec2i(x, y));
 }
 
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isL = false;
-  ogl->BtnUp();
+    m_isL = false;
+    ogl->BtnUp();
 }
 
 void EventManager::MBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isM = false;
-  ogl->BtnUp();
+    m_isM = false;
+    ogl->BtnUp();
 }
 
 void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isR = false;
-  ogl->BtnUp();
+    m_isR = false;
+    ogl->BtnUp();
 }
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
-  if (!m_isL && !m_isR && !m_isM) return;
-  ogl->MouseMove(EVec2i(x, y));
+    if (!m_isL && !m_isR && !m_isM) return;
+    ogl->MouseMove(EVec2i(x, y));
 }
-
 
 void EventManager::Step()
 {
+    int i, j;
+    // Step
+    for (i = 0; i < m_balls.size(); ++i)
+    {
+        m_balls[i].Step();
+    }
+    for (int i = 0; i < m_cuboids.size(); ++i) 
+    {
+        m_cuboids[i].Step();
+    }
 
+    // CollideAndSolve
+    for (i = 0; i < m_balls.size(); ++i)
+    {
+        for (j = i + 1; j < m_balls.size(); ++j)
+        {
+            CollideAndSolve(m_balls[i], m_balls[j]);
+        }
+        for (j = 0; j < m_cuboids.size(); ++j)
+        {
+            CollideAndSolve(m_balls[i], m_cuboids[j]);
+        }
+
+
+
+        //m_balls[i].HitCuboid(m_cuboids);
+        //m_balls[i].HitBall(m_balls);
+    }
+}
+
+void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
+{
+    float bounce = 1.0f; // 球の反発係数(未定)
+
+    EVec3f pos1 = b1.GetPos();
+    EVec3f pos2 = b2.GetPos();
+    float radi1 = b1.GetRadi();
+    float radi2 = b2.GetRadi();
+
+    EVec3f diff = pos2 - pos1; // p1p2ベクトル
+    float d_size = diff.norm(); // p1p2ベクトルの大きさ
+    if (radi1 + radi2 >= d_size) // 衝突判定
+    { // 衝突処理
+        std::cout << d_size << "\n";
+        EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
+        EVec3f velo1 = b1.GetVelo();
+        EVec3f velo2 = b2.GetVelo();
+
+        // ベクトルの分割
+        EVec3f v1 = dir * velo1.dot(dir);
+        EVec3f v2 = velo1 - v1;
+        EVec3f v3 = dir * velo2.dot(dir);
+        EVec3f v4 = velo2 - v3;
+
+        EVec3f temp = v1;
+        v1 = v3;
+        v3 = temp;
+
+        pos1 += -dir * (radi1 + radi2 - d_size) / 2;
+        pos2 += dir * (radi1 + radi2 - d_size) / 2;
+
+        velo1 = v1 + v2;
+        velo2 = v3 + v4;
+
+        b1.SetPos(pos1);
+        b2.SetPos(pos2);
+
+        b1.SetVelo(velo1);
+        b2.SetVelo(velo2);
+    }
+}
+
+void EventManager::CollideAndSolve(Ball& b)
+{
+    EVec3f b_pos = b.GetPos();
+    float b_radi = b.GetRadi();
+    if(fabsf(b_pos[0] ))
+}
+
+void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
+{
+    EVec3f b_pos = b.GetPos();
+    float b_radi = b.GetRadi();
+    EVec3f c_pos = c.GetPos();
+    float c_width = c.GetWidth();
+    float c_height = c.GetHeight();
+    float c_depth = c.GetDepth();
+    const EVec3f ex = EVec3f(1, 0, 0);
+
+    if (fabsf(b_pos[0] - c_pos[0]) < b_radi + c_width && fabsf(b_pos[1] - c_pos[1]) < c_height && fabsf(b_pos[2] - c_pos[2]) < c_depth)
+    {
+        b_pos[0] = c_pos[0] + width * EVec3f(1, 0, 0).dot((c_pos - b_pos).nomalized())
+    }
+    else if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < b_radi + c_height && fabsf(b_pos[2] - c_pos[2]) < c_depth)
+    {
+
+    }
+    else if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < c_height && fabsf(b_pos[2] - c_pos[2]) < b_radi + c_depth)
+    {
+
+    }
+
+
+
+
+    
+    /*
+    int check[3] = { 1, 1, 1 };
+    int count = 0;
+    EVec3f b_pos, b_velo, c_pos, c_length;
+    float b_radi, c_bounce;
+
+    b_pos = b.GetPos();
+    b_radi = b.GetRadi();
+    c_pos = c.GetPos();
+    c_depth = c.GetDepth();
+    c_bounce = c.GetBounce();
+
+    for (int i = 0; i < 3; ++i) { // 衝突判定
+        if (c_pos[i] - c_depth[i] <= b_pos[i] && b_pos[i] <= c_pos[i] + c_depth[i])
+        {
+            check[i] = 0;
+            count += 1;
+        }
+    }
+    switch (count) { // 衝突処理
+    case 0:
+        // 頂点の延長上
+        break;
+    case 1:
+        // 辺の延長上
+        break;
+    case 2:
+        // 面の延長上
+        for (int i = 0; i < 3; ++i)
+        {
+            if (check[i] == 1)
+            {
+                if (c_pos[i] <= b_pos[i])
+                {
+                    if (b_pos[i] - c_pos[i] <= b_radi + c_depth[i])
+                    {
+                        b_pos[i] = c_pos[i] + b_radi + c_depth[i];
+                        b.SetPos(b_pos);
+                        b_velo = b.GetVelo();
+                        b_velo[i] *= -c_bounce;
+                        b.SetVelo(b_velo);
+                    }
+                }
+                else
+                {
+                    if (c_pos[i] - b_pos[i] <= b_radi + c_depth[i])
+                    {
+                        b_pos[i] = c_pos[i] - b_radi - c_depth[i];
+                        b.SetPos(b_pos);
+                        b_velo = b.GetVelo();
+                        b_velo[i] *= -c_bounce;
+                        b.SetVelo(b_velo);
+                    }
+                }
+            }
+        }
+        break;
+    case 3:
+        //直方体内部
+        break;
+    default:
+        break;
+    }
+    */
 }
