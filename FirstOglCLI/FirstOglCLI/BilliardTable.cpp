@@ -5,10 +5,10 @@
 BilliardTable::BilliardTable()
 {
     m_pos = EVec3f(0, 10, 0);
-    m_width = 10;
+    m_width = 15;
     m_height = 10;
-    m_depth = 10;
-    m_bounce = 1.0f; // îΩî≠åWêî
+    m_depth = 20;
+    m_bounce = 0.99f; // îΩî≠åWêî
 }
 
 void BilliardTable::Draw()

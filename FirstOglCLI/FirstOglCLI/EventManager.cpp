@@ -9,9 +9,30 @@ EventManager::EventManager()
     m_balls.push_back(Ball(0.5f, EVec3f(1, 3, 0), EVec3f(0, 0, 0)));
     m_balls.push_back(Ball(0.5f, EVec3f(3, 3, 1), EVec3f(0, 0, 0)));
     m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
     m_balls.push_back(Ball(0.5f, EVec3f(2, 5, 3), EVec3f(0, 0, 0)));
     m_balls.push_back(Ball(0.5f, EVec3f(4, 1, 2), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(6, 6, 6), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(6, 6, 6), EVec3f(5.0f, 0, 3.5f)));
     m_balls.push_back(Ball(0.5f, EVec3f(7, 5, 1), EVec3f(0, 0, 0)));
     m_balls.push_back(Ball(0.5f, EVec3f(5, 5, 5), EVec3f(0.5f, 0, 0.8f)));
 
@@ -146,7 +167,7 @@ void EventManager::CollideAndSolve(Ball& b)
     {
         EVec3f b_velo = b.GetVelo();
         float bt_bounce = BilliardTable::GetInst()->GetBounce();
-        b_pos[1] = bt_pos[1] + (bt_width - b_radi) * (b_pos[1] - bt_pos[1]) / fabsf(b_pos[1] - bt_pos[1]);
+        b_pos[1] = bt_pos[1] + (bt_height - b_radi) * (b_pos[1] - bt_pos[1]) / fabsf(b_pos[1] - bt_pos[1]);
         b_velo[1] *= -bt_bounce;
         b.SetVelo(b_velo);
         b.SetPos(b_pos);
@@ -155,7 +176,7 @@ void EventManager::CollideAndSolve(Ball& b)
     {
         EVec3f b_velo = b.GetVelo();
         float bt_bounce = BilliardTable::GetInst()->GetBounce();
-        b_pos[2] = bt_pos[2] + (bt_width - b_radi) * (b_pos[2] - bt_pos[2]) / fabsf(b_pos[2] - bt_pos[2]);
+        b_pos[2] = bt_pos[2] + (bt_depth - b_radi) * (b_pos[2] - bt_pos[2]) / fabsf(b_pos[2] - bt_pos[2]);
         b_velo[2] *= -bt_bounce;
         b.SetVelo(b_velo);
         b.SetPos(b_pos);
