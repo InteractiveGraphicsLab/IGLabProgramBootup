@@ -5,16 +5,23 @@ EventManager::EventManager()
 {
     m_isL = m_isR = m_isM = false;
 
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 3, 0), EVec3f(0.2f, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(2, 3, 0), EVec3f(0, 0, 0)));
-    //m_balls.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
-    //m_balls.push_back(Ball(1, EVec3f(1, 10, 0), EVec3f(0, 3, 3)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 3, 0), EVec3f(0.2f, 0, 0.1f)));
+    m_balls.push_back(Ball(0.5f, EVec3f(1, 3, 0), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(3, 3, 1), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(2, 5, 3), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(4, 1, 2), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(6, 6, 6), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(7, 5, 1), EVec3f(0, 0, 0)));
+    m_balls.push_back(Ball(0.5f, EVec3f(5, 5, 5), EVec3f(0.5f, 0, 0.8f)));
 
-    m_cuboids.push_back(Cuboid(EVec3f(-10.7f, 2, 0), EVec3f(0.5f, 2, 10), EVec3f(0, 0, 0)));
-    m_cuboids.push_back(Cuboid(EVec3f(10.7f, 2, 0), EVec3f(0.5f, 2, 10), EVec3f(0, 0, 0)));
-    m_cuboids.push_back(Cuboid(EVec3f(0, 2, -10.7f), EVec3f(10, 2, 0.5f), EVec3f(0, 0, 0)));
-    m_cuboids.push_back(Cuboid(EVec3f(0, 2, 10.7f), EVec3f(10, 2, 0.5f), EVec3f(0, 0, 0)));
-    m_cuboids.push_back(Cuboid(EVec3f(0, -0.5f, 0), EVec3f(10, 0.5f, 10), EVec3f(0, 0, 0)));
+    /*
+    m_cuboids.push_back(Cuboid(EVec3f(-10.7f, 2, 0), 0.5f, 2, 10, EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(10.7f, 2, 0), 0.5f, 2, 10, EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, 2, -10.7f), 10, 2, 0.5f, EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, 2, 10.7f), 10, 2, 0.5f, EVec3f(0, 0, 0)));
+    m_cuboids.push_back(Cuboid(EVec3f(0, -0.5f, 0), 10, 0.5f, 10, EVec3f(0, 0, 0)));
+    */
 }
 
 void EventManager::DrawScene()
@@ -30,6 +37,7 @@ void EventManager::DrawScene()
     glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
     glEnd();
 
+    BilliardTable::GetInst()->Draw();
     for (int i = 0; i < m_balls.size(); ++i)
     {
         m_balls[i].Draw();
@@ -98,6 +106,7 @@ void EventManager::Step()
     // CollideAndSolve
     for (i = 0; i < m_balls.size(); ++i)
     {
+        CollideAndSolve(m_balls[i]);
         for (j = i + 1; j < m_balls.size(); ++j)
         {
             CollideAndSolve(m_balls[i], m_balls[j]);
@@ -114,6 +123,45 @@ void EventManager::Step()
     }
 }
 
+void EventManager::CollideAndSolve(Ball& b)
+{
+    EVec3f bt_pos = BilliardTable::GetInst()->GetPos();
+    float bt_width = BilliardTable::GetInst()->GetWidth();
+    float bt_height = BilliardTable::GetInst()->GetHeight();
+    float bt_depth = BilliardTable::GetInst()->GetDepth();
+
+    EVec3f b_pos = b.GetPos();
+    float b_radi = b.GetRadi();
+
+    if (fabsf(b_pos[0] - bt_pos[0]) > bt_width - b_radi)
+    {
+        EVec3f b_velo = b.GetVelo();
+        float bt_bounce = BilliardTable::GetInst()->GetBounce();
+        b_pos[0] = bt_pos[0] + (bt_width - b_radi) * (b_pos[0] - bt_pos[0]) / fabsf(b_pos[0] - bt_pos[0]);
+        b_velo[0] *= -bt_bounce;
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
+    }
+    if (fabsf(b_pos[1] - bt_pos[1]) > bt_height - b_radi)
+    {
+        EVec3f b_velo = b.GetVelo();
+        float bt_bounce = BilliardTable::GetInst()->GetBounce();
+        b_pos[1] = bt_pos[1] + (bt_width - b_radi) * (b_pos[1] - bt_pos[1]) / fabsf(b_pos[1] - bt_pos[1]);
+        b_velo[1] *= -bt_bounce;
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
+    }
+    if (fabsf(b_pos[2] - bt_pos[2]) > bt_depth - b_radi)
+    {
+        EVec3f b_velo = b.GetVelo();
+        float bt_bounce = BilliardTable::GetInst()->GetBounce();
+        b_pos[2] = bt_pos[2] + (bt_width - b_radi) * (b_pos[2] - bt_pos[2]) / fabsf(b_pos[2] - bt_pos[2]);
+        b_velo[2] *= -bt_bounce;
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
+    }
+}
+
 void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
 {
     float bounce = 1.0f; // 球の反発係数(未定)
@@ -127,7 +175,6 @@ void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
     float d_size = diff.norm(); // p1p2ベクトルの大きさ
     if (radi1 + radi2 >= d_size) // 衝突判定
     { // 衝突処理
-        std::cout << d_size << "\n";
         EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
         EVec3f velo1 = b1.GetVelo();
         EVec3f velo2 = b2.GetVelo();
@@ -156,13 +203,6 @@ void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
     }
 }
 
-void EventManager::CollideAndSolve(Ball& b)
-{
-    EVec3f b_pos = b.GetPos();
-    float b_radi = b.GetRadi();
-    if(fabsf(b_pos[0] ))
-}
-
 void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
 {
     EVec3f b_pos = b.GetPos();
@@ -171,19 +211,33 @@ void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
     float c_width = c.GetWidth();
     float c_height = c.GetHeight();
     float c_depth = c.GetDepth();
-    const EVec3f ex = EVec3f(1, 0, 0);
 
     if (fabsf(b_pos[0] - c_pos[0]) < b_radi + c_width && fabsf(b_pos[1] - c_pos[1]) < c_height && fabsf(b_pos[2] - c_pos[2]) < c_depth)
     {
-        b_pos[0] = c_pos[0] + width * EVec3f(1, 0, 0).dot((c_pos - b_pos).nomalized())
+        EVec3f b_velo = b.GetVelo();
+        float bounce = c.GetBounce();
+        b_velo[0] *= -bounce;
+        b_pos[0] = c_pos[0] + (b_radi + c_width) * (b_pos[0] - c_pos[0]) / fabsf(b_pos[0] - c_pos[0]);
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
     }
-    else if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < b_radi + c_height && fabsf(b_pos[2] - c_pos[2]) < c_depth)
+    if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < b_radi + c_height && fabsf(b_pos[2] - c_pos[2]) < c_depth)
     {
-
+        EVec3f b_velo = b.GetVelo();
+        float bounce = c.GetBounce();
+        b_velo[1] *= -bounce;
+        b_pos[1] = c_pos[1] + (b_radi + c_height) * (b_pos[1] - c_pos[1]) / fabsf(b_pos[1] - c_pos[1]);
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
     }
-    else if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < c_height && fabsf(b_pos[2] - c_pos[2]) < b_radi + c_depth)
+    if (fabsf(b_pos[0] - c_pos[0]) < c_width && fabsf(b_pos[1] - c_pos[1]) < c_height && fabsf(b_pos[2] - c_pos[2]) < b_radi + c_depth)
     {
-
+        EVec3f b_velo = b.GetVelo();
+        float bounce = c.GetBounce();
+        b_velo[2] *= -bounce;
+        b_pos[2] = c_pos[2] + (b_radi + c_depth) * (b_pos[2] - c_pos[2]) / fabsf(b_pos[2] - c_pos[2]);
+        b.SetVelo(b_velo);
+        b.SetPos(b_pos);
     }
 
 

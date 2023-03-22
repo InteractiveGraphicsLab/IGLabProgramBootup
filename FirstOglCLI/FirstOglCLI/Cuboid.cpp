@@ -9,7 +9,7 @@ Cuboid::Cuboid(EVec3f& pos, float width, float height, float length, EVec3f& vel
     m_height = height;
     m_depth = length;
     m_velo = velo;
-    m_bounce = 1.0f; // ”½”­ŒW”
+    m_bounce = 0.9f; // ”½”­ŒW”
 }
 
 Cuboid::Cuboid(const Cuboid& src)
@@ -62,17 +62,17 @@ void Cuboid::DrawCuboid()
     // Å¬“_‚ÆÅ‘å“_‚©‚ç’¼•û‘Ì‚ğ•`‰æ
     for (int x = 0; x < 2; x++) {
         for (int y = 0; y < 2; y++) {
-            glColor3d(1, 0, 0); glVertex3f(twoPos[x][0], twoPos[    y][1], twoPos[    y][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[    y][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[1 - y][2]);
+            glVertex3f(twoPos[x][0], twoPos[    y][1], twoPos[    y][2]);
+            glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[    y][2]);
+            glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[1 - y][2]);
 
-            glColor3d(1, 0, 0); glVertex3f(twoPos[    y][0], twoPos[x][1], twoPos[    y][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[    y][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[1 - y][2]);
-                                         
-            glColor3d(1, 0, 0); glVertex3f(twoPos[    y][0], twoPos[    y][1], twoPos[x][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[1 - y][0], twoPos[    y][1], twoPos[x][2]);
-            glColor3d(1, 0, 0); glVertex3f(twoPos[1 - y][0], twoPos[1 - y][1], twoPos[x][2]);
+            glVertex3f(twoPos[    y][0], twoPos[x][1], twoPos[    y][2]);
+            glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[    y][2]);
+            glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[1 - y][2]);
+                     
+            glVertex3f(twoPos[    y][0], twoPos[    y][1], twoPos[x][2]);
+            glVertex3f(twoPos[1 - y][0], twoPos[    y][1], twoPos[x][2]);
+            glVertex3f(twoPos[1 - y][0], twoPos[1 - y][1], twoPos[x][2]);
         }
     }
     glEnd();

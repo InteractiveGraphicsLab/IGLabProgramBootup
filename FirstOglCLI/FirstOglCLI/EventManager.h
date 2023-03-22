@@ -4,6 +4,7 @@
 #include "OglForCLI.h"
 #include "Ball.h"
 #include "Cuboid.h"
+#include "BilliardTable.h"
 
 class EventManager
 {
