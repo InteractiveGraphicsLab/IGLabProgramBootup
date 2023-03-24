@@ -1,10 +1,19 @@
 #include "pch.h"
 #include "EventManager.h"
 
+static double M_PI = 3.141592;
+
+
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
+  m_ball = Ball;
 }
+
+
+
+
+
 
 void EventManager::DrawScene()
 {
@@ -12,12 +21,15 @@ void EventManager::DrawScene()
   glDisable(GL_LIGHTING);//“d‹C‚ğÁ‚·
 
   //OpenGL‚Å3–{‚Ì’¼ü‚ğ•`‚­
+  
   glBegin(GL_LINES);
   glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
 }
+
+
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {

@@ -2,11 +2,13 @@
 
 #pragma unmanaged
 #include "OglForCLI.h"
+#include "Ball.h"
 
 class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
+  Ball m_ball;
   EventManager();
 
 public:
