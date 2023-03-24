@@ -7,8 +7,11 @@ class BilliardTable
 {
 private:
     EVec3f m_pos;
-    float m_width, m_height, m_depth, m_bounce;
+    float m_width, m_height, m_depth;
+    float m_bounce;
+
     BilliardTable();
+
     void DrawBilliardTable();
 
 public:
@@ -16,7 +19,9 @@ public:
         static BilliardTable p;
         return &p;
     }
+
     void Draw();
+
     EVec3f GetPos();
     float GetWidth();
     float GetHeight();

@@ -5,36 +5,29 @@ EventManager::EventManager()
 {
     m_isL = m_isR = m_isM = false;
 
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 3, 0), EVec3f(0.2f, 0, 0.1f)));
-    m_balls.push_back(Ball(0.5f, EVec3f(1, 3, 0), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(3, 3, 1), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(0, 2, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(2, 5, 3), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(4, 1, 2), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(6, 6, 6), EVec3f(5.0f, 0, 3.5f)));
-    m_balls.push_back(Ball(0.5f, EVec3f(7, 5, 1), EVec3f(0, 0, 0)));
-    m_balls.push_back(Ball(0.5f, EVec3f(5, 5, 5), EVec3f(0.5f, 0, 0.8f)));
+    const float radi = 0.5f;
+
+    float bt_width = BilliardTable::GetInst()->GetWidth();
+    float bt_height = BilliardTable::GetInst()->GetHeight();
+    float bt_depth = BilliardTable::GetInst()->GetDepth();
+
+    for (int i = 0; i < 200; ++i)
+    {
+        const float div = 100.0f;
+        float posx = std::rand() % 2 * div * bt_width  - div * (bt_width  + radi) / div;
+        float posy = std::rand() % 2 * div * bt_height - div * (bt_height + radi) / div;
+        float posz = std::rand() % 2 * div * bt_depth  - div * (bt_depth  + radi) / div;
+
+
+        float velox = std::rand() % 110  - ;
+        float veloy = std::rand() % 2 * (bt_height - radi) - bt_height - 2 * radi;
+        float veloz = std::rand() % 2 * (bt_depth  - radi) - bt_depth  - 2 * radi;
+
+        m_balls.push_back(Ball(
+            radi, 
+            EVec3f((posx, posy, posz), 
+                EVec3f((std::rand()%110-50)/10, (std::rand()%11-5)/10, (std::rand() % 110 - 50) / 10)));
+    }
 
     /*
     m_cuboids.push_back(Cuboid(EVec3f(-10.7f, 2, 0), 0.5f, 2, 10, EVec3f(0, 0, 0)));

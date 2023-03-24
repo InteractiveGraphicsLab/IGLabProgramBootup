@@ -25,7 +25,17 @@ void Ball::Step()
     static bool check[3];*/
     m_velo += acc * dt;
     m_pos += m_velo * dt;
-    m_velo *= 0.9999f; // 0.99f
+    if (sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]) < 0.001f)
+    {
+        m_velo[0] = 0.0f;
+        m_velo[2] = 0.0f;
+    }
+    else
+    {
+        m_velo[0] *= 0.99f; // 0.99f
+        m_velo[2] *= 0.99f; // 0.99f
+    }
+    m_velo[1] *= 0.99f;
 }
 
 void Ball::Draw()

@@ -122,7 +122,7 @@ public:
   OglForCLI(HDC dc)
   {
     if (dc == 0) return;
-    m_camera.Set(EVec3f(0, 0, 10), EVec3f(0, 0, 0), EVec3f(0, 1, 0));
+    m_camera.Set(EVec3f(0, 30, 10), EVec3f(0, -5, 0), EVec3f(0, 20, 0));
     m_bkgrnd_color = EVec4f(0, 0, 0, 0.5);
     m_is_rendering = false;
     SetDefaultProperties();

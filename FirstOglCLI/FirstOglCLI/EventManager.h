@@ -21,6 +21,7 @@ public:
         static EventManager p;
         return &p;
     }
+
     void DrawScene();
     void LBtnDown(int x, int y, OglForCLI* ogl);
     void MBtnDown(int x, int y, OglForCLI* ogl);
@@ -31,6 +32,7 @@ public:
     void MouseMove(int x, int y, OglForCLI* ogl);
 
     void Step();
+
     static void CollideAndSolve(Ball& b1, Ball& b2);
     static void CollideAndSolve(Ball& b, Cuboid& c);
     static void CollideAndSolve(Ball& b);

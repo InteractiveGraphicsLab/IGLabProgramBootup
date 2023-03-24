@@ -8,7 +8,7 @@ BilliardTable::BilliardTable()
     m_width = 15;
     m_height = 10;
     m_depth = 20;
-    m_bounce = 0.99f; // ”½”­ŒW”
+    m_bounce = 1.0f; // ”½”­ŒW”
 }
 
 void BilliardTable::Draw()
