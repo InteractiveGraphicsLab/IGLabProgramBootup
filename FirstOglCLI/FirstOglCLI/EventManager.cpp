@@ -12,7 +12,7 @@ EventManager::EventManager()
     float bt_height = BilliardTable::GetInst()->GetHeight();
     float bt_depth = BilliardTable::GetInst()->GetDepth();
 
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         const float div = 100.0f;
         float posx = (std::rand() % (int)(2 * div * (bt_width  - radi) + 1) - div * (bt_width  - radi)) / div + bt_pos[0];
@@ -69,14 +69,9 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     m_isL = true;
     EVec3f ray_pos, ray_dir;
+
     ogl->GetCursorRay(x, y, ray_pos, ray_dir);
-    m_idx = PicBall(ray_pos, ray_dir);
-    if (m_idx != -1)
-    {
-        EVec3f b_velo = m_balls[m_idx].GetVelo();
-        b_velo += EVec3f(-2,2,-2);
-        m_balls[m_idx].SetVelo(b_velo);
-    }
+    m_idx = PickBall(ray_pos, ray_dir);
 
     //ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
 }
@@ -96,6 +91,22 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
     m_isL = false;
+    if (m_idx != -1)
+    {
+        EVec3f b_pos = m_balls[m_idx].GetPos();
+        EVec3f ray_pos, ray_dir;
+
+        ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+        float slope = GetNormalVector(b_pos, ray_pos, ray_dir);
+        std::cout << slope << "\n";
+
+        EVec3f release_pos = slope * ray_dir + ray_pos;
+        EVec3f nor_vec = b_pos - release_pos;
+        EVec3f b_velo = m_balls[m_idx].GetVelo();
+        b_velo += nor_vec;
+        m_balls[m_idx].SetVelo(b_velo);       
+    }
+
     ogl->BtnUp();
 }
 
@@ -113,8 +124,8 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
-    if (!m_isL && !m_isR && !m_isM) return;
-    ogl->MouseMove(EVec2i(x, y));
+    //if (!(!m_isL && !m_isR && !m_isM))
+        ogl->MouseMove(EVec2i(x, y));
 }
 
 void EventManager::Step()
@@ -337,10 +348,10 @@ void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
     */
 }
 
-int EventManager::PicBall(EVec3f RayPos, EVec3f RayDir)
+int EventManager::PickBall(EVec3f RayPos, EVec3f RayDir)
 {
     float dis = 10000.0;
-    int pic_idx = -1;
+    int pick_idx = -1;
     for (int i = 0; i < m_balls.size(); ++i)
     {
         EVec3f b_pos = m_balls[i].GetPos();
@@ -348,9 +359,20 @@ int EventManager::PicBall(EVec3f RayPos, EVec3f RayDir)
         float d = pow(RayDir.dot(RayPos - b_pos), 2) - (pow((RayPos - b_pos).norm(), 2) - pow(b_radi, 2));
         if (d > 0 && (RayPos - b_pos).norm() < dis) // ÚG
         {
-            pic_idx = i;
+            pick_idx = i;
             dis = (RayPos - b_pos).norm();
         }
     }
-    return pic_idx;
+    if (pick_idx != -1)
+    {
+        m_balls[pick_idx].SetVelo(EVec3f(0, 0, 0));
+    }
+    return pick_idx;
 }
+
+float EventManager::GetNormalVector(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir)
+{
+    float slope = (TargetPos - RayPos).dot(RayDir);
+    return slope;
+}
+

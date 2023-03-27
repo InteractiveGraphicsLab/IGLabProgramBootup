@@ -39,6 +39,7 @@ public:
     static void CollideAndSolve(Ball& b, Cuboid& c);
     static void CollideAndSolve(Ball& b);
 
-    int PicBall(EVec3f RayPos, EVec3f RayDir);
+    int PickBall(EVec3f RayPos, EVec3f RayDir);
+    float GetNormalVector(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir);
 };
 #pragma managed

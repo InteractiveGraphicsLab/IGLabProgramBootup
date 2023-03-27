@@ -20,7 +20,8 @@ static void CALLBACK MyTimerProc(
   DWORD dwTime         // system time
 )
 {
-  //std::cout << "timerが呼ばれた\n";   //コメントを表示して
+	static int count = 0;
+  std::cout << "timerが呼ばれた" << count++ << "\n";   //コメントを表示して
   EventManager::GetInst()->Step();    //Step関数を読んで
   MainForm::GetInst()->RedrawPanel(); //Redrawする
 }
