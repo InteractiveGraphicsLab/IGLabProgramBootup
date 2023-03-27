@@ -40,6 +40,6 @@ public:
     static void CollideAndSolve(Ball& b);
 
     int PickBall(EVec3f RayPos, EVec3f RayDir);
-    float GetNormalVector(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir);
+    float CalcReleaseDist(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir);
 };
 #pragma managed

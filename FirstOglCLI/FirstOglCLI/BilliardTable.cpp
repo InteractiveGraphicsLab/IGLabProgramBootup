@@ -32,7 +32,7 @@ void BilliardTable::DrawBilliardTable()
     glVertex3f(twoPos[1][0], twoPos[0][1], twoPos[1][2]);
     glVertex3f(twoPos[1][0], twoPos[0][1], twoPos[0][2]);
     glVertex3f(twoPos[0][0], twoPos[0][1], twoPos[1][2]);
-    
+
     glEnd();
 }
 

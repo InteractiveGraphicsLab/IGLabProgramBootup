@@ -69,7 +69,7 @@ void Cuboid::DrawCuboid()
             glVertex3f(twoPos[    y][0], twoPos[x][1], twoPos[    y][2]);
             glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[    y][2]);
             glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[1 - y][2]);
-                     
+
             glVertex3f(twoPos[    y][0], twoPos[    y][1], twoPos[x][2]);
             glVertex3f(twoPos[1 - y][0], twoPos[    y][1], twoPos[x][2]);
             glVertex3f(twoPos[1 - y][0], twoPos[1 - y][1], twoPos[x][2]);

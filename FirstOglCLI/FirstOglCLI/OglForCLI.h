@@ -2,15 +2,15 @@
 #define COMMON_OGLFORCLI_H_
 #pragma unmanaged
 
-#include <windows.h> 
-// windows.h have min max functions 
+#include <windows.h>
+// windows.h have min max functions
 #undef min
 #undef max
 
 #include "gl/glew.h"
-#include <gl/gl.h> 
-#include <gl/glu.h> 
-#include <iostream> 
+#include <gl/gl.h>
+#include <gl/glu.h>
+#include <iostream>
 
 #include "tmath.h"
 
@@ -19,7 +19,7 @@ class OglCameraParam
 public:
   EVec3f m_pos; //camera position
   EVec3f m_cnt; //camera focus point
-  EVec3f m_up ; //camera Up (y-axis) direction 
+  EVec3f m_up ; //camera Up (y-axis) direction
 
   OglCameraParam()
   {
@@ -28,7 +28,7 @@ public:
     m_up  = EVec3f(0, 1, 0 );
   }
 
-  OglCameraParam( const OglCameraParam &src) 
+  OglCameraParam( const OglCameraParam &src)
   {
     Copy(src);
   }
@@ -46,9 +46,9 @@ public:
     m_up  = src.m_up ;
   }
 
-  //camera rotation/zoom/translate by mouse operation 
+  //camera rotation/zoom/translate by mouse operation
   // (mouse_dx, mouse_dy) : mouse offsets in 2D
-  //  
+  //
   void RotateCamera( int mouse_dx, int mouse_dy)
   {
     float theta = -mouse_dx / 200.0f;
@@ -66,7 +66,7 @@ public:
     EVec3f newEyeP = m_pos + mouse_dy / 80.0f * (m_cnt - m_pos);
     if ((newEyeP - m_cnt).norm() > 0.02f) m_pos = newEyeP;
   }
-  
+
   void TranslateCamera(int mouse_dx, int mouse_dy)
   {
     float c = (m_pos - m_cnt).norm() / 900.0f;
@@ -86,24 +86,24 @@ public:
   }
 
   void Set(const EVec3f &pos, const EVec3f &cnt, const EVec3f up)
-  { 
+  {
     m_pos = pos;
     m_cnt = cnt;
     m_up  = up ;
   }
-  
+
 };
 
 
 class OglForCLI
 {
-private: 
+private:
   //windows handles
   HDC   m_hdc;
   HGLRC m_hglrc;
 
-  // Camera position/center/Up direction 
-  OglCameraParam m_camera; 
+  // Camera position/center/Up direction
+  OglCameraParam m_camera;
 
   // View Size
   bool   m_is_rendering;
@@ -154,12 +154,12 @@ public:
     if (pfmt == 0) return;
     if (!SetPixelFormat(m_hdc, pfmt, &pfd)) return;
 
-    // This couse error when called under pure Managed 
+    // This couse error when called under pure Managed
     if ( (m_hglrc = wglCreateContext(m_hdc) ) == 0) return;
     if ( (wglMakeCurrent(m_hdc, m_hglrc)    ) == 0) return;
 
     GLenum err = glewInit();
-    if (err != GLEW_OK) 
+    if (err != GLEW_OK)
     {
       std::cout << "Error: " << glewGetErrorString(err) << "\n";
     }
@@ -216,16 +216,16 @@ public:
   }
 
 
-  //for rendering for other Form (or panel) 
+  //for rendering for other Form (or panel)
   int m_tmp_viewport[4];
 
   void OnDrawBeginByOtherForm(
     HDC hdc,
-    int    screem_width, 
-    int    screen_height, 
+    int    screem_width,
+    int    screen_height,
     OglCameraParam cam,
-    double fovY = 45.0, 
-    double view_near = 0.02, 
+    double fovY = 45.0,
+    double view_near = 0.02,
     double view_far = 700.0)
   {
     if (m_is_rendering) return;
@@ -276,15 +276,15 @@ public:
   {
     m_camera.Set(pos, cnt, up);
   }
- 
-  inline void SetBgColor(const EVec4f &bg) 
-  { 
-    m_bkgrnd_color = bg; 
+
+  inline void SetBgColor(const EVec4f &bg)
+  {
+    m_bkgrnd_color = bg;
   }
 
-  inline void SetBgColor(float r, float g, float b, float a) 
-  { 
-    m_bkgrnd_color << r, g, b, a; 
+  inline void SetBgColor(float r, float g, float b, float a)
+  {
+    m_bkgrnd_color << r, g, b, a;
   }
 
 
@@ -327,11 +327,11 @@ public:
   }
 
   void unProject_correctY(
-    const double cx, 
-    const double cy, 
-    const double depth, 
-    double &x, 
-    double &y, 
+    const double cx,
+    const double cy,
+    const double depth,
+    double &x,
+    double &y,
     double &z) const
   {
     if (!m_is_rendering) oglMakeCurrent();
@@ -347,10 +347,10 @@ public:
   }
 
   void Project(
-    const double inX, 
-    const double inY, 
+    const double inX,
+    const double inY,
     const double inZ,
-    double &outX, 
+    double &outX,
     double &outY,
     double &outZ) const
   {
@@ -367,9 +367,9 @@ public:
 
 
   inline void GetCursorRay(
-    int cx, 
-    int cy, 
-    EVec3f &ray_pos, 
+    int cx,
+    int cy,
+    EVec3f &ray_pos,
     EVec3f &ray_dir) const
   {
     double x1, y1, z1, x2, y2, z2;
@@ -382,8 +382,8 @@ public:
   }
 
   inline void GetCursorRay(
-      const EVec2i &pt, 
-      EVec3f &rayPos, 
+      const EVec2i &pt,
+      EVec3f &rayPos,
       EVec3f &rayDir) const
   {
     GetCursorRay(pt[0], pt[1], rayPos, rayDir);
@@ -403,7 +403,7 @@ private:
   {
     glClearDepth(1.0f);
 
-    //Material 
+    //Material
     float   shin[1] = { 64 };
     EVec4f  spec(1, 1, 1, 0.5);
     EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
@@ -422,7 +422,7 @@ private:
 
     //for (int i = 0; i < 3; ++i)
     //{
-    //  GLenum light = (i == 0) ? GL_LIGHT0 : 
+    //  GLenum light = (i == 0) ? GL_LIGHT0 :
     //                 (i == 1) ? GL_LIGHT1 : GL_LIGHT2;
     //  glLightfv(light, GL_POSITION, lPosi[i].data());
     //  glLightfv(light, GL_AMBIENT , lambi[i].data());

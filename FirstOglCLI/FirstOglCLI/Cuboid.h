@@ -15,11 +15,11 @@ private:
 public:
     Cuboid(EVec3f& pos, float width, float height, float depth, EVec3f& velo);
     Cuboid(const Cuboid& src);
-    
+
     void Step();
-    
+
     void Draw();
-    
+
     EVec3f GetPos();
     float GetWidth();
     float GetHeight();

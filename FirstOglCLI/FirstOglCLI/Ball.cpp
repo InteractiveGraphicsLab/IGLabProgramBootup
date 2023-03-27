@@ -53,7 +53,7 @@ void Ball::DrawSphere()
     const float M_PI = 3.141592f;
 
     glEnable(GL_DEPTH_TEST);
-    //Material 
+    //Material
     float   shin[1] = { 64 };
     EVec4f  spec(1, 1, 1, 0.5f);
     EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);

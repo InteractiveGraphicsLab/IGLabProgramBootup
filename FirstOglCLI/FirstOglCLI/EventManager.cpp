@@ -27,8 +27,8 @@ EventManager::EventManager()
         float veloz = (std::rand() % (int)(div * ((veloz_max + 1) - veloz_max / 2))) / div;
 
         m_balls.push_back(Ball(
-            radi, 
-            EVec3f(posx, posy, posz), 
+            radi,
+            EVec3f(posx, posy, posz),
             EVec3f(velox, veloy, veloz)));
     }
 
@@ -97,14 +97,14 @@ void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
         EVec3f ray_pos, ray_dir;
 
         ogl->GetCursorRay(x, y, ray_pos, ray_dir);
-        float slope = GetNormalVector(b_pos, ray_pos, ray_dir);
+        float slope = CalcReleaseDist(b_pos, ray_pos, ray_dir);
         std::cout << slope << "\n";
 
         EVec3f release_pos = slope * ray_dir + ray_pos;
         EVec3f nor_vec = b_pos - release_pos;
         EVec3f b_velo = m_balls[m_idx].GetVelo();
         b_velo += nor_vec;
-        m_balls[m_idx].SetVelo(b_velo);       
+        m_balls[m_idx].SetVelo(b_velo);
     }
 
     ogl->BtnUp();
@@ -136,7 +136,7 @@ void EventManager::Step()
     {
         m_balls[i].Step();
     }
-    for (int i = 0; i < m_cuboids.size(); ++i) 
+    for (int i = 0; i < m_cuboids.size(); ++i)
     {
         m_cuboids[i].Step();
     }
@@ -281,7 +281,7 @@ void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
 
 
 
-    
+
     /*
     int check[3] = { 1, 1, 1 };
     int count = 0;
@@ -370,7 +370,7 @@ int EventManager::PickBall(EVec3f RayPos, EVec3f RayDir)
     return pick_idx;
 }
 
-float EventManager::GetNormalVector(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir)
+float EventManager::CalcReleaseDist(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir)
 {
     float slope = (TargetPos - RayPos).dot(RayDir);
     return slope;

@@ -33,7 +33,7 @@ namespace FirstOglCLI {
 			if (m_singleton == nullptr) m_singleton = gcnew MainForm();
 			return m_singleton;
 		}
-		
+
 		void RedrawPanel(); // <-- ’Ç‰Á
 
 	protected:
@@ -71,9 +71,9 @@ namespace FirstOglCLI {
 			this->m_button1 = (gcnew System::Windows::Forms::Button());
 			this->m_button2 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
-			// 
+			//
 			// m_panel
-			// 
+			//
 			this->m_panel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
@@ -86,9 +86,9 @@ namespace FirstOglCLI {
 			this->m_panel->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::m_panel_MouseMove);
 			this->m_panel->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::m_panel_MouseUp);
 			this->m_panel->Resize += gcnew System::EventHandler(this, &MainForm::m_panel_Resize);
-			// 
+			//
 			// m_button1
-			// 
+			//
 			this->m_button1->Location = System::Drawing::Point(12, 767);
 			this->m_button1->Name = L"m_button1";
 			this->m_button1->Size = System::Drawing::Size(103, 47);
@@ -96,9 +96,9 @@ namespace FirstOglCLI {
 			this->m_button1->Text = L"button1";
 			this->m_button1->UseVisualStyleBackColor = true;
 			this->m_button1->Click += gcnew System::EventHandler(this, &MainForm::m_button1_Click);
-			// 
+			//
 			// m_button2
-			// 
+			//
 			this->m_button2->Location = System::Drawing::Point(121, 767);
 			this->m_button2->Name = L"m_button2";
 			this->m_button2->Size = System::Drawing::Size(103, 47);
@@ -106,9 +106,9 @@ namespace FirstOglCLI {
 			this->m_button2->Text = L"button2";
 			this->m_button2->UseVisualStyleBackColor = true;
 			this->m_button2->Click += gcnew System::EventHandler(this, &MainForm::m_button2_Click);
-			// 
+			//
 			// MainForm
-			// 
+			//
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(904, 826);
