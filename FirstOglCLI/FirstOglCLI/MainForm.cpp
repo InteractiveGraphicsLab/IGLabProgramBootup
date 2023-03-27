@@ -71,9 +71,9 @@ System::Void MainForm::m_panel_MouseUp(System::Object^ sender, System::Windows::
 
 System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-  //std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
+  std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
   EventManager::GetInst()->MouseMove(e->X, e->Y, m_ogl);
-  RedrawPanel(); //再描画！!
+  //RedrawPanel(); //再描画！!
 }
 
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)

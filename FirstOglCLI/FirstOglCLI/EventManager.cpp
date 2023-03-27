@@ -12,16 +12,16 @@ EventManager::EventManager()
     float bt_height = BilliardTable::GetInst()->GetHeight();
     float bt_depth = BilliardTable::GetInst()->GetDepth();
 
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
         const float div = 100.0f;
         float posx = (std::rand() % (int)(2 * div * (bt_width  - radi) + 1) - div * (bt_width  - radi)) / div + bt_pos[0];
         float posy = (std::rand() % (int)(2 * div * (bt_height - radi) + 1) - div * (bt_height - radi)) / div + bt_pos[1];
         float posz = (std::rand() % (int)(2 * div * (bt_depth  - radi) + 1) - div * (bt_depth  - radi)) / div + bt_pos[2];
 
-        const float velox_max = 0.0;
+        const float velox_max = 10.0;
         const float veloy_max = 0.0;
-        const float veloz_max = 0.0;
+        const float veloz_max = 10.0;
         float velox = (std::rand() % (int)(div * ((velox_max + 1) - velox_max / 2))) / div;
         float veloy = (std::rand() % (int)(div * ((veloy_max + 1) - veloy_max / 2))) / div;
         float veloz = (std::rand() % (int)(div * ((veloz_max + 1) - veloz_max / 2))) / div;
@@ -59,10 +59,10 @@ void EventManager::DrawScene()
     {
         m_balls[i].Draw();
     }
-    for (int i = 0; i < m_cuboids.size(); ++i)
-    {
-        m_cuboids[i].Draw();
-    }
+    //for (int i = 0; i < m_cuboids.size(); ++i)
+    //{
+    //    m_cuboids[i].Draw();
+    //}
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
@@ -124,7 +124,7 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
-    //if (!(!m_isL && !m_isR && !m_isM))
+    if (!(!m_isL && !m_isR && !m_isM))
         ogl->MouseMove(EVec2i(x, y));
 }
 
@@ -356,7 +356,7 @@ int EventManager::PickBall(EVec3f RayPos, EVec3f RayDir)
     {
         EVec3f b_pos = m_balls[i].GetPos();
         float b_radi = m_balls[i].GetRadi();
-        float d = pow(RayDir.dot(RayPos - b_pos), 2) - (pow((RayPos - b_pos).norm(), 2) - pow(b_radi, 2));
+        float d = (float)pow(RayDir.dot(RayPos - b_pos), 2) - (pow((RayPos - b_pos).norm(), 2) - pow(b_radi, 2));
         if (d > 0 && (RayPos - b_pos).norm() < dis) // ÚG
         {
             pick_idx = i;

@@ -49,7 +49,7 @@ void Ball::Draw()
 
 void Ball::DrawSphere()
 {
-    const int    N = 20;
+    const int    N = 10;
     const float M_PI = 3.141592f;
 
     glEnable(GL_DEPTH_TEST);
