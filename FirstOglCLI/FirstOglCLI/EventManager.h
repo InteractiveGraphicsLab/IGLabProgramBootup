@@ -10,6 +10,8 @@ class EventManager
 {
 private:
     bool m_isL, m_isR, m_isM; //マウスボタンの状態
+    bool m_isTarget;
+    int m_idx;
     EventManager();
 
     std::vector<Ball> m_balls;
@@ -36,5 +38,7 @@ public:
     static void CollideAndSolve(Ball& b1, Ball& b2);
     static void CollideAndSolve(Ball& b, Cuboid& c);
     static void CollideAndSolve(Ball& b);
+
+    int PicBall(EVec3f RayPos, EVec3f RayDir);
 };
 #pragma managed

@@ -7,26 +7,29 @@ EventManager::EventManager()
 
     const float radi = 0.5f;
 
+    EVec3f bt_pos = BilliardTable::GetInst()->GetPos();
     float bt_width = BilliardTable::GetInst()->GetWidth();
     float bt_height = BilliardTable::GetInst()->GetHeight();
     float bt_depth = BilliardTable::GetInst()->GetDepth();
 
-    for (int i = 0; i < 200; ++i)
+    for (int i = 0; i < 50; ++i)
     {
         const float div = 100.0f;
-        float posx = std::rand() % 2 * div * bt_width  - div * (bt_width  + radi) / div;
-        float posy = std::rand() % 2 * div * bt_height - div * (bt_height + radi) / div;
-        float posz = std::rand() % 2 * div * bt_depth  - div * (bt_depth  + radi) / div;
+        float posx = (std::rand() % (int)(2 * div * (bt_width  - radi) + 1) - div * (bt_width  - radi)) / div + bt_pos[0];
+        float posy = (std::rand() % (int)(2 * div * (bt_height - radi) + 1) - div * (bt_height - radi)) / div + bt_pos[1];
+        float posz = (std::rand() % (int)(2 * div * (bt_depth  - radi) + 1) - div * (bt_depth  - radi)) / div + bt_pos[2];
 
-
-        float velox = std::rand() % 110  - ;
-        float veloy = std::rand() % 2 * (bt_height - radi) - bt_height - 2 * radi;
-        float veloz = std::rand() % 2 * (bt_depth  - radi) - bt_depth  - 2 * radi;
+        const float velox_max = 0.0;
+        const float veloy_max = 0.0;
+        const float veloz_max = 0.0;
+        float velox = (std::rand() % (int)(div * ((velox_max + 1) - velox_max / 2))) / div;
+        float veloy = (std::rand() % (int)(div * ((veloy_max + 1) - veloy_max / 2))) / div;
+        float veloz = (std::rand() % (int)(div * ((veloz_max + 1) - veloz_max / 2))) / div;
 
         m_balls.push_back(Ball(
             radi, 
-            EVec3f((posx, posy, posz), 
-                EVec3f((std::rand()%110-50)/10, (std::rand()%11-5)/10, (std::rand() % 110 - 50) / 10)));
+            EVec3f(posx, posy, posz), 
+            EVec3f(velox, veloy, veloz)));
     }
 
     /*
@@ -65,7 +68,17 @@ void EventManager::DrawScene()
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     m_isL = true;
-    ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚Ì‹“_‚ğ‰ñ“]‚³‚¹‚é€”õ
+    EVec3f ray_pos, ray_dir;
+    ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+    m_idx = PicBall(ray_pos, ray_dir);
+    if (m_idx != -1)
+    {
+        EVec3f b_velo = m_balls[m_idx].GetVelo();
+        b_velo += EVec3f(-2,2,-2);
+        m_balls[m_idx].SetVelo(b_velo);
+    }
+
+    //ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚Ì‹“_‚ğ‰ñ“]‚³‚¹‚é€”õ
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -322,4 +335,22 @@ void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
         break;
     }
     */
+}
+
+int EventManager::PicBall(EVec3f RayPos, EVec3f RayDir)
+{
+    float dis = 10000.0;
+    int pic_idx = -1;
+    for (int i = 0; i < m_balls.size(); ++i)
+    {
+        EVec3f b_pos = m_balls[i].GetPos();
+        float b_radi = m_balls[i].GetRadi();
+        float d = pow(RayDir.dot(RayPos - b_pos), 2) - (pow((RayPos - b_pos).norm(), 2) - pow(b_radi, 2));
+        if (d > 0 && (RayPos - b_pos).norm() < dis) // ÚG
+        {
+            pic_idx = i;
+            dis = (RayPos - b_pos).norm();
+        }
+    }
+    return pic_idx;
 }
