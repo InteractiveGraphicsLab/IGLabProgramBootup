@@ -93,7 +93,7 @@ namespace FirstOglCLI {
 			this->m_button1->Name = L"m_button1";
 			this->m_button1->Size = System::Drawing::Size(103, 47);
 			this->m_button1->TabIndex = 1;
-			this->m_button1->Text = L"button1";
+			this->m_button1->Text = L"Reset";
 			this->m_button1->UseVisualStyleBackColor = true;
 			this->m_button1->Click += gcnew System::EventHandler(this, &MainForm::m_button1_Click);
 			//
@@ -103,7 +103,7 @@ namespace FirstOglCLI {
 			this->m_button2->Name = L"m_button2";
 			this->m_button2->Size = System::Drawing::Size(103, 47);
 			this->m_button2->TabIndex = 2;
-			this->m_button2->Text = L"button2";
+			this->m_button2->Text = L"Add";
 			this->m_button2->UseVisualStyleBackColor = true;
 			this->m_button2->Click += gcnew System::EventHandler(this, &MainForm::m_button2_Click);
 			//

@@ -3,6 +3,7 @@
 #pragma unmanaged
 #include "OglForCLI.h"
 #include "Cuboid.h"
+#include "BilliardTable.h"
 
 class Ball
 {
@@ -15,6 +16,7 @@ private:
 
 public:
   Ball(float radi, EVec3f& pos, EVec3f& velo);
+  Ball(float radi, EVec3f& pos);
   Ball(const Ball& src);
 
   void Step();

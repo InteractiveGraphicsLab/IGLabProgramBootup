@@ -12,10 +12,23 @@ private:
     bool m_isL, m_isR, m_isM; //マウスボタンの状態
     bool m_isTarget;
     int m_idx;
+    EVec3f m_MousePos;
     EventManager();
 
     std::vector<Ball> m_balls;
     std::vector<Cuboid> m_cuboids;
+
+    void InitializeBalls();
+    void InitializeBalls1();
+
+    void CollideAndSolve(Ball& b1, Ball& b2);
+    void CollideAndSolve(Ball& b, Cuboid& c);
+    void CollideAndSolve(Ball& b);
+
+    int PickBall(EVec3f RayPos, EVec3f RayDir);
+    EVec3f CalcMousePos(const EVec3f& TargetPos, const EVec3f& RayPos, const EVec3f& RayDir);
+    EVec3f CalcMousePos1(const EVec3f& RayPos, const EVec3f& RayDir);
+
 
 public:
     //シングルトンクラス（see デザインパターン, シングルトン）
@@ -35,11 +48,7 @@ public:
 
     void Step();
 
-    static void CollideAndSolve(Ball& b1, Ball& b2);
-    static void CollideAndSolve(Ball& b, Cuboid& c);
-    static void CollideAndSolve(Ball& b);
-
-    int PickBall(EVec3f RayPos, EVec3f RayDir);
-    float CalcReleaseDist(EVec3f TargetPos, EVec3f RayPos, EVec3f RayDir);
+    void Reset();
+    void Add();
 };
 #pragma managed
