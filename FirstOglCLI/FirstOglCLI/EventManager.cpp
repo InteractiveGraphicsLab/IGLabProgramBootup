@@ -8,7 +8,7 @@ EventManager::EventManager()
   //InitializeBalls();
 
   m_balls.push_back(Ball(0.5f, EVec3f(0, 0.5f, 0)));
-  m_balls.push_back(Ball(0.5f, EVec3f(2, 0.5f, 0)));
+  m_balls.push_back(Ball(0.5f, EVec3f(2, 0.5f, 0), EVec3f(-9, 0, 0)));
 
 }
 
@@ -213,7 +213,6 @@ void EventManager::Step()
   }
 
 
-
 }
 
 void EventManager::Reset()
@@ -274,42 +273,55 @@ void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
   EVec3f pos2 = b2.GetPos();
   float radi1 = b1.GetRadi();
   float radi2 = b2.GetRadi();
-
- 
-
-
+  EVec3f velo1 = b1.GetVelo();
+  EVec3f velo2 = b2.GetVelo();
 
 
 
-  EVec3f diff = pos2 - pos1; // p1p2ベクトル
-  float d_size = diff.norm(); // p1p2ベクトルの大きさ
-  if (radi1 + radi2 >= d_size) // 衝突判定
+  EVec3f q = pos1 - pos2;
+  EVec3f u = velo1 - velo2;
+
+  float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(radi1 + radi2, 2.0f));
+
+  if (discri >= 0.0f && u.norm() > 0.0f) // 衝突判定
   { // 衝突処理
-    EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
-    EVec3f velo1 = b1.GetVelo();
-    EVec3f velo2 = b2.GetVelo();
+    float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
+    if (C >= 0 && C <= 1.0f)
+    {
 
-    // ベクトルの分割
-    EVec3f v1 = dir * velo1.dot(dir);
-    EVec3f v2 = velo1 - v1;
-    EVec3f v3 = dir * velo2.dot(dir);
-    EVec3f v4 = velo2 - v3;
+      //std::cout << C << std::endl;
 
-    EVec3f temp = v1;
-    v1 = v3;
-    v3 = temp;
+      EVec3f colli_pos1 = pos1 + C * velo1;
+      EVec3f colli_pos2 = pos2 + C * velo2;
 
-    pos1 += -dir * (radi1 + radi2 - d_size) / 2;
-    pos2 += dir * (radi1 + radi2 - d_size) / 2;
 
-    velo1 = v1 + v2;
-    velo2 = v3 + v4;
+      EVec3f diff = colli_pos2 - colli_pos1;
+      EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
 
-    b1.SetPos(pos1);
-    b2.SetPos(pos2);
+      // ベクトルの分割
+      EVec3f v1 = dir * velo1.dot(dir);
+      EVec3f v2 = velo1 - v1;
+      EVec3f v3 = dir * velo2.dot(dir);
+      EVec3f v4 = velo2 - v3;
 
-    b1.SetVelo(velo1);
-    b2.SetVelo(velo2);
+      EVec3f temp = v1;
+      v1 = v3;
+      v3 = temp;
+
+      //pos1 += -dir * (radi1 + radi2 - diff.norm()) / 2;
+      //pos2 += dir * (radi1 + radi2 - diff.norm()) / 2;
+
+      velo1 = v1 + v2;
+      std::cout << "v1(" << velo1[0] << ", " << velo1[1] << ", " << velo1[2] << ")" << std::endl;
+      velo2 = v3 + v4;
+      std::cout << "v2(" << velo2[0] << ", " << velo2[1] << ", " << velo2[2] << ")\n" << std::endl;
+
+      b1.SetPos(colli_pos1);
+      b2.SetPos(colli_pos2);
+
+      b1.SetVelo(velo1);
+      b2.SetVelo(velo2);
+    }
   }
 }
 

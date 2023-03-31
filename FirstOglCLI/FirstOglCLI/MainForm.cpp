@@ -34,7 +34,7 @@ MainForm::MainForm(void)
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
 
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 100, MyTimerProc); //’Ç‰Á
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 10, MyTimerProc); //’Ç‰Á
 }
 
 void MainForm::RedrawPanel()

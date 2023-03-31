@@ -51,6 +51,7 @@ void Ball::Step()
   if (m_pos[1] != bottom_y + m_radi) m_velo[1] += acc[1] * dt;
   m_velo[2] += acc[2] * dt;
   m_pos += m_velo * dt;
+
 }
 
 void Ball::Draw()
