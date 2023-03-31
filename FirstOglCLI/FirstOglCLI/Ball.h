@@ -30,3 +30,4 @@ public:
   void SetPos(EVec3f pos);
   void SetVelo(EVec3f velo);
 };
+

@@ -25,6 +25,7 @@ void BilliardTable::DrawBilliardTable()
   twoPos[0] = m_pos - EVec3f(m_width, m_height, m_depth);
   twoPos[1] = m_pos + EVec3f(m_width, m_height, m_depth);
 
+
   glVertex3f(twoPos[0][0], twoPos[0][1], twoPos[0][2]);
   glVertex3f(twoPos[1][0], twoPos[0][1], twoPos[0][2]);
   glVertex3f(twoPos[0][0], twoPos[0][1], twoPos[1][2]);

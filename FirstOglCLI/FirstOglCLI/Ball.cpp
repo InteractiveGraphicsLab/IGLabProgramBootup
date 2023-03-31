@@ -27,7 +27,7 @@ Ball::Ball(const Ball& src)
 void Ball::Step()
 {
   const float dt = 0.33f;
-  const float max_velo = 2 * m_radi / dt;
+  //const float max_velo = 2 * m_radi / dt;
   const EVec3f acc = EVec3f(0, -0.2f, 0);
 
   m_velo[1] *= 0.99f;
@@ -40,11 +40,11 @@ void Ball::Step()
     m_velo[2] *= 0.99f;
   }
 
-  if (sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]) > max_velo) // §ŒÀðŒ(‹…‚Ì”¼Œa‚ª“™‚µ‚¢ê‡)
-  {
-    m_velo[0] *= max_velo / sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]);
-    m_velo[2] *= max_velo / sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]);
-  }
+  //if (sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]) > max_velo) // §ŒÀðŒ(‹…‚Ì”¼Œa‚ª“™‚µ‚¢ê‡)
+  //{
+  //  m_velo[0] *= max_velo / sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]);
+  //  m_velo[2] *= max_velo / sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]);
+  //}
 
   m_velo[0] += acc[0] * dt;
   float bottom_y = BilliardTable::GetInst()->GetPos()[1] - BilliardTable::GetInst()->GetHeight();
@@ -66,6 +66,7 @@ void Ball::DrawSphere()
 {
   const int    N = 20;
   const float M_PI = 3.141592f;
+  static int D = 0;
 
   glEnable(GL_DEPTH_TEST);
   //Material
@@ -73,6 +74,16 @@ void Ball::DrawSphere()
   EVec4f  spec(1, 1, 1, 0.5f);
   EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
   EVec4f  ambi(0.5f, 0.5f, 0.5f, 0.5f);
+  if (D%2 == 0)
+  {
+    diff = EVec4f(1.0, 0.0, 0.0, 0.5f);
+  }
+  else
+  {
+    diff = EVec4f(0.0, 1.0, 0.0, 0.5f);
+  }
+  D++;
+
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi.data());
@@ -82,6 +93,7 @@ void Ball::DrawSphere()
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHT2);
+
 
   glBegin(GL_TRIANGLES);
   for (int y = 0; y < N; ++y)

@@ -5,7 +5,11 @@ EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
 
-  InitializeBalls();
+  //InitializeBalls();
+
+  m_balls.push_back(Ball(0.5f, EVec3f(0, 0.5f, 0)));
+  m_balls.push_back(Ball(0.5f, EVec3f(2, 0.5f, 0)));
+
 }
 
 void EventManager::InitializeBalls()
@@ -66,10 +70,10 @@ void EventManager::InitializeBalls1()
 
 void EventManager::DrawScene()
 {
-  /*
-  glLineWidth(2.0f);
-  glDisable(GL_LIGHTING);//電気を消す
+  //glLineWidth(2.0f);
+  //glDisable(GL_LIGHTING);//電気を消す
 
+  /*
   //OpenGLで3本の直線を描く
   glBegin(GL_LINES);
   glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
@@ -105,9 +109,10 @@ void EventManager::DrawScene()
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
   m_isL = true;
-  EVec3f ray_pos, ray_dir;
 
+  EVec3f ray_pos, ray_dir;
   ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+
   m_idx = PickBall(ray_pos, ray_dir);
   m_MousePos = m_balls[m_idx].GetPos();
 
@@ -178,16 +183,6 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 void EventManager::Step()
 {
   int i, j;
-  // Step
-  for (i = 0; i < m_balls.size(); ++i)
-  {
-    m_balls[i].Step();
-  }
-  for (int i = 0; i < m_cuboids.size(); ++i)
-  {
-    m_cuboids[i].Step();
-  }
-
   // CollideAndSolve
   for (i = 0; i < m_balls.size(); ++i)
   {
@@ -206,6 +201,18 @@ void EventManager::Step()
     //m_balls[i].HitCuboid(m_cuboids);
     //m_balls[i].HitBall(m_balls);
   }
+
+  // Step
+  for (i = 0; i < m_balls.size(); ++i)
+  {
+    m_balls[i].Step();
+  }
+  for (int i = 0; i < m_cuboids.size(); ++i)
+  {
+    m_cuboids[i].Step();
+  }
+
+
 
 }
 
@@ -267,6 +274,12 @@ void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
   EVec3f pos2 = b2.GetPos();
   float radi1 = b1.GetRadi();
   float radi2 = b2.GetRadi();
+
+ 
+
+
+
+
 
   EVec3f diff = pos2 - pos1; // p1p2ベクトル
   float d_size = diff.norm(); // p1p2ベクトルの大きさ
