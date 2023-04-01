@@ -2,12 +2,14 @@
 
 #pragma unmanaged
 #include "OglForCLI.h"
+#include "Ball.h"
 
 class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
   EventManager();
+  std::vector<Ball> m_balls;
 
 public:
   //シングルトンクラス（see デザインパターン, シングルトン）
@@ -15,6 +17,8 @@ public:
     static EventManager p;
     return &p;
   }
+  void DrawSphere(double r, int N = 20);
+  void DrawStand();
   void DrawScene();
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);

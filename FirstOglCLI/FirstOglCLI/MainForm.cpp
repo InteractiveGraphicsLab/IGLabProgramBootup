@@ -41,6 +41,8 @@ void MainForm::RedrawPanel()
   if (m_ogl == 0) return;
   m_ogl->OnDrawBegin(m_panel->Width, m_panel->Height, 45.0, 0.01f, 300.0f);
   EventManager::GetInst()->DrawScene();
+  EventManager::GetInst()->DrawSphere(1,20);
+  EventManager::GetInst()->DrawStand();
   m_ogl->OnDrawEnd();
 }
 
