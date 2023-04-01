@@ -4,7 +4,7 @@
 #include "OglForCLI.h"
 #pragma managed
 
-
+// Unity Class
 namespace FirstOglCLI {
 
 	using namespace System;

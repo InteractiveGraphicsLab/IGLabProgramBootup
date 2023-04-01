@@ -20,29 +20,29 @@ static void CALLBACK MyTimerProc(
   DWORD dwTime         // system time
 )
 {
-  std::cout << "timerが呼ばれた\n";   //コメントを表示して
+  //std::cout << "timerが呼ばれた\n";   //コメントを表示して
   EventManager::GetInst()->Step();    //Step関数を読んで
   MainForm::GetInst()->RedrawPanel(); //Redrawする
 }
 
-
+// Unity起動
 MainForm::MainForm(void)
 {
-  m_ogl = 0;
+  m_ogl = 0;  // OpenGLをCLIで表示するためのクラスのインスタンスへのポインタを初期化
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
 
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc); //追加
+  // Update関数を毎回呼ぶ処理
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc);
 }
+
 
 void MainForm::RedrawPanel()
 {
   if (m_ogl == 0) return;
   m_ogl->OnDrawBegin(m_panel->Width, m_panel->Height, 45.0, 0.01f, 300.0f);
   EventManager::GetInst()->DrawScene();
-  EventManager::GetInst()->DrawSphere(1,20);
-  EventManager::GetInst()->DrawStand();
   m_ogl->OnDrawEnd();
 }
 
@@ -74,7 +74,6 @@ System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows
 {
   std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
   EventManager::GetInst()->MouseMove(e->X, e->Y, m_ogl);
-  RedrawPanel(); //再描画！!
 }
 
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)

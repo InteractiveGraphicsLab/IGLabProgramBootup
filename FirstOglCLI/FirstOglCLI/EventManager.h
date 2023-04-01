@@ -17,9 +17,9 @@ public:
     static EventManager p;
     return &p;
   }
-  void DrawSphere(double r, int N = 20);
-  void DrawStand();
-  void DrawScene();
+
+  void DrawTable();
+  void DrawScene();  // 描画関数（シーン描画）
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);
   void RBtnDown(int x, int y, OglForCLI* ogl);
@@ -28,6 +28,6 @@ public:
   void RBtnUp(int x, int y, OglForCLI* ogl);
   void MouseMove(int x, int y, OglForCLI* ogl);
 
-  void Step();
+  void Step(); // Update関数
 };
 #pragma managed
