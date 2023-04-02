@@ -5,8 +5,8 @@
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  m_balls.push_back(Ball(2.0, EVec3f(-1.0, 2.0, 0), EVec3f(0.0, 0.0,0)));
-  m_balls.push_back(Ball(1, EVec3f(0, 1.0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(1, EVec3f(-10.0, 0, 0), EVec3f(5.0, 0.0,0)));
+  m_balls.push_back(Ball(1, EVec3f(5, 0, 0), EVec3f(-5.0, 0, 0)));
   //m_balls.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 3, 3)));
 
   m_table = new BilliardTable(20, 20);
@@ -77,7 +77,7 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
   ogl->MouseMove(EVec2i(x, y));
 }
 
-
+//‚ß‚è‚ñ‚Å‚½‚çƒ{[ƒ‹‚ÌˆÊ’u‚ğ–ß‚·ˆ—
 void EventManager::SolveReflection(Ball &ball)
 {
   EVec3f pos = ball.GetPos();
@@ -111,6 +111,26 @@ void EventManager::SolveReflection(Ball &ball)
 }
 
 
+static bool IsCollision(const Ball& ball_i,const Ball& ball_j)
+{
+  EVec3f pos_i = ball_i.GetPos();
+  EVec3f pos_j = ball_j.GetPos();
+  float radi_i = ball_i.GetRadi();
+  float radi_j = ball_j.GetRadi();
+
+  float dist = (pos_i - pos_j).norm();
+
+  if (dist <= radi_i + radi_j)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
 // UpdateŠÖ”
 void EventManager::Step()
 {
@@ -118,5 +138,21 @@ void EventManager::Step()
   {
     m_balls[i].Step();
     SolveReflection(m_balls[i]);
+  }
+
+  if (IsCollision(m_balls[0],m_balls[1]))
+  {
+    EVec3f pos_i = m_balls[0].GetPos();
+    EVec3f pos_j = m_balls[1].GetPos();
+    EVec3f velo_i = m_balls[0].GetVelo();
+    EVec3f velo_j = m_balls[1].GetVelo();
+    float radi_i = m_balls[0].GetRadi();
+    float radi_j = m_balls[1].GetRadi();
+
+
+    m_balls[0].SetVelo(velo_j);
+    m_balls[1].SetVelo(velo_i);
+    m_balls[0].SetPos((pos_i + pos_j) / 2 + radi_i * (pos_i - pos_j).normalized());
+    m_balls[1].SetPos((pos_j + pos_i) / 2 + radi_j * (pos_j - pos_i).normalized());
   }
 }

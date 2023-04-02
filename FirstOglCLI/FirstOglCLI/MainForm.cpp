@@ -33,8 +33,11 @@ MainForm::MainForm(void)
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
 
+  m_ogl->SetCam(EVec3f(18.8f, 30.2f, 54.7f), 
+                EVec3f(-1.8f, 0.9f, 0.2f), EVec3f(0.0f, 1.0f, 0.0f));
+
   // Update関数を毎回呼ぶ処理
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc);
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 500, MyTimerProc);
 }
 
 
@@ -72,7 +75,7 @@ System::Void MainForm::m_panel_MouseUp(System::Object^ sender, System::Windows::
 
 System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-  std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
+  //std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
   EventManager::GetInst()->MouseMove(e->X, e->Y, m_ogl);
 }
 

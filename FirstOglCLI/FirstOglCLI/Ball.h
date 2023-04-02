@@ -18,14 +18,14 @@ public:
   void Step();
   void Draw();
 
-  EVec3f GetPos();
+  EVec3f GetPos() const;
   void SetPos(const EVec3f& pos);
   
-  EVec3f GetVelo();  
+  EVec3f GetVelo() const;  
   void SetVelo(const EVec3f& velo);
   
-  float GetRadi();  
-  void SetVelo(float radi);
+  float GetRadi() const;  
+  void SetRadi(float radi);
   
 };
 

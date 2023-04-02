@@ -39,9 +39,27 @@ static void DrawSphere(float radi)
   glEnable(GL_DEPTH_TEST);
   //Material 
   float   shin[1] = { 64 };
+
+  static int count = 0;
+  EVec4f  diff(1.0f, 0.0f, 0.0f, 0.5f);
+  EVec4f  ambi(0.5f, 0.0f, 0.0f, 0.5f);
+  count++;
+
+  if (count % 2 == 0)
+  {
+    diff = EVec4f(1.0f, 0.0f, 0.0f, 0.5f);
+    ambi = EVec4f(0.5f, 0.0f, 0.0f, 0.5f);
+  }
+  else
+  {
+    diff = EVec4f(0.0f, 1.0f, 0.0f, 0.5f);
+    ambi = EVec4f(0.0f, 0.5f, 0.0f, 0.5f);
+  }
+
+
+
+
   EVec4f  spec(1, 1, 1, 0.5);
-  EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
-  EVec4f  ambi(0.5f, 0.5f, 0.5f, 0.5f);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi.data());
@@ -89,8 +107,8 @@ void Ball::Draw()
   glTranslated(-m_pos[0], -m_pos[1], -m_pos[2]);
 }
 
-
-EVec3f Ball::GetPos()
+//メンバ関数の後ろのconstは、このメンバ関数内でメンバ変数を変更しませんという意思表示
+EVec3f Ball::GetPos() const
 {
   return m_pos;
 }
@@ -100,7 +118,7 @@ void Ball::SetPos(const EVec3f& pos)
   m_pos = pos;
 }
 
-EVec3f Ball::GetVelo()
+EVec3f Ball::GetVelo() const
 {
   return m_velo;
 }
@@ -110,12 +128,12 @@ void Ball::SetVelo(const EVec3f& velo)
   m_velo = velo;
 }
 
-float Ball::GetRadi()
+float Ball::GetRadi() const
 {
   return m_radi;
 }
 
-void Ball::SetVelo(float radi)
+void Ball::SetRadi(float radi)
 {
   m_radi = radi;
 }
