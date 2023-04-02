@@ -137,3 +137,17 @@ void Ball::SetRadi(float radi)
 {
   m_radi = radi;
 }
+
+bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
+{
+  float D = powf(ray_dir.dot(ray_pos - m_pos), 2) - powf((ray_pos - m_pos).norm(), 2) + powf(m_radi, 2);
+
+  if (D >= 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}

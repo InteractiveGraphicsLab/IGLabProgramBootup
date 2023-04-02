@@ -38,8 +38,24 @@ void EventManager::DrawScene()
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
+  std::cout << "LButton 押された\n\n";
   m_isL = true;
-  ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
+
+  EVec3f ray_pos = EVec3f(0, 0, 0);
+  EVec3f ray_dir = EVec3f(0, 0, 0);
+
+  ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+
+  for (int i = 0; i < m_balls.size(); ++i)
+  {
+    if (m_balls[i].IsPicked(ray_pos,ray_dir))
+    {
+      std::cout<<"当たった"<<std::endl;
+    }
+  }
+
+
+  //ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -56,6 +72,8 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
+  //std::cout << "\nLButton 離された\n\n";
+
   m_isL = false;
   ogl->BtnUp();
 }
@@ -74,7 +92,17 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
-  if (!m_isL && !m_isR && !m_isM) return;
+  if (!m_isL && !m_isR && !m_isM)
+  {
+    return;
+  }
+  else if (m_isL && !m_isR && !m_isM)
+  {  
+    //std::cout << "LButton ドラッグ中\n";
+    return;
+  }
+
+  //画面の平行移動とかの処理
   ogl->MouseMove(EVec2i(x, y));
 }
 

@@ -3,6 +3,7 @@
 #pragma unmanaged
 #include "OglForCLI.h"
 
+// ボールの状態を管理するクラス
 class Ball
 {
 private:
@@ -27,5 +28,7 @@ public:
   float GetRadi() const;  
   void SetRadi(float radi);
   
+  bool IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const;
+
 };
 
