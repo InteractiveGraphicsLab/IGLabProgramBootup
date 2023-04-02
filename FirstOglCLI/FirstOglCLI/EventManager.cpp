@@ -126,50 +126,54 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 }
 
 
+static void SolveReflection(Ball &ball)
+{
+  EVec3f pos = ball.GetPos();
+  EVec3f velo = ball.GetVelo();
+  float radi = ball.GetRadi();
+
+  //îΩéÀ
+  if (pos[1] < 0)
+  {
+    velo[1] *= -0.97f;
+    pos[1] = 0.00001f;
+  }
+
+  if (pos[0] <= radi - 20)
+  {
+    velo[0] *= -1;
+    pos[0] = radi - 20;
+
+  }
+  else if (pos[0] >= 20 - radi)
+  {
+    velo[0] *= -1;
+    pos[0] = 20 - radi;
+  }
+
+  if (pos[2] <= radi - 20)
+  {
+    velo[2] *= -1;
+    pos[2] = radi - 20;
+  }
+  else if (pos[2] >= 20 - radi)
+  {
+    velo[2] *= -1;
+    pos[2] = 20 - radi;
+  }
+
+  ball.SetVelo(velo);
+  ball.SetPos(pos);
+}
+
+
 // Updateä÷êî
 void EventManager::Step()
 {
   for (int i = 0; i < m_balls.size(); ++i)
   {
     m_balls[i].Step();
-
-    EVec3f pos = m_balls[i].GetPos();
-    EVec3f velo = m_balls[i].GetVelo();
-    float radi =m_balls[i].GetRadi();
-
-
-    //îΩéÀ
-    if (pos[1] < 0)
-    {
-      velo[1] *= -0.97f;
-      pos[1] = 0.00001f;
-    }
-
-    if (pos[0] <= radi - 20)
-    {
-      velo[0] *= -1;
-      pos[0] = radi - 20;
-
-    }
-    else if (pos[0] >= 20 - radi)
-    {
-      velo[0] *= -1;
-      pos[0] = 20 - radi;
-    }
-
-    if (pos[2] <= radi - 20)
-    {
-      velo[2] *= -1;
-      pos[2] = radi - 20;
-    }
-    else if (pos[2] >= 20 - radi)
-    {
-      velo[2] *= -1;
-      pos[2] = 20 - radi;
-    }
-
-    m_balls[i].SetVelo(velo);
-    m_balls[i].SetPos(pos);
+    SolveReflection(m_balls[i]);
   }
 }
 
