@@ -37,7 +37,7 @@ MainForm::MainForm(void)
                 EVec3f(-1.8f, 0.9f, 0.2f), EVec3f(0.0f, 1.0f, 0.0f));
 
   // UpdateŠÖ”‚ð–ˆ‰ñŒÄ‚Ôˆ—
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 500, MyTimerProc);
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc);
 }
 
 
