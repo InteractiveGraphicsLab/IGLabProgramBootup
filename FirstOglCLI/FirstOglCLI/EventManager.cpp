@@ -143,44 +143,33 @@ void EventManager::Step()
     {
       velo[1] *= -0.97f;
       pos[1] = 0.00001f;
-      m_balls[i].SetVelo(velo);
-      m_balls[i].SetPos(pos);
-      std::cout << "°”½ŽË‚µ‚Ü‚µ‚½" << std::endl;
     }
 
     if (pos[0] <= radi - 20)
     {
       velo[0] *= -1;
       pos[0] = radi - 20;
-      m_balls[i].SetVelo(velo);
-      m_balls[i].SetPos(pos);
 
     }
     else if (pos[0] >= 20 - radi)
     {
       velo[0] *= -1;
       pos[0] = 20 - radi;
-      m_balls[i].SetVelo(velo);
-      m_balls[i].SetPos(pos);
-
     }
 
     if (pos[2] <= radi - 20)
     {
       velo[2] *= -1;
       pos[2] = radi - 20;
-      m_balls[i].SetVelo(velo);
-      m_balls[i].SetPos(pos);
-
     }
     else if (pos[2] >= 20 - radi)
     {
       velo[2] *= -1;
       pos[2] = 20 - radi;
-      m_balls[i].SetVelo(velo);
-      m_balls[i].SetPos(pos);
-
     }
+
+    m_balls[i].SetVelo(velo);
+    m_balls[i].SetPos(pos);
   }
 }
 
