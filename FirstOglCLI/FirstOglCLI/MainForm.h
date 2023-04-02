@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma unmanaged
-#include "OglForCLI.h"
 #pragma managed
 
 // Unity Class

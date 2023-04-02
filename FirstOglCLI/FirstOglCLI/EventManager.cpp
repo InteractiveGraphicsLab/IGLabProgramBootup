@@ -5,7 +5,7 @@
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  m_balls.push_back(Ball(1, EVec3f(-1.0, 0, 0), EVec3f(0.0, 0.0, -1.0)));
+  m_balls.push_back(Ball(1, EVec3f(-1.0, 0, 0), EVec3f(1, 0.0,0)));
   //m_balls.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 2, 2)));
   //m_balls.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 3, 3)));
 }
@@ -132,6 +132,55 @@ void EventManager::Step()
   for (int i = 0; i < m_balls.size(); ++i)
   {
     m_balls[i].Step();
+
+    EVec3f pos = m_balls[i].GetPos();
+    EVec3f velo = m_balls[i].GetVelo();
+    float radi =m_balls[i].GetRadi();
+
+
+    //”½ŽË
+    if (pos[1] < 0)
+    {
+      velo[1] *= -0.97f;
+      pos[1] = 0.00001f;
+      m_balls[i].SetVelo(velo);
+      m_balls[i].SetPos(pos);
+      std::cout << "°”½ŽË‚µ‚Ü‚µ‚½" << std::endl;
+    }
+
+    if (pos[0] <= radi - 20)
+    {
+      velo[0] *= -1;
+      pos[0] = radi - 20;
+      m_balls[i].SetVelo(velo);
+      m_balls[i].SetPos(pos);
+
+    }
+    else if (pos[0] >= 20 - radi)
+    {
+      velo[0] *= -1;
+      pos[0] = 20 - radi;
+      m_balls[i].SetVelo(velo);
+      m_balls[i].SetPos(pos);
+
+    }
+
+    if (pos[2] <= radi - 20)
+    {
+      velo[2] *= -1;
+      pos[2] = radi - 20;
+      m_balls[i].SetVelo(velo);
+      m_balls[i].SetPos(pos);
+
+    }
+    else if (pos[2] >= 20 - radi)
+    {
+      velo[2] *= -1;
+      pos[2] = 20 - radi;
+      m_balls[i].SetVelo(velo);
+      m_balls[i].SetPos(pos);
+
+    }
   }
 }
 

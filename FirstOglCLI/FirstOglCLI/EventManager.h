@@ -1,7 +1,6 @@
 #pragma once
 
 #pragma unmanaged
-#include "OglForCLI.h"
 #include "Ball.h"
 
 class EventManager

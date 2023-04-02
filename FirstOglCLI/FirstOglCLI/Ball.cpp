@@ -26,35 +26,9 @@ void Ball::Step()
   // v = v + gdt
   m_velo += EVec3f(0, -0.98f, 0) * dt;
   m_velo *= 0.99f;
-  //”½ŽË
-  if (m_pos[1] < 0)
-  {
-    m_velo[1] *= -0.97f;
-    m_pos[1] = 0.00001f;
-  }
-
-  if (m_pos[0] <= m_radi - 20)
-  {
-    m_velo[0] *= -1;
-    m_pos[0] = m_radi - 20;
-  }  
-  else if (m_pos[0] >= 20 - m_radi)
-  {
-    m_velo[0] *= -1;
-    m_pos[0] = 20 - m_radi;
-  }
-  
-  if (m_pos[2] <= m_radi -20)
-  {
-    m_velo[2] *= -1;
-    m_pos[2] = m_radi - 20;
-  }  
-  else if (m_pos[2] >= 20 - m_radi)
-  {
-    m_velo[2] *= -1;
-    m_pos[2] = 20 - m_radi;
-  }
 }
+
+
 
 
 static void DrawSphere()
