@@ -5,63 +5,15 @@
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  m_balls.push_back(Ball(1, EVec3f(-1.0, 0, 0), EVec3f(1, 0.0,0)));
-  //m_balls.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 2, 2)));
+  m_balls.push_back(Ball(2.0, EVec3f(-1.0, 2.0, 0), EVec3f(0.0, 0.0,0)));
+  m_balls.push_back(Ball(1, EVec3f(0, 1.0, 0), EVec3f(0, 0, 0)));
   //m_balls.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 3, 3)));
+
+  m_table = new BilliardTable(20, 20);
 }
 
 
-void EventManager::DrawTable()
-{
-  glBegin(GL_TRIANGLES);
 
-  //’ê–Ê
-  glVertex3d(20, -1, 20);
-  glVertex3d(-20, -1, 20);
-  glVertex3d(-20, -1, -20);
-
-  glVertex3d(20, -1, 20);
-  glVertex3d(20, -1, -20);
-  glVertex3d(-20, -1, -20);
-
-  //‘¤–Ê‚P
-  glVertex3d(20, -1, 20);
-  glVertex3d(20, 1, 20);
-  glVertex3d(20, 1, -20);
-
-  glVertex3d(20, -1, 20);
-  glVertex3d(20, -1, -20);
-  glVertex3d(20, 1, -20);
-
-  //‘¤–Ê‚Q
-  glVertex3d(20, -1, -20);
-  glVertex3d(20, 1, -20);
-  glVertex3d(-20, 1, -20);
-
-  glVertex3d(20, -1, -20);
-  glVertex3d(-20, -1, -20);
-  glVertex3d(-20, 1, -20);
-
-  //‘¤–Ê‚R
-  glVertex3d(-20, -1, -20);
-  glVertex3d(-20, 1, -20);
-  glVertex3d(-20, 1, 20);
-
-  glVertex3d(-20, -1, -20);
-  glVertex3d(-20, -1, 20);
-  glVertex3d(-20, 1, 20);
-
-  //‘¤–Ê‚S
-  glVertex3d(-20, -1, 20);
-  glVertex3d(-20, 1, 20);
-  glVertex3d(20, 1, 20);
-
-  glVertex3d(-20, -1, 20);
-  glVertex3d(20, -1, 20);
-  glVertex3d(20, 1, 20);
-
-  glEnd();
-}
 
 // •`‰æˆ—
 void EventManager::DrawScene()
@@ -77,7 +29,7 @@ void EventManager::DrawScene()
   glEnd();
 
   glColor3f(0.1f, 0.4f, 0.2f);
-  DrawTable();
+  m_table->Draw();
 
   for (int i = 0; i < m_balls.size(); ++i)
     m_balls[i].Draw();
@@ -126,21 +78,21 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 }
 
 
-static void SolveReflection(Ball &ball)
+void EventManager::SolveReflection(Ball &ball)
 {
   EVec3f pos = ball.GetPos();
   EVec3f velo = ball.GetVelo();
   float radi = ball.GetRadi();
 
   //”½ŽË
-  if (pos[1] < 0)
+  if (pos[1] < radi)
   {
-    velo[1] *= -0.97f;
-    pos[1] = 0.00001f;
+    velo[1] *= -0.5f;
+    pos[1] = radi;
   }
 
-  float x_wall = 20 - radi;
-  float z_wall = 20 - radi;
+  float x_wall = m_table->GetWidth() - radi;
+  float z_wall = m_table->GetDepth() - radi;
 
   if (fabs(pos[0]) - x_wall > 0)
   {
@@ -167,11 +119,4 @@ void EventManager::Step()
     m_balls[i].Step();
     SolveReflection(m_balls[i]);
   }
-}
-
-
-
-void DrawSphere()
-{
-
 }

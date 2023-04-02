@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="BilliardTable.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="BilliardTable.cpp" />
     <ClCompile Include="FirstOglCLI.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="pch.cpp">

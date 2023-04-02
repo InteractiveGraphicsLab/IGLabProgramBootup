@@ -25,13 +25,13 @@ void Ball::Step()
 
   // v = v + gdt
   m_velo += EVec3f(0, -0.98f, 0) * dt;
+
+  // v = v + adt
   m_velo *= 0.99f;
 }
 
 
-
-
-static void DrawSphere()
+static void DrawSphere(float radi)
 {
   const int    N = 20;
   const double M_PI = 3.141592;
@@ -63,19 +63,18 @@ static void DrawSphere()
       double p2 = (y + 1) / (double)N * 1.0 * M_PI - 0.5 * M_PI;
 
       glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
-      glVertex3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
+      glVertex3d(radi * cos(t1) * cos(p1), radi * sin(p1), radi * sin(t1) * cos(p1));
       glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
-      glVertex3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
+      glVertex3d(radi * cos(t2) * cos(p2), radi * sin(p2), radi * sin(t2) * cos(p2));
       glNormal3d(cos(t2) * cos(p1), sin(p1), sin(t2) * cos(p1));
-      glVertex3d(cos(t2) * cos(p1), sin(p1), sin(t2) * cos(p1));
+      glVertex3d(radi * cos(t2) * cos(p1), radi * sin(p1), radi * sin(t2) * cos(p1));
 
       glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
-      glVertex3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
+      glVertex3d(radi * cos(t1) * cos(p1), radi * sin(p1), radi * sin(t1) * cos(p1));
       glNormal3d(cos(t1) * cos(p2), sin(p2), sin(t1) * cos(p2));
-      glVertex3d(cos(t1) * cos(p2), sin(p2), sin(t1) * cos(p2));
+      glVertex3d(radi * cos(t1) * cos(p2), radi * sin(p2), radi * sin(t1) * cos(p2));
       glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
-      glVertex3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
-
+      glVertex3d(radi * cos(t2) * cos(p2), radi * sin(p2), radi * sin(t2) * cos(p2));
     }
   }
 
@@ -86,6 +85,37 @@ static void DrawSphere()
 void Ball::Draw()
 {
   glTranslated(m_pos[0], m_pos[1], m_pos[2]);
-  DrawSphere();
+  DrawSphere(m_radi);
   glTranslated(-m_pos[0], -m_pos[1], -m_pos[2]);
+}
+
+
+EVec3f Ball::GetPos()
+{
+  return m_pos;
+}
+
+void Ball::SetPos(const EVec3f& pos)
+{
+  m_pos = pos;
+}
+
+EVec3f Ball::GetVelo()
+{
+  return m_velo;
+}
+
+void Ball::SetVelo(const EVec3f& velo)
+{
+  m_velo = velo;
+}
+
+float Ball::GetRadi()
+{
+  return m_radi;
+}
+
+void Ball::SetVelo(float radi)
+{
+  m_radi = radi;
 }

@@ -2,6 +2,7 @@
 
 #pragma unmanaged
 #include "Ball.h"
+#include "BilliardTable.h"
 
 class EventManager
 {
@@ -9,6 +10,8 @@ private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
   EventManager();
   std::vector<Ball> m_balls;
+  BilliardTable *m_table;
+  void SolveReflection(Ball& ball);
 
 public:
   //シングルトンクラス（see デザインパターン, シングルトン）
@@ -17,7 +20,6 @@ public:
     return &p;
   }
 
-  void DrawTable();
   void DrawScene();  // 描画関数（シーン描画）
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);

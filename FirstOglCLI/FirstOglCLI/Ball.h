@@ -17,35 +17,15 @@ public:
 
   void Step();
   void Draw();
-  EVec3f GetPos()
-  {
-    return m_pos;
-  } 
+
+  EVec3f GetPos();
+  void SetPos(const EVec3f& pos);
   
-  void SetPos(const EVec3f& pos)
-  {
-    m_pos = pos;
-  } 
+  EVec3f GetVelo();  
+  void SetVelo(const EVec3f& velo);
   
-  EVec3f GetVelo()
-  {
-    return m_velo;
-  }
-  
-  void SetVelo(const EVec3f& velo)
-  {
-    m_velo = velo;
-  }
-  
-  float GetRadi()
-  {
-    return m_radi;
-  } 
-  
-  void SetVelo(float radi)
-  {
-    m_radi = radi;
-  }
+  float GetRadi();  
+  void SetVelo(float radi);
   
 };
 
