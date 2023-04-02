@@ -139,40 +139,20 @@ static void SolveReflection(Ball &ball)
     pos[1] = 0.00001f;
   }
 
-  if (fabs(pos[0]) - (20 - radi) > 0)
+  float x_wall = 20 - radi;
+  float z_wall = 20 - radi;
+
+  if (fabs(pos[0]) - x_wall > 0)
   {
     velo[0] *= -1.0f;
-    pos[0] = (pos[0] > 0) ? (20 - radi) : (radi - 20);
+    pos[0] = (pos[0] > 0) ? x_wall : -x_wall;
   }
 
-  if (fabs(pos[2]) - (20 - radi) > 0)
+  if (fabs(pos[2]) - z_wall > 0)
   {
     velo[2] *= -1.0f;
-    pos[2] = (pos[2] > 0) ? (20 - radi) : (radi - 20);
+    pos[2] = (pos[2] > 0) ? z_wall : -z_wall;
   }
-
-  //if (pos[0] <= radi - 20)
-  //{
-  //  velo[0] *= -1;
-  //  pos[0] = radi - 20;
-
-  //}
-  //else if (pos[0] >= 20 - radi)
-  //{
-  //  velo[0] *= -1;
-  //  pos[0] = 20 - radi;
-  //}
-
-  //if (pos[2] <= radi - 20)
-  //{
-  //  velo[2] *= -1;
-  //  pos[2] = radi - 20;
-  //}
-  //else if (pos[2] >= 20 - radi)
-  //{
-  //  velo[2] *= -1;
-  //  pos[2] = 20 - radi;
-  //}
 
   ball.SetVelo(velo);
   ball.SetPos(pos);
