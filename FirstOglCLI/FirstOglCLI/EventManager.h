@@ -11,6 +11,7 @@ class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
+  EVec3f m_hit_pos;
   EventManager();
   std::vector<Ball> m_balls;
   BilliardTable *m_table;

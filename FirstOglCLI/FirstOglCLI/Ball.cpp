@@ -138,9 +138,18 @@ void Ball::SetRadi(float radi)
   m_radi = radi;
 }
 
-bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
+float Ball::GetD(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_pos, float m_radi) const
 {
   float D = powf(ray_dir.dot(ray_pos - m_pos), 2) - powf((ray_pos - m_pos).norm(), 2) + powf(m_radi, 2);
+  return D;
+}
+
+
+//ボールがクリックされたかどうかをbool値で返してくれる関数
+bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
+{
+  //float D = powf(ray_dir.dot(ray_pos - m_pos), 2) - powf((ray_pos - m_pos).norm(), 2) + powf(m_radi, 2);
+  float D = GetD(ray_pos, ray_dir, m_pos, m_radi);
 
   if (D >= 0)
   {
@@ -150,4 +159,14 @@ bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
   {
     return false;
   }
+}
+
+
+float Ball::GetHitDist(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_pos) const
+{
+  float D = GetD(ray_pos, ray_dir, m_pos, m_radi);
+  float hit_dist;
+
+  hit_dist = -((ray_dir.dot(ray_pos - m_pos)) - powf(D, 0.5f));
+  return hit_dist;
 }

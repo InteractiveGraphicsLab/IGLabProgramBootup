@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "EventManager.h"
 
-// Unityの起動
+// Unityの起動 メンバ変数はコンストラクタで初期化
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
+  m_hit_pos = EVec3f(0,-1,0);
   m_balls.push_back(Ball(1, EVec3f(-5.0, 0, 0), EVec3f(5.0, 0.0, 3.0)));
   m_balls.push_back(Ball(1, EVec3f(5, 0, 0), EVec3f(-5.0, 0, 3.0)));
   m_balls.push_back(Ball(1, EVec3f(0, 10, 0), EVec3f(0, 3, 3)));
@@ -36,11 +37,13 @@ void EventManager::DrawScene()
     m_balls[i].Draw();
 }
 
+//x,yはパネルのx,y座標
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
   std::cout << "LButton 押された\n\n";
   m_isL = true;
 
+  //右辺のEVec3f()はコンストラクタ
   EVec3f ray_pos = EVec3f(0, 0, 0);
   EVec3f ray_dir = EVec3f(0, 0, 0);
 
@@ -51,6 +54,8 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
     if (m_balls[i].IsPicked(ray_pos,ray_dir))
     {
       std::cout<<"当たった"<<std::endl;
+      m_hit_pos = ray_pos + m_balls[i].GetHitDist(ray_pos,ray_dir,m_balls[i].GetPos()) * ray_dir;
+      std::cout << m_hit_pos << std::endl;
     }
   }
 

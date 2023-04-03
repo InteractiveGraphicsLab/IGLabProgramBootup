@@ -28,7 +28,10 @@ public:
   float GetRadi() const;  
   void SetRadi(float radi);
   
+  float GetD(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_pos, float m_radi) const;
+
   bool IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const;
 
+  float GetHitDist(const EVec3f& ray_pos,const EVec3f& ray_dir,const EVec3f& m_pos) const;
 };
 
