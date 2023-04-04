@@ -9,7 +9,7 @@ class Ball
 private:
   EVec3f m_pos, m_velo;
   float  m_radi;
-
+  bool m_isPicked;
 
 public:
   Ball(float radi, const EVec3f& pos, const EVec3f& velo);
@@ -30,8 +30,10 @@ public:
   
   float GetD(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_pos, float m_radi) const;
 
-  bool IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const;
+  bool IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) ;
+  bool IsRealsed(const EVec3f& ray_pos, const EVec3f& ray_dir) ;
 
   float GetHitDist(const EVec3f& ray_pos,const EVec3f& ray_dir,const EVec3f& m_pos) const;
+  void SetIsPicked(bool isPicked);
 };
 

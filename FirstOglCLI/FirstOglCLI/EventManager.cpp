@@ -6,12 +6,19 @@ EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
   m_hit_pos = EVec3f(0,-1,0);
-  m_balls.push_back(Ball(1, EVec3f(-5.0, 0, 0), EVec3f(5.0, 0.0, 3.0)));
-  m_balls.push_back(Ball(1, EVec3f(5, 0, 0), EVec3f(-5.0, 0, 3.0)));
-  m_balls.push_back(Ball(1, EVec3f(0, 10, 0), EVec3f(0, 3, 3)));
-  m_balls.push_back(Ball(1, EVec3f(3, 10, 0), EVec3f(0, 3, 3)));
+  m_release_pos = EVec3f(0, -1, 0);
+
+  m_balls.push_back(Ball(1, EVec3f(-5.0, 0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(1, EVec3f(5, 0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(1, EVec3f(0, 10, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(1, EVec3f(3, 10, 0), EVec3f(0, 0, 0)));
 
   m_table = new BilliardTable(20, 20);
+  m_ball_index = -1;
+  m_hit_dist = -1;
+
+  m_ray_pos = EVec3f::Zero();
+  m_ray_dir = EVec3f::Zero();
 }
 
 
@@ -35,6 +42,18 @@ void EventManager::DrawScene()
 
   for (int i = 0; i < m_balls.size(); ++i)
     m_balls[i].Draw();
+
+  if (m_ball_index != -1)
+  {
+    glDisable(GL_LIGHTING);//電気を消す
+    glBegin(GL_LINES);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glVertex3fv(m_hit_pos.data());
+    
+    EVec3f drag_pos = m_ray_pos;
+    glVertex3fv(drag_pos.data());
+    glEnd();
+  }
 }
 
 //x,yはパネルのx,y座標
@@ -49,12 +68,16 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 
   ogl->GetCursorRay(x, y, ray_pos, ray_dir);
 
+  //for文を回すことによってどのボールがクリックされたのかを探している
   for (int i = 0; i < m_balls.size(); ++i)
   {
     if (m_balls[i].IsPicked(ray_pos,ray_dir))
     {
       std::cout<<"当たった"<<std::endl;
       m_hit_pos = ray_pos + m_balls[i].GetHitDist(ray_pos,ray_dir,m_balls[i].GetPos()) * ray_dir;
+      m_ball_index = i;
+      m_hit_dist = m_balls[i].GetHitDist(ray_pos, ray_dir, m_balls[i].GetPos());
+      m_balls[i].SetVelo(EVec3f(0, 0, 0));
       std::cout << m_hit_pos << std::endl;
     }
   }
@@ -77,10 +100,28 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
-  //std::cout << "\nLButton 離された\n\n";
+  std::cout << "\nLButton 離された\n\n";
 
   m_isL = false;
-  ogl->BtnUp();
+  //ogl->BtnUp();
+
+
+
+  EVec3f ray_pos = EVec3f(0, 0, 0);
+  EVec3f ray_dir = EVec3f(0, 0, 0);
+
+  ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+
+    if (m_ball_index != -1)
+    {
+      std::cout << "離した" << std::endl;
+      m_release_pos = ray_pos + m_hit_dist * ray_dir;
+      m_addforce_vec = m_hit_pos - m_release_pos;
+      std::cout << m_release_pos << std::endl;
+      m_balls[m_ball_index].SetVelo(CalcAddforceVelo());
+      m_balls[m_ball_index].SetIsPicked(false);
+      m_ball_index = -1;
+    }
 }
 
 void EventManager::MBtnUp(int x, int y, OglForCLI* ogl)
@@ -104,6 +145,7 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
   else if (m_isL && !m_isR && !m_isM)
   {  
     //std::cout << "LButton ドラッグ中\n";
+    ogl->GetCursorRay(x, y, m_ray_pos, m_ray_dir);
     return;
   }
 
@@ -164,6 +206,14 @@ static bool IsCollision(const Ball& ball_i,const Ball& ball_j)
   }
 }
 
+
+
+EVec3f EventManager::CalcAddforceVelo() const
+{
+  EVec3f addforce_velo = EVec3f(0,0,0);
+  addforce_velo = m_addforce_vec;
+  return addforce_velo;
+}
 
 // Update関数
 void EventManager::Step()

@@ -7,27 +7,34 @@ Ball::Ball(float radi, const EVec3f& pos, const EVec3f& velo)
   m_radi = radi;
   m_pos = pos;
   m_velo = velo;
+  m_isPicked = false;
 }
 
-
+//コピーコンストラクタは現時点ではPushBuck時にしか呼ばれていない
 Ball::Ball(const Ball& src)//Copy Constructer
 {
+  std::cout << "コピーコンストラクタが呼ばれた\n";
   m_pos = src.m_pos;
   m_velo = src.m_velo;
   m_radi = src.m_radi;
+  m_isPicked = src.m_isPicked;
 }
 
 void Ball::Step() 
 {
   float dt = 0.33f;
+
   // x = x + vdt
   m_pos += m_velo * dt;
 
-  // v = v + gdt
-  m_velo += EVec3f(0, -0.98f, 0) * dt;
+  if(!m_isPicked)
+  {
+    // v = v + gdt
+    m_velo += EVec3f(0, -0.98f, 0) * dt;
 
-  // v = v + adt
-  m_velo *= 0.99f;
+    // v = v + adt
+    m_velo *= 0.99f;
+  }
 }
 
 
@@ -145,14 +152,15 @@ float Ball::GetD(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_p
 }
 
 
-//ボールがクリックされたかどうかをbool値で返してくれる関数
-bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
+//ボールがクリックされたかどうかをbool値で返してくれる関数,Xベクトルとtの値が存在するかどうかを判定する関数
+bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) 
 {
   //float D = powf(ray_dir.dot(ray_pos - m_pos), 2) - powf((ray_pos - m_pos).norm(), 2) + powf(m_radi, 2);
   float D = GetD(ray_pos, ray_dir, m_pos, m_radi);
 
   if (D >= 0)
   {
+    m_isPicked = true;
     return true;
   }
   else
@@ -161,7 +169,15 @@ bool Ball::IsPicked(const EVec3f& ray_pos, const EVec3f& ray_dir) const
   }
 }
 
+////ボールが１度クリックされた後に離されたかどうかをbool値で返してくれる関数
+//bool Ball::IsRealsed(const EVec3f& ray_pos, const EVec3f& ray_dir) 
+//{
+//  float D = GetD(ray_pos, ray_dir, m_pos, m_radi);
+//
+//  
+//}
 
+//EventManagerがボールに対して聞いているから応えるための関数
 float Ball::GetHitDist(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3f& m_pos) const
 {
   float D = GetD(ray_pos, ray_dir, m_pos, m_radi);
@@ -169,4 +185,9 @@ float Ball::GetHitDist(const EVec3f& ray_pos, const EVec3f& ray_dir, const EVec3
 
   hit_dist = -((ray_dir.dot(ray_pos - m_pos)) - powf(D, 0.5f));
   return hit_dist;
+}
+
+void Ball::SetIsPicked(bool isPicked)
+{
+  m_isPicked = isPicked;
 }
