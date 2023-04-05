@@ -21,7 +21,9 @@ private:
     void InitializeBalls();
     void InitializeBalls1();
 
-    void CollideAndSolve(Ball& b1, Ball& b2);
+    bool CollideAndSolve(Ball& b1, Ball& b2);
+    bool Collide(Ball& b1, Ball& b2, float& t);
+    void Solve(Ball& b1, Ball& b2);
     void CollideAndSolve(Ball& b, Cuboid& c);
     void CollideAndSolve(Ball& b);
 

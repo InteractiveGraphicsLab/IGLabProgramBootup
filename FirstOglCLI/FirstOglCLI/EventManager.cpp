@@ -186,21 +186,37 @@ void EventManager::Step()
   // CollideAndSolve
   for (i = 0; i < m_balls.size(); ++i)
   {
+    // 球とビリヤード台
     CollideAndSolve(m_balls[i]);
+
+    // 球と球
+    int idx = -1;
+    float t = 0.33f;
     for (j = i + 1; j < m_balls.size(); ++j)
     {
-      CollideAndSolve(m_balls[i], m_balls[j]);
+      //CollideAndSolve(m_balls[i], m_balls[j]);
+      if (Collide(m_balls[i], m_balls[j], t))
+      {
+        std::cout << "check" << std::endl;
+        idx = j;
+      }
     }
+    if (idx != -1)
+    {
+      Solve(m_balls[i], m_balls[idx]);
+    }
+
+    // 球と直方体
     for (j = 0; j < m_cuboids.size(); ++j)
     {
       CollideAndSolve(m_balls[i], m_cuboids[j]);
     }
 
 
-
     //m_balls[i].HitCuboid(m_cuboids);
     //m_balls[i].HitBall(m_balls);
   }
+
 
   // Step
   for (i = 0; i < m_balls.size(); ++i)
@@ -265,7 +281,89 @@ void EventManager::CollideAndSolve(Ball& b)
   }
 }
 
-void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
+bool EventManager::Collide(Ball& b1, Ball& b2, float& t)
+{
+  float bounce = 1.0f; // 球の反発係数(未定)
+
+  EVec3f pos1 = b1.GetPos();
+  EVec3f pos2 = b2.GetPos();
+  float radi1 = b1.GetRadi();
+  float radi2 = b2.GetRadi();
+  EVec3f velo1 = b1.GetVelo();
+  EVec3f velo2 = b2.GetVelo();
+
+  EVec3f q = pos1 - pos2;
+  EVec3f u = velo1 - velo2;
+
+  float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(radi1 + radi2, 2.0f));
+
+  // 衝突判定
+  if (discri > 0.0f && u.norm() > 0.0f)
+  {
+    float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
+    std::cout << C << std::endl;
+    if (C >= 0.0f && C <= t)
+    {
+      return true;
+    }
+  }
+  return false;
+
+}
+
+void EventManager::Solve(Ball& b1, Ball& b2)
+{
+  float bounce = 1.0f; // 球の反発係数(未定)
+
+  EVec3f pos1 = b1.GetPos();
+  EVec3f pos2 = b2.GetPos();
+  float radi1 = b1.GetRadi();
+  float radi2 = b2.GetRadi();
+  EVec3f velo1 = b1.GetVelo();
+  EVec3f velo2 = b2.GetVelo();
+
+  EVec3f q = pos1 - pos2;
+  EVec3f u = velo1 - velo2;
+
+  float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(radi1 + radi2, 2.0f));
+  float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
+
+  EVec3f colli_pos1 = pos1 + C * velo1;
+  EVec3f colli_pos2 = pos2 + C * velo2;
+
+  EVec3f diff = colli_pos2 - colli_pos1;
+  EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
+
+  // ベクトルの分割
+  EVec3f v1 = dir * velo1.dot(dir);
+  EVec3f v2 = velo1 - v1;
+  EVec3f v3 = dir * velo2.dot(dir);
+  EVec3f v4 = velo2 - v3;
+
+  EVec3f temp = v1;
+  v1 = v3;
+  v3 = temp;
+
+  //pos1 += -dir * (radi1 + radi2 - diff.norm()) / 2;
+  //pos2 += dir * (radi1 + radi2 - diff.norm()) / 2;
+
+  velo1 = v1 + v2;
+  velo2 = v3 + v4;
+
+  colli_pos1 += velo1 * (0.33f - C);
+  colli_pos2 += velo2 * (0.33f - C);
+
+  b1.SetPos(colli_pos1);
+  b2.SetPos(colli_pos2);
+
+  b1.SetVelo(velo1);
+  b2.SetVelo(velo2);
+
+  b1.SetIsSkip(true);
+  b2.SetIsSkip(true);
+}
+
+bool EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
 {
   float bounce = 1.0f; // 球の反発係数(未定)
 
@@ -279,51 +377,96 @@ void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
 
 
   EVec3f q = pos1 - pos2;
-  EVec3f u = velo1 - velo2;
 
-  float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(radi1 + radi2, 2.0f));
-
-  if (discri >= 0.0f && u.norm() > 0.0f) // 衝突判定
+  if (q.norm() <= radi1 + radi2) // 衝突判定
   { // 衝突処理
-    float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
-    if (C >= 0 && C <= 1.0f)
-    {
 
-      //std::cout << C << std::endl;
+    EVec3f diff = pos2 - pos1;
+    EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
 
-      EVec3f colli_pos1 = pos1 + C * velo1;
-      EVec3f colli_pos2 = pos2 + C * velo2;
+    // ベクトルの分割
+    EVec3f v1 = dir * velo1.dot(dir);
+    EVec3f v2 = velo1 - v1;
+    EVec3f v3 = dir * velo2.dot(dir);
+    EVec3f v4 = velo2 - v3;
 
+    EVec3f temp = v1;
+    v1 = v3;
+    v3 = temp;
 
-      EVec3f diff = colli_pos2 - colli_pos1;
-      EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
+    pos1 += -dir * (radi1 + radi2 - diff.norm()) / 2;
+    pos2 += dir * (radi1 + radi2 - diff.norm()) / 2;
 
-      // ベクトルの分割
-      EVec3f v1 = dir * velo1.dot(dir);
-      EVec3f v2 = velo1 - v1;
-      EVec3f v3 = dir * velo2.dot(dir);
-      EVec3f v4 = velo2 - v3;
+    velo1 = v1 + v2;
+    velo2 = v3 + v4;
 
-      EVec3f temp = v1;
-      v1 = v3;
-      v3 = temp;
+    b1.SetPos(pos1);
+    b2.SetPos(pos2);
 
-      //pos1 += -dir * (radi1 + radi2 - diff.norm()) / 2;
-      //pos2 += dir * (radi1 + radi2 - diff.norm()) / 2;
-
-      velo1 = v1 + v2;
-      std::cout << "v1(" << velo1[0] << ", " << velo1[1] << ", " << velo1[2] << ")" << std::endl;
-      velo2 = v3 + v4;
-      std::cout << "v2(" << velo2[0] << ", " << velo2[1] << ", " << velo2[2] << ")\n" << std::endl;
-
-      b1.SetPos(colli_pos1);
-      b2.SetPos(colli_pos2);
-
-      b1.SetVelo(velo1);
-      b2.SetVelo(velo2);
-    }
+    b1.SetVelo(velo1);
+    b2.SetVelo(velo2);
   }
 }
+//
+// //void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
+//{
+//  float bounce = 1.0f; // 球の反発係数(未定)
+//
+//  EVec3f pos1 = b1.GetPos();
+//  EVec3f pos2 = b2.GetPos();
+//  float radi1 = b1.GetRadi();
+//  float radi2 = b2.GetRadi();
+//  EVec3f velo1 = b1.GetVelo();
+//  EVec3f velo2 = b2.GetVelo();
+//
+//
+//
+//  EVec3f q = pos1 - pos2;
+//  EVec3f u = velo1 - velo2;
+//
+//  float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(radi1 + radi2, 2.0f));
+//
+//  if (discri >= 0.0f && u.norm() > 0.0f) // 衝突判定
+//  { // 衝突処理
+//    float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
+//    if (C >= 0 && C <= 0.33f)
+//    {
+//
+//      //std::cout << C << std::endl;
+//
+//      EVec3f colli_pos1 = pos1 + C * velo1;
+//      EVec3f colli_pos2 = pos2 + C * velo2;
+//
+//
+//      EVec3f diff = colli_pos2 - colli_pos1;
+//      EVec3f dir = diff.normalized(); // p1p2ベクトルの正規化
+//
+//      // ベクトルの分割
+//      EVec3f v1 = dir * velo1.dot(dir);
+//      EVec3f v2 = velo1 - v1;
+//      EVec3f v3 = dir * velo2.dot(dir);
+//      EVec3f v4 = velo2 - v3;
+//
+//      EVec3f temp = v1;
+//      v1 = v3;
+//      v3 = temp;
+//
+//      //pos1 += -dir * (radi1 + radi2 - diff.norm()) / 2;
+//      //pos2 += dir * (radi1 + radi2 - diff.norm()) / 2;
+//
+//      velo1 = v1 + v2;
+//      std::cout << "v1(" << velo1[0] << ", " << velo1[1] << ", " << velo1[2] << ")" << std::endl;
+//      velo2 = v3 + v4;
+//      std::cout << "v2(" << velo2[0] << ", " << velo2[1] << ", " << velo2[2] << ")\n" << std::endl;
+//
+//      b1.SetPos(colli_pos1);
+//      b2.SetPos(colli_pos2);
+//
+//      b1.SetVelo(velo1);
+//      b2.SetVelo(velo2);
+//    }
+//  }
+//}
 
 void EventManager::CollideAndSolve(Ball& b, Cuboid& c) // ball to cuboid
 {
