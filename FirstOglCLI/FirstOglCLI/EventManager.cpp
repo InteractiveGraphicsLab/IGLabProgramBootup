@@ -183,9 +183,10 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 void EventManager::Step()
 {
   int i, j;
-  // CollideAndSolve
+  // PreCollideAndSolve
   for (i = 0; i < m_balls.size(); ++i)
   {
+
     // 球とビリヤード台
     CollideAndSolve(m_balls[i]);
 
@@ -205,16 +206,6 @@ void EventManager::Step()
     {
       Solve(m_balls[i], m_balls[idx]);
     }
-
-    // 球と直方体
-    for (j = 0; j < m_cuboids.size(); ++j)
-    {
-      CollideAndSolve(m_balls[i], m_cuboids[j]);
-    }
-
-
-    //m_balls[i].HitCuboid(m_cuboids);
-    //m_balls[i].HitBall(m_balls);
   }
 
 
@@ -228,6 +219,29 @@ void EventManager::Step()
     m_cuboids[i].Step();
   }
 
+
+  // CollideAndSolve
+  for (i = 0; i < m_balls.size(); ++i)
+  {
+    // 球とビリヤード台
+    CollideAndSolve(m_balls[i]);
+
+    // 球と球
+    for (j = i + 1; j < m_balls.size(); ++j)
+    {
+      CollideAndSolve(m_balls[i], m_balls[j]);
+    }
+
+    // 球と直方体
+    for (j = 0; j < m_cuboids.size(); ++j)
+    {
+      CollideAndSolve(m_balls[i], m_cuboids[j]);
+    }
+
+
+    //m_balls[i].HitCuboid(m_cuboids);
+    //m_balls[i].HitBall(m_balls);
+  }
 
 }
 
@@ -363,7 +377,7 @@ void EventManager::Solve(Ball& b1, Ball& b2)
   b2.SetIsSkip(true);
 }
 
-bool EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
+void EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
 {
   float bounce = 1.0f; // 球の反発係数(未定)
 
@@ -373,8 +387,6 @@ bool EventManager::CollideAndSolve(Ball& b1, Ball& b2) // ball to ball
   float radi2 = b2.GetRadi();
   EVec3f velo1 = b1.GetVelo();
   EVec3f velo2 = b2.GetVelo();
-
-
 
   EVec3f q = pos1 - pos2;
 
