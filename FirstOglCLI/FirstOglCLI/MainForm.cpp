@@ -32,9 +32,9 @@ MainForm::MainForm(void)
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
-  m_ogl->SetCam(EVec3f(0, 280, 0), EVec3f(0, 0, 0), EVec3f(0, 0, -1));
+  m_ogl->SetCam(EVec3f(0, 280, 0), EVec3f(0, 0, 0), EVec3f(0, 0, -1)); //カメラ位置変更
 
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc); //追加
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 10, MyTimerProc); //追加 33→10
 }
 
 void MainForm::RedrawPanel()
@@ -73,7 +73,7 @@ System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows
 {
   //std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
   EventManager::GetInst()->MouseMove(e->X, e->Y, m_ogl);
-  RedrawPanel(); //再描画！!
+  //RedrawPanel(); //再描画！!
 }
 
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "EventManager.h"
-
+#include "math.h"
 
 
 EventManager::EventManager()
@@ -8,9 +8,16 @@ EventManager::EventManager()
   m_isL = m_isR = m_isM = false;
 
   //2.855cmÇÕÉrÉäÉÑÅ[Éhã ÇÃîºåa
-  m_balls.push_back(Ball(1, EVec3f(2, 2.855, 0), EVec3f(1, 0, 1)));
-  //m_balls.push_back(Ball(1, EVec3f(11, 2.855, 3), EVec3f(8, 0, 10)));
-  //m_balls.push_back(Ball(1, EVec3f(8, 2.855, 7), EVec3f(0, 3, 0)));
+  m_balls.push_back(Ball(2.855f, EVec3f(2.0f, 2.855f, 0.0f), EVec3f(0.0f, 0.0f, 1.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(2.0f, 2.855f, 15.0f), EVec3f(0.0f, 0.0f, 0.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 3.0f), EVec3f(7.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(28.0f, 2.855f, 15.0f), EVec3f(6.0f, 8.0f, 2.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(21.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(1.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(15.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(30.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(-1.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
 
 }
 
@@ -49,10 +56,6 @@ void EventManager::DrawScene()
 
   for (int i = 0; i < m_balls.size(); ++i) {
       m_balls[i].Draw();
-  }
-
-  for (int i = 0; i < 3; ++i) {
-      m_balls[i].Step();
   }
 
 }
@@ -97,14 +100,19 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
   if (!m_isL && !m_isR && !m_isM) return;
   ogl->MouseMove(EVec2i(x, y));
-  std::cout << ogl->GetCamCnt() << "\n";
-  std::cout << ogl->GetCamPos() << "\n";
-  std::cout << ogl->GetCamUp() << "\n\n";
 
 }
 
 
 void EventManager::Step()
 {
+    for (int i = 0; i < m_balls.size(); ++i) {
+        m_balls[i].Step();
+    }
 
+    for (int i = 0; i < m_balls.size(); ++i) {
+        for (int j = i+1; j < m_balls.size(); ++j) {
+            m_balls[i].Collision(m_balls[j]);
+        }
+    }
 }
