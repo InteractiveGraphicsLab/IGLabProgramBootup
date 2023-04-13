@@ -65,13 +65,27 @@ public:
         
         //m_velo *= 1.0;
         //壁に反射
-        if (std::fabs(m_pos[0]) >= max_width)
+        if (m_pos[0] >= max_width)
         {
+            m_pos[0] = max_width;
             m_velo[0] *= -1.0f; //反射減衰
         }
 
-        if (std::fabs(m_pos[2]) >= max_height)
+        if (m_pos[0] <= -max_width)
         {
+            m_pos[0] = -max_width;
+            m_velo[0] *= -1.0f; //反射減衰
+        }
+
+        if (m_pos[2] >= max_height)
+        {
+            m_pos[2] = max_height;
+            m_velo[2] *= -1.0f; //反射減衰
+        }
+
+        if (m_pos[2] <= -max_height)
+        {
+            m_pos[2] = -max_height;
             m_velo[2] *= -1.0f; //反射減衰
         }
 
@@ -84,13 +98,13 @@ public:
         EVec3f m2_pos = other.GetPos();
         EVec3f m2_velo = other.GetVelo();
         
-        std::cout << m_pos[0] << "\n";
-        std::cout << m2_pos[0] << "\n";
+        //std::cout << m_pos[0] << "\n";
+        //std::cout << m2_pos[0] << "\n";
 
         //2点間の距離
         float distance = sqrt(pow(m_pos[0] - m2_pos[0], 2.0f) + pow(m_pos[1] - m2_pos[1], 2.0f) + pow(m_pos[2] - m2_pos[2], 2.0f));
 
-        std::cout << "dis:" << distance<< "\n";
+        //std::cout << "dis:" << distance<< "\n";
 
         //m1の方向ベクトル
         EVec3f m1_direction;
@@ -115,7 +129,12 @@ public:
         //衝突判定
         if (distance < 2.0f * m_radi) {
 
-            std::cout << "--------------------------" << "\n";
+            //std::cout << "--------------------------" << "\n";
+
+            float move_dis = (2.0f * m_radi - distance) / 2;
+            m_pos += move_dis * -m1_direction;
+            other.SetPos(m2_pos+(move_dis * -m2_direction));
+
 
             EVec3f V1 = v1_vertical + v2_vertical;
             EVec3f V2 = v1_vertical - v2_vertical;
@@ -127,7 +146,11 @@ public:
 
             m_velo = v1_aftervertical + v1_parallel;
             other.SetVelo(v2_aftervertical + v2_parallel);
+
+
             
+
+
             return true;
         }
 
