@@ -32,12 +32,19 @@ void Ball::Step()
   if (!m_is_skip)
   {
     const float dt = 0.33f;
-    //const float max_velo = 2 * m_radi / dt;
     const EVec3f acc = EVec3f(0, -0.2f, 0);
+    //const float max_velo = 2 * m_radi / dt;
+
+    m_velo[0] += acc[0] * dt;
+    float bottom = BilliardTable::GetInst()->GetPos()[1] - BilliardTable::GetInst()->GetHeight();
+    if (fabsf(m_pos[1] - bottom + m_radi) < 0.001f) m_velo[1] += acc[1] * dt;
+    m_velo[2] += acc[2] * dt;
 
     m_velo[1] *= 0.99f;
     if (sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]) < 0.001f) // ’âŽ~ðŒ
     {
+      m_velo[0] = 0.0f;
+      m_velo[2] = 0.0f;
     }
     else
     {
@@ -51,10 +58,6 @@ void Ball::Step()
     //  m_velo[2] *= max_velo / sqrt(m_velo[0] * m_velo[0] + m_velo[2] * m_velo[2]);
     //}
 
-    m_velo[0] += acc[0] * dt;
-    float bottom_y = BilliardTable::GetInst()->GetPos()[1] - BilliardTable::GetInst()->GetHeight();
-    if (m_pos[1] != bottom_y + m_radi) m_velo[1] += acc[1] * dt;
-    m_velo[2] += acc[2] * dt;
     m_pos += m_velo * dt;
   }
   else
@@ -63,7 +66,7 @@ void Ball::Step()
   }
 }
 
-void Ball::Draw()
+void Ball::Draw() const
 {
   glTranslated(m_pos[0], m_pos[1], m_pos[2]);
   /*glRotated(m_radi, 1, 1, 1);*/
@@ -72,7 +75,7 @@ void Ball::Draw()
   /*glRotated(m_radi, 1, 1, 1);*/
 }
 
-void Ball::DrawSphere()
+void Ball::DrawSphere() const
 {
   const int    N = 20;
   const float M_PI = 3.141592f;
@@ -92,7 +95,7 @@ void Ball::DrawSphere()
   {
     diff = EVec4f(0.0, 1.0, 0.0, 0.5f);
   }
-  D++;
+  D = D + 2;
 
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
@@ -134,23 +137,23 @@ void Ball::DrawSphere()
   glEnd();
 }
 
-EVec3f Ball::GetPos()
+EVec3f Ball::GetPos() const
 {
   return m_pos;
 }
 
 
-EVec3f Ball::GetVelo()
+EVec3f Ball::GetVelo() const
 {
   return m_velo;
 }
 
-float Ball::GetRadi()
+float Ball::GetRadi() const
 {
   return m_radi;
 }
 
-bool Ball::GetIsSkip()
+bool Ball::GetIsSkip() const
 {
   return m_is_skip;
 }

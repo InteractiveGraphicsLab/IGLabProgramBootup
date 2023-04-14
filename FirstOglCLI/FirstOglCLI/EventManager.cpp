@@ -14,12 +14,12 @@ EventManager::EventManager()
 
 void EventManager::InitializeBalls()
 {
-  const float radi = 0.5f;
+  const float radi = 1.0f;
 
   m_balls.push_back(Ball(radi, EVec3f(0, 0, 0)));
 
   const int row = 5; // 5
-  const EVec3f first_pos = EVec3f(0, 0.5, -10.0);
+  const EVec3f first_pos = EVec3f(0, radi, -10.0);
 
   for (int i = 0; i < row; ++i) // ビリヤードボール生成
   {
@@ -142,7 +142,7 @@ void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 
     EVec3f b_pos = m_balls[m_idx].GetPos();
     //EVec3f mouse_pos = CalcMousePos(b_pos, ray_pos, ray_dir);
-    EVec3f mouse_pos = CalcMousePos1(ray_pos, ray_dir);
+    EVec3f mouse_pos = CalcMousePos1(ray_pos, ray_dir, m_balls[m_idx]);
     EVec3f nor_vec = b_pos - mouse_pos;
     EVec3f b_velo = m_balls[m_idx].GetVelo();
     b_velo += nor_vec / 2;
@@ -175,7 +175,7 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 
     //EVec3f b_pos = m_balls[m_idx].GetPos();
     //m_MousePos = CalcMousePos(b_pos, ray_pos, ray_dir);
-    m_MousePos = CalcMousePos1(ray_pos, ray_dir);
+    m_MousePos = CalcMousePos1(ray_pos, ray_dir, m_balls[m_idx]);
   }
   ogl->MouseMove(EVec2i(x, y));
 }
@@ -198,7 +198,6 @@ void EventManager::Step()
       //CollideAndSolve(m_balls[i], m_balls[j]);
       if (Collide(m_balls[i], m_balls[j], t))
       {
-        std::cout << "check" << std::endl;
         idx = j;
       }
     }
@@ -253,7 +252,7 @@ void EventManager::Reset()
 
 void EventManager::Add()
 {
-  m_balls.push_back(Ball(0.5f, EVec3f(0, 10.0, 0)));
+  m_balls.push_back(Ball(0.5f, EVec3f(0, 10.0f, 0)));
 }
 
 void EventManager::CollideAndSolve(Ball& b)
@@ -546,8 +545,10 @@ EVec3f EventManager::CalcMousePos(const EVec3f& TargetPos, const EVec3f& RayPos,
   return slope * RayDir + RayPos;
 }
 
-EVec3f EventManager::CalcMousePos1(const EVec3f& RayPos, const EVec3f& RayDir)
+EVec3f EventManager::CalcMousePos1(const EVec3f& RayPos, const EVec3f& RayDir, const Ball& b)
 { // RayDirの大きさを返す(y座標 = 0.5)
-  float slope = (0.5f - RayPos[1]) / RayDir[1];
+  float bottom = BilliardTable::GetInst()->GetPos()[1] - BilliardTable::GetInst()->GetHeight();
+  float radi = b.GetRadi();
+  float slope = (bottom + radi - RayPos[1]) / RayDir[1];
   return slope * RayDir + RayPos;
 }

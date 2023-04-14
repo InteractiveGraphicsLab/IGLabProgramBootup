@@ -79,7 +79,7 @@ namespace FirstOglCLI {
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->m_panel->Location = System::Drawing::Point(12, 12);
 			this->m_panel->Name = L"m_panel";
-			this->m_panel->Size = System::Drawing::Size(880, 749);
+			this->m_panel->Size = System::Drawing::Size(880, 749); // 880, 749
 			this->m_panel->TabIndex = 0;
 			this->m_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::m_panel_Paint);
 			this->m_panel->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MainForm::m_panel_MouseDown);

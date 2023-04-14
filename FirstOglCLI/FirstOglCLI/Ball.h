@@ -13,7 +13,7 @@ private:
   float  m_radi;
   bool   m_is_skip;
 
-  void DrawSphere();
+  void DrawSphere() const;
 
 public:
   Ball(float radi, EVec3f& pos, EVec3f& velo);
@@ -22,12 +22,12 @@ public:
 
   void Step();
 
-  void Draw();
+  void Draw() const;
 
-  EVec3f GetPos();
-  EVec3f GetVelo();
-  float GetRadi();
-  bool GetIsSkip();
+  EVec3f GetPos() const;
+  EVec3f GetVelo() const;
+  float GetRadi() const;
+  bool GetIsSkip() const;
 
   void SetPos(EVec3f pos);
   void SetVelo(EVec3f velo);

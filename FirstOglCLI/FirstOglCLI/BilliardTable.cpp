@@ -18,7 +18,23 @@ void BilliardTable::Draw()
 
 void BilliardTable::DrawBilliardTable()
 {
+  glEnable(GL_DEPTH_TEST);
+  //Material
+  float   shin[1] = { 64 };
+  EVec4f  spec(1, 1, 1, 0.5f);
+  EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
+  EVec4f  ambi(0.5f, 0.5f, 0.5f, 0.5f);
+
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi.data());
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
+
   glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHT2);
+
   glBegin(GL_TRIANGLES);
 
   EVec3f twoPos[2];

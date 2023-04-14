@@ -29,7 +29,7 @@ private:
 
     int PickBall(EVec3f RayPos, EVec3f RayDir);
     EVec3f CalcMousePos(const EVec3f& TargetPos, const EVec3f& RayPos, const EVec3f& RayDir);
-    EVec3f CalcMousePos1(const EVec3f& RayPos, const EVec3f& RayDir);
+    EVec3f CalcMousePos1(const EVec3f& RayPos, const EVec3f& RayDir, const Ball& b);
 
 
 public:
