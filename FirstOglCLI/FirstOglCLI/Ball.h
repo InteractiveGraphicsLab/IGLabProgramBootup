@@ -1,16 +1,26 @@
 #pragma once
 
-#include "GL/glew.h"
+#pragma unmanaged
 #include "tmath.h"
 
-class Ball {
-    double m_position;
-    double m_velocity;
+class Ball
+{
+private:
+    EVec3f m_pos;
+    EVec3f m_velo;
 
-    Ball(const EVec3d& pos, const EVec3d& force);
+    double m_radi;
 
-    void step();
-    void draw();
+
+public:
+    Ball(double radi, EVec3f& pos, EVec3f& velo);
+
+    Ball(const Ball& src);
+
+    void Step();
+    void Draw();
 
 };
+
+#pragma managed
 

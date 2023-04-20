@@ -7,8 +7,10 @@ static double M_PI = 3.141592;
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  m_ball = Ball;
+  m_balls.push_back(Ball(1.0, EVec3f(0,0,0), EVec3f(0,0,0)));
 }
+
+
 
 
 
@@ -27,6 +29,8 @@ void EventManager::DrawScene()
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
+
+  m_balls[0].Draw();
 }
 
 

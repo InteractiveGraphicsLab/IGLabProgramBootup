@@ -6,3 +6,7 @@ C:\Users\socce\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI
 C:\Users\socce\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.SuggestedBindingRedirects.cache
 C:\Users\socce\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
 C:\Users\socce\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache
+C:\Users\Taisei Yamazaki\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.AssemblyReference.cache
+C:\Users\Taisei Yamazaki\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\Taisei Yamazaki\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
+C:\Users\Taisei Yamazaki\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache

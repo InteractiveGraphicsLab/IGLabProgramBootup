@@ -8,7 +8,7 @@ class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
-  Ball m_ball;
+  std::vector<Ball> m_balls;
   EventManager();
 
 public:
@@ -28,4 +28,5 @@ public:
 
   void Step();
 };
+
 #pragma managed
