@@ -51,7 +51,7 @@ static void DrawSphere()
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
 
-    int N = 20;
+    int N = 40;
 
     glBegin(GL_TRIANGLES);
     for (int y = 0; y < N; ++y)

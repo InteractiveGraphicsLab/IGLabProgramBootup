@@ -17,7 +17,11 @@ public:
     static EventManager p;
     return &p;
   }
+  //double vector;
+
   void DrawScene();
+  //void GreenLoad(char FileName);
+  //void GreenLoad(const char* filename, vector<glm::vec4>& vertices, vector<glm::vec3>& normals, vector<GLushort>& elements);
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);
   void RBtnDown(int x, int y, OglForCLI* ogl);

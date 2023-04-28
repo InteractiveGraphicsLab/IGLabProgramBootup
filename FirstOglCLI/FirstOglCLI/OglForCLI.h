@@ -28,7 +28,7 @@ public:
     m_up  = EVec3f(0, 1, 0 );
   }
 
-  OglCameraParam( const OglCameraParam &src) 
+  OglCameraParam( const OglCameraParam &src)
   {
     Copy(src);
   }

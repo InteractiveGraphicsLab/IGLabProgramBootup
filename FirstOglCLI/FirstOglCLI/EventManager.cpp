@@ -1,7 +1,12 @@
 #include "pch.h"
 #include "EventManager.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+using namespace std;
 
 static double M_PI = 3.141592;
+
 
 
 EventManager::EventManager()
@@ -11,19 +16,15 @@ EventManager::EventManager()
 }
 
 
-
-
-
-
-
-
 void EventManager::DrawScene()
 {
   glLineWidth(2.0f);
   glDisable(GL_LIGHTING);//“d‹C‚ğÁ‚·
 
   //OpenGL‚Å3–{‚Ì’¼ü‚ğ•`‚­
-  
+
+
+
   glBegin(GL_LINES);
   glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
@@ -32,6 +33,9 @@ void EventManager::DrawScene()
 
   m_balls[0].Draw();
 }
+
+
+
 
 
 
