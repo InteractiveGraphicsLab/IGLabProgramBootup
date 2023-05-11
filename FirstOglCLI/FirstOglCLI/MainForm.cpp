@@ -8,6 +8,8 @@
 using namespace FirstOglCLI;
 
 #pragma comment( lib, "opengl32.lib" )
+
+
 #pragma comment( lib, "glu32.lib"    )
 #pragma comment( lib, "gdi32.lib"    )
 #pragma comment( lib, "User32.lib"   )
@@ -34,7 +36,7 @@ MainForm::MainForm(void)
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
   m_ogl->SetCam(EVec3f(0, 280, 0), EVec3f(0, 0, 0), EVec3f(0, 0, -1)); //ÉJÉÅÉâà íuïœçX
 
-  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 100, MyTimerProc); //í«â¡ 33Å®10
+  SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 10, MyTimerProc); //í«â¡ 33Å®10
 }
 
 void MainForm::RedrawPanel()

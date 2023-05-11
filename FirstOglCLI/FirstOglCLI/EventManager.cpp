@@ -10,14 +10,14 @@ EventManager::EventManager()
   //2.855cm‚ÍƒrƒŠƒ„[ƒh‹Ê‚Ì”¼Œa
   m_balls.push_back(Ball(2.855f, EVec3f(2.0f, 2.855f, 0.0f), EVec3f(0.0f, 0.0f, 1.0f)));
   m_balls.push_back(Ball(2.855f, EVec3f(2.0f, 2.855f, 15.0f), EVec3f(0.0f, 0.0f, 0.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 3.0f), EVec3f(7.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(28.0f, 2.855f, 15.0f), EVec3f(6.0f, 8.0f, 2.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(21.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(1.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(15.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(30.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(-1.0f, 2.855f, 30.0f), EVec3f(3.0f, 9.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 3.0f), EVec3f(6.0f, 0.0f, 4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(50.0f, 2.855f, 15.0f), EVec3f(-3.0f, 3.0f, 1.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 30.0f), EVec3f(3.0f, 2.0f, -4.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(21.0f, 2.855f, 30.0f), EVec3f(4.0f, 3.0f, -5.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(1.0f, 2.855f, 30.0f), EVec3f(-5.0f, 1.0f, 5.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(15.0f, 2.855f, 30.0f), EVec3f(-3.0f, 9.0f, 2.0f)));
+  m_balls.push_back(Ball(2.855f, EVec3f(30.0f, 2.855f, 30.0f), EVec3f(1.0f, 4.0f, 1.0f)));
+  //m_balls.push_back(Ball(2.855f, EVec3f(-1.0f, 2.855f, 30.0f), EVec3f(-4.0f, 2.0f, -1.0f)));
 
 }
 
@@ -63,7 +63,24 @@ void EventManager::DrawScene()
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
   m_isL = true;
-  ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
+  //ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
+  EVec3f cam_pos;
+  EVec3f cam_dir;
+  EVec3f ball_pos;
+  EVec3f velo;
+  velo[0] = 0;
+  velo[1] = 0;
+  velo[2] = 0;
+  ogl->GetCursorRay(x, y, cam_pos, cam_dir);
+  for (int i = 0; i < m_balls.size(); ++i) {
+      ball_pos = m_balls[i].GetPos();
+      float discrimination = pow(cam_dir.dot(cam_pos - ball_pos), 2.0f) - cam_dir.squaredNorm() * ((cam_pos - ball_pos).squaredNorm() - pow(m_balls[i].GetRadius(), 2.0f));
+      if (discrimination >= 0) {
+          m_balls[i].SetVelo(velo);
+      }
+
+  }
+  //std::cout << cam_dir[0] << " " << cam_dir[1] << " " << cam_dir[2] << std::endl;
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -94,18 +111,22 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 {
   m_isR = false;
   ogl->BtnUp();
+
+
 }
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
+   // std::cout << "move" << std::endl;
   if (!m_isL && !m_isR && !m_isM) return;
   ogl->MouseMove(EVec2i(x, y));
-
 }
 
 
 void EventManager::Step()
 {
+    //std::cout << "step" << std::endl;
+
     for (int i = 0; i < m_balls.size(); ++i) {
         m_balls[i].Step();
     }

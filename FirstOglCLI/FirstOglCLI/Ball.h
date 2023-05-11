@@ -22,6 +22,11 @@ public:
         m_radi = src.m_radi;
     }
 
+    float GetRadius()
+    {
+        return m_radi;
+    }
+
     EVec3f GetPos()
     {
         return m_pos;
@@ -89,7 +94,7 @@ public:
             m_velo[2] *= -1.0f; //”½ËŒ¸Š
         }
 
-        m_velo[1] *= 0.99f; //‘¬“xŒ¸Š(“®‚«‚ğŒ©‚½‚¢‚½‚ßx,z‚Í‚»‚Ì‚Ü‚Ü)
+        m_velo *= 0.995f; //‘¬“xŒ¸Š(“®‚«‚ğŒ©‚½‚¢‚½‚ßx,z‚Í‚»‚Ì‚Ü‚Ü)
     }
 
     bool Collision(Ball& other)

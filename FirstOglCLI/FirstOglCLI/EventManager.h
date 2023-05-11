@@ -8,6 +8,9 @@
 class EventManager
 {
 private:
+    static int m_num;
+
+
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
   EventManager();
 
