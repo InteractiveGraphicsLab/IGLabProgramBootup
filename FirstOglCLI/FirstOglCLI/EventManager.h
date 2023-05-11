@@ -3,6 +3,7 @@
 #pragma unmanaged
 #include "OglForCLI.h"
 #include "Ball.h"
+#include "LoadObject.h"
 
 
 class EventManager
@@ -15,6 +16,9 @@ private:
   EventManager();
 
   std::vector<Ball> m_balls;
+  LoadObject Lobj;
+  Object obj;
+
 
 public:
   //シングルトンクラス（see デザインパターン, シングルトン）

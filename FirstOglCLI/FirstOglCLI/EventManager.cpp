@@ -2,7 +2,6 @@
 #include "EventManager.h"
 #include "math.h"
 
-
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
@@ -13,17 +12,20 @@ EventManager::EventManager()
   m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 3.0f), EVec3f(6.0f, 0.0f, 4.0f)));
   m_balls.push_back(Ball(2.855f, EVec3f(50.0f, 2.855f, 15.0f), EVec3f(-3.0f, 3.0f, 1.0f)));
   m_balls.push_back(Ball(2.855f, EVec3f(11.0f, 2.855f, 30.0f), EVec3f(3.0f, 2.0f, -4.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(21.0f, 2.855f, 30.0f), EVec3f(4.0f, 3.0f, -5.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(1.0f, 2.855f, 30.0f), EVec3f(-5.0f, 1.0f, 5.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(15.0f, 2.855f, 30.0f), EVec3f(-3.0f, 9.0f, 2.0f)));
-  m_balls.push_back(Ball(2.855f, EVec3f(30.0f, 2.855f, 30.0f), EVec3f(1.0f, 4.0f, 1.0f)));
+  //m_balls.push_back(Ball(2.855f, EVec3f(21.0f, 2.855f, 30.0f), EVec3f(4.0f, 3.0f, -5.0f)));
+  //m_balls.push_back(Ball(2.855f, EVec3f(1.0f, 2.855f, 30.0f), EVec3f(-5.0f, 1.0f, 5.0f)));
+  //m_balls.push_back(Ball(2.855f, EVec3f(15.0f, 2.855f, 30.0f), EVec3f(-3.0f, 9.0f, 2.0f)));
+  //m_balls.push_back(Ball(2.855f, EVec3f(30.0f, 2.855f, 30.0f), EVec3f(1.0f, 4.0f, 1.0f)));
   //m_balls.push_back(Ball(2.855f, EVec3f(-1.0f, 2.855f, 30.0f), EVec3f(-4.0f, 2.0f, -1.0f)));
 
+  if (Lobj.loadObj("yasuda_pointcloud.obj") == true) obj = Lobj.GetObject();
 }
 
 void EventManager::DrawScene()
 {
-  glLineWidth(2.0f);
+  std::cout << "DrawScene" << std::endl;
+  
+    glLineWidth(2.0f);
   glDisable(GL_LIGHTING);//ìdãCÇè¡Ç∑
 
   //OpenGLÇ≈3ñ{ÇÃíºê¸Çï`Ç≠
@@ -35,6 +37,8 @@ void EventManager::DrawScene()
   */
 
   //ÉrÉäÉÑÅ[Éhë‰(254cmÅ~127cm)Çï`Ç≠
+  
+  /*
   glBegin(GL_TRIANGLES);
   glColor3d(0.0f, 0.3f, 0.0f);
   
@@ -54,16 +58,40 @@ void EventManager::DrawScene()
 
   glEnd();
 
+  */
+
+  int pointSize = 1;
+
+  for (int i = 0; i < obj.vertices.size(); ++i) {
+      glPointSize(pointSize);
+      glBegin(GL_POINTS);
+      glVertex3f(obj.vertices[i].x, obj.vertices[i].y, obj.vertices[i].z);
+      glEnd();
+
+      //glBegin(GL_LINES);
+      //glVertex3f(obj.nomals[i].x, obj.nomals[i].y, obj.nomals[i].z);
+      //glEnd();
+
+
+  }
+
+  glFlush();
+  
+
+  //É{Å[ÉãÇï`Ç≠
+  /*
   for (int i = 0; i < m_balls.size(); ++i) {
       m_balls[i].Draw();
   }
+  */
 
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
   m_isL = true;
-  //ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLÇÃéãì_ÇâÒì]Ç≥ÇπÇÈèÄîı
+  ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLÇÃéãì_ÇâÒì]Ç≥ÇπÇÈèÄîı
+  /*
   EVec3f cam_pos;
   EVec3f cam_dir;
   EVec3f ball_pos;
@@ -80,6 +108,7 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
       }
 
   }
+  */
   //std::cout << cam_dir[0] << " " << cam_dir[1] << " " << cam_dir[2] << std::endl;
 }
 

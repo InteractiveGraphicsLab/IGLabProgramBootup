@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="LoadObject.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -145,6 +146,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="FirstOglCLI.cpp" />
+    <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
