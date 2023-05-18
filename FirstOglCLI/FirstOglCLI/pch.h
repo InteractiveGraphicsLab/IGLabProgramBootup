@@ -8,5 +8,8 @@
 #define PCH_H
 
 // プリコンパイルするヘッダーをここに追加します
+#include <vector>
+#include "OglForCLI.h"
+#include "tmath.h"
 
 #endif //PCH_H

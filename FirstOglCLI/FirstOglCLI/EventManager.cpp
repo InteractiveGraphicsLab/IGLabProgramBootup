@@ -12,8 +12,10 @@ static double M_PI = 3.141592;
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  m_balls.push_back(Ball(1.0, EVec3f(0,0,0), EVec3f(0,0,0)));
+  m_balls.push_back(Ball(1.0f, EVec3f(0,0,10.f), EVec3f(0,0,-1.f)));
 }
+
+
 
 
 void EventManager::DrawScene()
@@ -22,16 +24,28 @@ void EventManager::DrawScene()
   glDisable(GL_LIGHTING);//電気を消す
 
   //OpenGLで3本の直線を描く
-
-
-
   glBegin(GL_LINES);
   glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
 
+
+  //ビリヤード台
+  glColor3d(0.4, 0.7, 0.15); 
+  glBegin(GL_TRIANGLES);
+  for (int j = -20; j < 20; ++j) {
+      for (int i = -25; i < 30; ++i) {
+          glVertex3d(j, i, 0); glVertex3d(j + 1, i, 0); glVertex3d(j + 1, i + 1, 0);
+          glVertex3d(j, i, 0); glVertex3d(j, i + 1, 0); glVertex3d(j + 1, i + 1, 0);
+      }
+  }
+
+  //glVertex3d(10, 0, 0); glVertex3d(-3, -4, 0); glVertex3d(-3, 4, 0);
+  glEnd();
+ 
   m_balls[0].Draw();
+ 
 }
 
 
@@ -84,5 +98,6 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 
 void EventManager::Step()
 {
-
+    m_balls[0].Step();
+    m_balls[0].Bound();
 }

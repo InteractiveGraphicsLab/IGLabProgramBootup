@@ -18,8 +18,11 @@ Ball::Ball(const Ball& src)
     m_radi = src.m_radi;
 }
 
-void Ball::Step() {
-
+void Ball::Step()
+{
+    //ÉXÉPÅ[ÉãÇÕ1/10
+    m_pos += m_velo;
+    m_velo[2] -= 0.98f * 0.033f;
 }
 
 
@@ -51,6 +54,10 @@ static void DrawSphere()
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
 
+
+    
+
+
     int N = 40;
 
     glBegin(GL_TRIANGLES);
@@ -77,7 +84,22 @@ static void DrawSphere()
     glEnd();
 }
 
-void Ball::Draw() {
+void Ball::Draw() const 
+{
+    glTranslated(m_pos[0], m_pos[1], m_pos[2]);
     DrawSphere();
+    glTranslated(-m_pos[0], -m_pos[1], -m_pos[2]);
 }
 
+void Ball::Bound()
+{
+    if (m_pos[2] < m_radi) {
+        m_pos[2] = m_radi;
+        m_velo[2] = -m_velo[2] * 0.5f;
+    }
+
+    if (m_pos[2] <= m_radi && m_velo[2] <= 0.07) {
+        m_velo[2] = 0;
+    }
+      
+}

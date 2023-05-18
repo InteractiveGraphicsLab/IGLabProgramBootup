@@ -18,8 +18,8 @@ public:
     Ball(const Ball& src);
 
     void Step();
-    void Draw();
-
+    void Draw() const;
+    void Bound();
 };
 
 #pragma managed
