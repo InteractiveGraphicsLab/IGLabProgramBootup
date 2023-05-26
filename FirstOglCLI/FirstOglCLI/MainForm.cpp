@@ -32,7 +32,7 @@ MainForm::MainForm(void)
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
-  m_ogl->SetCam(EVec3f(38.f, -45.f, 19.f), EVec3f(-6.f, 8.f, -6.f), EVec3f(0.4f, -0.4f, 0.7f));
+  m_ogl->SetCam(EVec3f(3.5f, -42.5f, 9.0f), EVec3f(-3.0f, 2.5f, -0.1f), EVec3f(0.1f, -0.6f, 0.6f));
 
   SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc); //’Ç‰Á
 }

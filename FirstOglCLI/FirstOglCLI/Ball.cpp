@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Ball.h"
 #include "OglForCLI.h"
+#include "Green.h"
+#include "YPolygon.h"
 
 #define M_PI 3.141592
 
-Ball::Ball(double radi, EVec3f& pos, EVec3f& velo)
+Ball::Ball(float radi, EVec3f& pos, EVec3f& velo)
 {
     m_pos = pos;
     m_velo = velo;
@@ -20,9 +22,8 @@ Ball::Ball(const Ball& src)
 
 void Ball::Step()
 {
-    //スケールは1/10
-    m_pos += m_velo;
-    m_velo[2] -= 0.98f * 0.033f;
+    //重力
+    m_velo[2] -= 0.98f * 0.033f;       
 }
 
 
@@ -53,9 +54,6 @@ static void DrawSphere()
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
-
-
-    
 
 
     int N = 40;
@@ -91,15 +89,3 @@ void Ball::Draw() const
     glTranslated(-m_pos[0], -m_pos[1], -m_pos[2]);
 }
 
-void Ball::Bound()
-{
-    if (m_pos[2] < m_radi) {
-        m_pos[2] = m_radi;
-        m_velo[2] = -m_velo[2] * 0.5f;
-    }
-
-    if (m_pos[2] <= m_radi && m_velo[2] <= 0.07) {
-        m_velo[2] = 0;
-    }
-      
-}
