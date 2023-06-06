@@ -28,7 +28,7 @@ public:
     void SetRadi(float radi) { m_radi = radi; }
 
 
-    void Step();
+    //void Step();
     void Draw() const;
 };
 

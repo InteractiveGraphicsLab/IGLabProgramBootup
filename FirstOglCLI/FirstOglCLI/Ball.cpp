@@ -6,6 +6,7 @@
 
 #define M_PI 3.141592
 
+
 Ball::Ball(float radi, EVec3f& pos, EVec3f& velo)
 {
     m_pos = pos;
@@ -20,11 +21,11 @@ Ball::Ball(const Ball& src)
     m_radi = src.m_radi;
 }
 
-void Ball::Step()
-{
-    //èdóÕ
-    m_velo[2] -= 0.98f * 0.033f;       
-}
+//void Ball::Step()
+//{
+//    //èdóÕ
+//    m_velo[2] -= 0.98f * 0.033f;       
+//}
 
 
 static EVec3d sCalcShperePos(double t, double p)
@@ -41,9 +42,9 @@ static void DrawSphere()
 {
     glEnable(GL_DEPTH_TEST);
     //Material 
-    float   shin[1] = { 64 };
+    float   shin[1] = { 32 };
     EVec4f  spec(1, 1, 1, 0.5);
-    EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
+    EVec4f  diff(1.0f, 1.0f, 1.0f, 1.0f);
     EVec4f  ambi(0.5f, 0.5f, 0.5f, 0.5f);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
@@ -56,7 +57,7 @@ static void DrawSphere()
     glEnable(GL_LIGHT2);
 
 
-    int N = 40;
+    int N = 20;
 
     glBegin(GL_TRIANGLES);
     for (int y = 0; y < N; ++y)

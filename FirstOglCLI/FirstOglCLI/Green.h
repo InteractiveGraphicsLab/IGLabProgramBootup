@@ -16,7 +16,7 @@ public:
 	void DrawGreen();
 	std::vector<YPolygon> GetPolys() const { return m_polys; }
 	
-	//Object LoadObj(const char* path);
+	bool LoadObj(const std::string& path);
 
 };
 

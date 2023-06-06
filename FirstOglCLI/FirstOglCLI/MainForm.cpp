@@ -32,7 +32,7 @@ MainForm::MainForm(void)
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
   m_ogl->SetBgColor(0.3f, 0.3f, 0.3f, 0.5f);
-  m_ogl->SetCam(EVec3f(3.5f, -42.5f, 9.0f), EVec3f(-3.0f, 2.5f, -0.1f), EVec3f(0.1f, -0.6f, 0.6f));
+  m_ogl->SetCam(EVec3f(-58.5f, 144.4f, 45.3f), EVec3f(23.1f, -25.1f, -26.0f), EVec3f(0.3f, -0.7f, 0.18f));
 
   SetTimer((HWND)m_panel->Handle.ToPointer(), 1, 33, MyTimerProc); //’Ç‰Á
 }
@@ -42,7 +42,7 @@ void MainForm::RedrawPanel()
   if (m_ogl == 0) return;
   m_ogl->OnDrawBegin(m_panel->Width, m_panel->Height, 45.0, 0.01f, 300.0f);
   EventManager::GetInst()->DrawScene();
-  std::cout << m_ogl->GetCamPos() << "\n\n" << m_ogl->GetCamCnt() << "\n\n" << m_ogl->GetCamUp() << "\n\n\n\n";
+  //std::cout << m_ogl->GetCamPos() << "\n\n" << m_ogl->GetCamCnt() << "\n\n" << m_ogl->GetCamUp() << "\n\n\n\n";
   m_ogl->OnDrawEnd();
 }
 
