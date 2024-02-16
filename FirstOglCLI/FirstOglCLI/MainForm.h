@@ -50,6 +50,7 @@ namespace FirstOglCLI {
 	private: System::Windows::Forms::Panel^ m_panel;
 	private: System::Windows::Forms::Button^ m_button1;
 	private: System::Windows::Forms::Button^ m_button2;
+	private: System::Windows::Forms::Button^ m_button3;
 
 
 	protected:
@@ -70,6 +71,7 @@ namespace FirstOglCLI {
 			this->m_panel = (gcnew System::Windows::Forms::Panel());
 			this->m_button1 = (gcnew System::Windows::Forms::Button());
 			this->m_button2 = (gcnew System::Windows::Forms::Button());
+			this->m_button3 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// m_panel
@@ -93,7 +95,7 @@ namespace FirstOglCLI {
 			this->m_button1->Name = L"m_button1";
 			this->m_button1->Size = System::Drawing::Size(103, 47);
 			this->m_button1->TabIndex = 1;
-			this->m_button1->Text = L"button1";
+			this->m_button1->Text = L"—Í‰Á‚¦‚é1";
 			this->m_button1->UseVisualStyleBackColor = true;
 			this->m_button1->Click += gcnew System::EventHandler(this, &MainForm::m_button1_Click);
 			// 
@@ -103,26 +105,35 @@ namespace FirstOglCLI {
 			this->m_button2->Name = L"m_button2";
 			this->m_button2->Size = System::Drawing::Size(103, 47);
 			this->m_button2->TabIndex = 2;
-			this->m_button2->Text = L"button2";
+			this->m_button2->Text = L"—Í‰Á‚¦‚é2";
 			this->m_button2->UseVisualStyleBackColor = true;
 			this->m_button2->Click += gcnew System::EventHandler(this, &MainForm::m_button2_Click);
+			// m_button3
+			this->m_button3->Location = System::Drawing::Point(230, 767);
+			this->m_button3->Name = L"m_button3";
+			this->m_button3->Size = System::Drawing::Size(103, 47);
+			this->m_button3->TabIndex = 3;
+			this->m_button3->Text = L"ƒ{[ƒ‹¶¬";
+			this->m_button3->UseVisualStyleBackColor = true;
+			this->m_button3->Click += gcnew System::EventHandler(this, &MainForm::m_button3_Click);
 			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(904, 826);
+			this->Controls->Add(this->m_button3);
 			this->Controls->Add(this->m_button2);
 			this->Controls->Add(this->m_button1);
 			this->Controls->Add(this->m_panel);
 			this->Name = L"MainForm";
 			this->Text = L"MainForm";
 			this->ResumeLayout(false);
-
 		}
 #pragma endregion
 	private: System::Void m_button1_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void m_button2_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void m_button3_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void m_panel_Resize (System::Object^ sender, System::EventArgs^ e);
 	private: System::Void m_panel_Paint  (System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e);
 	private: System::Void m_panel_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e);

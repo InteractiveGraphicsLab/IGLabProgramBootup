@@ -28,6 +28,7 @@ static void CALLBACK MyTimerProc(
 
 MainForm::MainForm(void)
 {
+
   m_ogl = 0;
   InitializeComponent();
   m_ogl = new OglForCLI(GetDC((HWND)m_panel->Handle.ToPointer()));
@@ -77,12 +78,17 @@ System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows
 
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)
 {
-  std::cout << "ボタン1が押された\n";
+	EventManager::GetInst()->OnButton1Click();
 }
 
 System::Void MainForm::m_button2_Click(System::Object^ sender, System::EventArgs^ e)
 {
-  std::cout << "ボタン2が押された\n";
+	EventManager::GetInst()->OnButton2Click();
+}
+
+System::Void MainForm::m_button3_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	EventManager::GetInst()->OnButton3Click();
 }
 
 

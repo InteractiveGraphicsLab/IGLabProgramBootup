@@ -136,8 +136,12 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PipeLine.h" />
+    <ClInclude Include="PrimitiveObjects.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="Rigidbody.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
