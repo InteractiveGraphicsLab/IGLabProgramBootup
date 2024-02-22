@@ -7,9 +7,9 @@ EventManager::EventManager()
 {
     isL_ = isR_ = isM_ = false;
 
-    balls_.push_back(Ball(1, EVec3f(1, 0, 0), EVec3f(0, 1, 0)));
-    balls_.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
-    balls_.push_back(Ball(1, EVec3f(1, 10, 0), EVec3f(0, 3, 3)));
+    balls_.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 1, 0)));
+   /* balls_.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
+    balls_.push_back(Ball(1, EVec3f(1, 10, 0), EVec3f(0, 3, 3)));*/
 }
 
 
