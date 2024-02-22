@@ -8,8 +8,12 @@ EventManager::EventManager()
 
 void EventManager::DrawScene()
 {
-  glLineWidth(2.0f);
-  glDisable(GL_LIGHTING);//電気を消す
+    const int N = 20;
+    const float PI = 3.1415f;
+    const int radi = 2;
+
+    glLineWidth(2.0f);
+    glDisable(GL_LIGHTING);//電気を消す
 
   //OpenGLで3本の直線を描く
   glBegin(GL_LINES);
@@ -17,6 +21,35 @@ void EventManager::DrawScene()
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
+
+  glBegin(GL_TRIANGLES);
+  for (int y = 0; y < N; y++)
+  {
+      for (int x = 0; x < N; x++)
+      {
+          double t1 = (x) / (double)N * 2.0 * PI;
+          double t2 = (x + 1.0) / (double)N * 2.0 * PI;
+          double p1 = (y) / (double)N * 1.0 * PI - 0.5 * PI;
+          double p2 = (y + 1.0) / (double)N * 1.0 * PI - 0.5 * PI;
+
+          glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
+          glVertex3d(cos(t1) * cos(p1) * radi, sin(p1) * radi, sin(t1) * cos(p1) * radi);
+          glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
+          glVertex3d(cos(t2) * cos(p2) * radi, sin(p2) * radi, sin(t2) * cos(p2) * radi);
+          glNormal3d(cos(t2) * cos(p1), sin(p1), sin(t2) * cos(p1));
+          glVertex3d(cos(t2) * cos(p1) * radi, sin(p1) * radi, sin(t2) * cos(p1) * radi);
+
+          glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
+          glVertex3d(cos(t1) * cos(p1) * radi, sin(p1) * radi, sin(t1) * cos(p1) * radi);
+          glNormal3d(cos(t1) * cos(p2), sin(p2), sin(t1) * cos(p2));
+          glVertex3d(cos(t1) * cos(p2) * radi, sin(p2) * radi, sin(t1) * cos(p2) * radi);
+          glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
+          glVertex3d(cos(t2) * cos(p2) * radi, sin(p2) * radi, sin(t2) * cos(p2) * radi);
+
+      }
+  }
+  glEnd();
+
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
