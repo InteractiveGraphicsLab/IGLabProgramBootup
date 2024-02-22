@@ -16,6 +16,7 @@ public:
     return &p;
   }
   void DrawScene();
+  void DrawSphere();
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);
   void RBtnDown(int x, int y, OglForCLI* ogl);
