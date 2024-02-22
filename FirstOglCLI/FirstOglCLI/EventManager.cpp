@@ -7,24 +7,20 @@ EventManager::EventManager()
 {
     isL_ = isR_ = isM_ = false;
 
-    balls_.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 1, 0)));
-   /* balls_.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
+   /* balls_.push_back(Ball(1, EVec3f(0, 0, 0), EVec3f(0, 1, 0)));
+    balls_.push_back(Ball(1, EVec3f(0, 2, 0), EVec3f(0, 2, 2)));
     balls_.push_back(Ball(1, EVec3f(1, 10, 0), EVec3f(0, 3, 3)));*/
 }
 
 
-void Ball::Step()
+void Ball::Step(float t)
 {
-    float dt = 1.0;
-    pos_ += velo_ * dt;
-    //velo_ = ;
-}
+    EVec3f g = EVec3f();
 
-void Ball::Draw()
-{
-    glTranslated(pos_[0], pos_[1], pos_[2]);
-    DrawSphere();
-    glTranslated(-pos_[0], -pos_[1], -pos_[2]);
+    pos_ += t * vel_;
+    vel_ += g * t;
+
+
 }
 
 void Ball::DrawSphere()
@@ -32,14 +28,14 @@ void Ball::DrawSphere()
     //OpenGL‚Å‹…‚ð•`‚­
     const int N = 50.0;
 
-    float   shin[1] = { 64 };
+   /* float   shin[1] = { 64 };
     EVec4f  spec(1, 1, 1, 0.5);
     EVec4f  diff(0.5f, 0.5f, 0.5f, 0.5f);
     EVec4f  ambi(0.5f, 0.5f, 0.5f, 0.5f);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec.data());
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff.data());
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambi.data());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shin);*/
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -99,12 +95,8 @@ void EventManager::DrawScene()
     glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
     glEnd();
 
-    for (int i = 0; i < balls_.size(); ++i)
-    {
-        //balls_[i].Step();
-        balls_[i].Draw();
-    }
-    
+    Ball ball(EVec3f(0,0,0));
+    ball.DrawSphere();
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)

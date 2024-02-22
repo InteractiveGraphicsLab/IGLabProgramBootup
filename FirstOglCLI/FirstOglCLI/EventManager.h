@@ -5,24 +5,26 @@
 
 class Ball
 {
-private:
-    EVec3f pos_, velo_;
-    float rad_;
+private:    
+    EVec3f pos_;
+    EVec3f rot_;
+    EVec3f vel_;
+    EVec3f rad_vel_;
 
 public:
-    Ball(const double rad, const EVec3f& pos, const EVec3f& velo)
+    Ball(const EVec3f &p)
     {
-        rad_ = rad;
-        pos_ = pos;
-        velo_ = velo;
+        pos_ = p;
+        rot_ << 0, 0, 0;;
+        vel_ << 0, 0, 0;;
+        rad_vel_ << 0, 0, 0;; 
     };
 
-    void Step();
-    void Draw();
+    void Step(float t);
     void DrawSphere();
-    //EVec3f GetPos();
-    //EVec3f GetVelo();
-    //EVec3f SetPos();
+    /*EVec3f GetPos();
+    EVec3f GetVelo();
+    EVec3f SetPos();*/
 };
 
 class EventManager
