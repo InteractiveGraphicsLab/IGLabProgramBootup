@@ -17,7 +17,9 @@ void EventManager::DrawScene()
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
+
 }
+
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
