@@ -5,33 +5,6 @@
 #include "Transform.h"
 #include "Rigidbody.h"
 
-/*
-enum color2
-{
-	green,
-	brown,
-	white,
-};
-
-void SetColr(color2 c)
-{
-	switch (c)
-	{
-	case green:
-		glColor3f(0.180, 0.545, 0.341);
-		break;
-	case brown:
-		glColor3f(0.545, 0.271, 0.075);
-		break;
-	case white:
-		glColor3f(1.000, 0.980, 0.980);
-		break;
-	default:
-		break;
-	}
-}
-*/
-
 
 /// <summary>
 /// プリミティブオブジェクトの基底クラス
@@ -139,18 +112,7 @@ public:
 		glPushMatrix(); // 現在の変換行列を保存
 		{
 			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
-			/*//回転
-			if (transform.rotation.norm() > 0.001) {
-				EMat3f R;
-				R = Eigen::AngleAxisf(transform.rotation.norm(),transform.rotation.normalized());
-				float A[16];
-				A[0] = R(0, 0); A[4] = R(0, 1); A[8] = R(0, 2); A[12] = 0;
-				A[1] = R(1, 0); A[5] = R(1, 1); A[9] = R(1, 2); A[13] = 0;
-				A[2] = R(2, 0); A[6] = R(2, 1); A[10] = R(2, 2); A[14] = 0;
-				A[3] = 0; A[7] = 0; A[11] = 0; A[15] = 1;
-				glMultMatrixf(A);
-			}
-			*/
+			//ここに回転
 		}
 		glBegin(GL_TRIANGLES);
 		for (int t = 0; t < N; t++)

@@ -2,7 +2,7 @@
 #include "EventManager.h"
 #include <iostream>
 #include <random>
-#define R 0.57/2
+#define R 0.57/2//‚â‚è•û‚ð‚È‚ñ‚Æ‚©‚·‚é
 
 std::random_device rd;
 std::mt19937 gen(rd());
