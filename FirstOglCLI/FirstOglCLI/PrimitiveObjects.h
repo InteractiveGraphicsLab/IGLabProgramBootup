@@ -76,6 +76,7 @@ public:
 		rigidbody.type = type;
 	}
 	virtual void Draw() = 0;
+	virtual bool IsHit(EVec3f& rayPos, EVec3f& rayDir) = 0;
 	virtual ~PrimitiveObject() {
 	}
 };
@@ -102,6 +103,35 @@ public:
 		shapeType = 0;
 		//SetColor(white);
 	};
+
+	bool IsHit(EVec3f& rayPos, EVec3f& rayDir)
+	{
+		float D = GetD(rayPos,rayDir);
+		if (D >= 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	float GetD(EVec3f& rayPos, EVec3f& rayDir)
+	{
+		//判別式
+		//球とrayのt方程式について、実数解が存在するかどうか
+		//rayDirは大きさ1
+		float D = powf(rayDir.dot(rayPos - transform.position), 2) - powf((rayPos - transform.position).norm(), 2) + powf(R, 2);
+		return D;
+	}
+
+	float GetHitDist(EVec3f& rayPos, EVec3f& rayDir)
+	{
+		float t = -(rayDir.dot(rayPos - transform.position)) + powf(GetD(rayPos, rayDir),0.5f);
+		return t;
+	}
+
 	void Draw() override
 	{
 		//色
@@ -166,6 +196,10 @@ public:
 		shapeType = 1;
 		//SetColor(brown);
 	}
+	bool IsHit(EVec3f& rayPos,EVec3f& rayDir) override
+	{
+		return false;
+	}
 	void Draw() override
 	{
 		glColor3f(0.180, 0.545, 0.341);
@@ -177,7 +211,7 @@ public:
 		//下面
 		glBegin(GL_QUADS); //四角形を作成
 		glNormal3f(0.0, -1.0, 0.0); //法線ベクトルを設定
-		glVertex3f(-width / 2,- height/2, -depth / 2);//外側の面が表になるように反時計回りに４点を指定
+		glVertex3f(-width / 2,- height/2, -depth / 2);
 		glVertex3f(width / 2,- height/2, -depth / 2);
 		glVertex3f(width / 2, -height/2, depth / 2);
 		glVertex3f(-width / 2, -height/2, depth / 2);

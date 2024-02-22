@@ -69,7 +69,6 @@ public:
 				auto v2Next = v2 + m1 * (1 + e) * (v1 - v2) / msum;
 				object1->transform.linearVelocity = v1Next;
 				object2->transform.linearVelocity = v2Next;
-				printf("Detect!");
 			}
 		}
 		//‹…‚Æ’¼•û‘Ì‚Ì“–‚½‚è”»’è
@@ -109,8 +108,6 @@ public:
 				auto v = ball->transform.linearVelocity;
 				ball->transform.linearVelocity *= -0.9;//ˆÚ“®•ûŒü‚ð”½“]‚³‚¹‚é‚¾‚¯
 			}
-			//Œ¸‘¬ˆ—‚±‚±‚Å‚â‚é•K—v‚È‚µ
-			//ball->transform.linearVelocity *= 0.99999;
 		}
 	}
 };

@@ -10,10 +10,14 @@ class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
-  std::vector<Ball> balls;//ボール群
-  std::vector<std::unique_ptr<PrimitiveObject>> objects;
+  std::vector<std::unique_ptr<PrimitiveObject>> objects;//オブジェクト群
+  //ボールを引っ張る時のマウスの位置と方向
+  EVec3f rayPos;//rayの発生点
+  EVec3f rayDir;//rayの方向
+  EVec3f hitPos;//球との衝突位置
   PipeLine pipeLine;//パイプライン
-  float prevTime;
+  int graspedBallIdx;//つかんでるボールのindex
+  float hitDist;
   EventManager();
 
 
@@ -24,6 +28,7 @@ public:
     static EventManager p;
     return &p;
   }
+  void Restart();
   void DrawScene();
   void LBtnDown(int x, int y, OglForCLI* ogl);
   void MBtnDown(int x, int y, OglForCLI* ogl);
