@@ -5,6 +5,7 @@ struct Rigidbody
 {
 	float mass;//¿—Ê
 	float e;//”½”­—¦
-	int type;
+	EMat3f moment;//Šµ«ƒeƒ“ƒ\ƒ‹
+	int type;//„‘Ì‚Ìtype
 };
 #endif //Rigidbody

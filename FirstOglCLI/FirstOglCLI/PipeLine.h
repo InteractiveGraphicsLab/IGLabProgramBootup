@@ -9,14 +9,20 @@ public:
 	void Step()
 	{
 	}
-	void AdaptForce(Transform& transform, Rigidbody& rigidbody, EVec3f& externalForce, float deltaTime)
+	void AdaptForce(Transform& transform, Rigidbody& rigidbody, EVec3f& externalForce, EVec3f& externalTorque, float deltaTime)
 	{
 		if (rigidbody.type == 0)//à⁄ìÆÇµÇ»Ç¢ÉÇÅ[ÉhÇÃèÍçáÇÕë≈ÇøêÿÇË
 			return;
 		EVec3f accel = externalForce * (1 / rigidbody.mass);
+		EMat3f inverseMoment = rigidbody.moment.inverse();
+		EVec3f angleAccel = inverseMoment * externalTorque;
 		transform.linearVelocity += deltaTime * accel;
+		transform.rotateVelocity += angleAccel * deltaTime;
+		//âÒì]ÇÃé¿ëï
+		/*
 		EVec3f angleAccel = EVec3f{ (0.57 / 2) * (0.57 / 2),(0.57 / 2) * (0.57 / 2),(0.57 / 2) * (0.57 / 2) } / (rigidbody.mass * (0.57/2) *(0.57/2));
 		transform.rotateVelocity += angleAccel * deltaTime;
+		*/
 
 	}
 	void DetectCollisions(std::vector<std::unique_ptr<PrimitiveObject>>& objects)
@@ -33,7 +39,7 @@ public:
 	void Integrate(std::vector<std::unique_ptr<PrimitiveObject>>& objects, float deltaTime) {
 		for (auto& object : objects) {
 			object->transform.position += object->transform.linearVelocity * deltaTime;
-			object->transform.rotation += object->transform.rotateVelocity * deltaTime;
+			//object->transform.rotation += object->transform.rotateVelocity * deltaTime;
 		}
 	}
 
@@ -75,23 +81,23 @@ public:
 		else if((object1->shapeType == 0 && object2->shapeType == 1)||(object1->shapeType == 1 && object2->shapeType == 0))
 		{
 			Ball* ball;
-			Floor* box;
+			Box* box;
 			if (object1->shapeType == 0 && object2->shapeType == 1)
 			{
 				ball = dynamic_cast<Ball*>(object1.get());
-				box = dynamic_cast<Floor*>(object2.get());
+				box = dynamic_cast<Box*>(object2.get());
 			}
 			else
 			{
 				ball = dynamic_cast<Ball*>(object2.get());
-				box = dynamic_cast<Floor*>(object1.get());
+				box = dynamic_cast<Box*>(object1.get());
 			}
 			auto centerPos = ball->transform.position;
 			auto R = ball->R;
 			auto size = EVec3f{box->width,box->height,box->depth};
 			auto box_position = box->transform.position;
-			//auto world_size = size + box_position;
 			auto sqLength = 0.0;
+			//AABB
 			for (int i = 0; i < 3; i++) {
 				auto point = centerPos[i];
 				auto boxMin = box_position[i] - size[i]/2;

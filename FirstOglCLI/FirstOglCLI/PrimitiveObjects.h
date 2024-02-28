@@ -16,14 +16,13 @@ public:
 	Rigidbody rigidbody;
 	int shapeType;
 	//color2 c;
-	void SetTransform(EVec3f position, EVec3f rotation, EVec3f linearVelocity, EVec3f rotateVelocity)
+	void SetTransform(EVec3f position, Eigen::Quaternionf quaternion, EVec3f linearVelocity, EVec3f rotateVelocity)
 	{
 		transform.position = position;
-		transform.rotation = rotation;
+		transform.quaternion = quaternion;
 		transform.linearVelocity = linearVelocity;
 		transform.rotateVelocity = rotateVelocity;
 	}
-
 	/*
 	void SetColor(color2 col)
 	{
@@ -64,7 +63,7 @@ private:
 	const float M = 10; //¿—Ê
 	const int N = 50; //•ªŠ„”
 	const EVec3f firstPosition = {0,0,0};//‹…‘Ì‚Ì’†S(dS‚ÌˆÊ’u)
-	const EVec3f firstRotation = {0,0,0};//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
+	const Eigen::Quaternionf firstRotation = Eigen::Quaternionf{0,0,0,0};//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 	const EVec3f firstLinearVelocity = {0,0,0};//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 	const EVec3f firstRotateVelocity = {0,0,0};//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 public:
@@ -74,7 +73,9 @@ public:
 		SetTransform(firstPosition,firstRotation,firstLinearVelocity,firstRotateVelocity);
 		SetRigidbody(M,0.9,1);
 		shapeType = 0;
+		rigidbody.moment = EMat3f({{M*R*R*2/5,0,0},{0,M * R * R * 2 / 5,0},{0,0,M * R * R * 2 / 5}});
 		//SetColor(white);
+
 	};
 
 	bool IsHit(EVec3f& rayPos, EVec3f& rayDir)
@@ -111,8 +112,14 @@ public:
 		glColor3f(1.000, 0.980, 0.980);
 		glPushMatrix(); // Œ»İ‚Ì•ÏŠ·s—ñ‚ğ•Û‘¶
 		{
+			//‚±‚±‚É‰ñ“]ˆ—‚à’Ç‰Á
 			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // dS‚ÌˆÊ’u‚ÉˆÚ“®
-			//‚±‚±‚É‰ñ“]
+			/*ƒIƒCƒ‰[Šp“x
+			glRotatef(transform.rotation[2], 0.0f, 0.0f, 1.0f); // Z²ü‚è‚Ì‰ñ“]
+			glRotatef(transform.rotation[1], 0.0f, 1.0f, 0.0f); // Y²ü‚è‚Ì‰ñ“]
+			glRotatef(transform.rotation[0], 1.0f, 0.0f, 0.0f); // X²ü‚è‚Ì‰ñ“]
+			*/
+			//glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // dS‚ÌˆÊ’u‚ÉˆÚ“®
 		}
 		glBegin(GL_TRIANGLES);
 		for (int t = 0; t < N; t++)
@@ -140,18 +147,18 @@ public:
 /// <summary>
 /// ’¼•û‘ÌƒNƒ‰ƒX
 /// </summary>
-class Floor:public PrimitiveObject
+class Box:public PrimitiveObject
 {
 	const float M = 2;
 	const EVec3f firstPosition = { 0,0,0 };//‹…‘Ì‚Ì’†S(dS‚ÌˆÊ’u)
-	const EVec3f firstRotation = { 0,0,0 };//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
+	const Eigen::Quaternionf firstRotation = Eigen::Quaternionf{ 0,0,0,0 };//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 	const EVec3f firstLinearVelocity = { 0,0,0 };//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 	const EVec3f firstRotateVelocity = { 0,0,0 };//p¨(Œ³‚Ìó‘Ô‚©‚ç‚Ì‰ñ“])
 public:
 	const float width;
 	const float height;
 	const float depth;
-	Floor(float width,float height,float depth) : width(width), height(height), depth(depth)
+	Box(float width,float height,float depth) : width(width), height(height), depth(depth)
 	{
 		SetTransform(firstPosition, firstRotation, firstLinearVelocity, firstRotateVelocity);
 		SetRigidbody(M,0.9,0);
@@ -167,7 +174,17 @@ public:
 		glColor3f(0.180, 0.545, 0.341);
 		glPushMatrix(); // Œ»İ‚Ì•ÏŠ·s—ñ‚ğ•Û‘¶
 		{
+			Eigen::Matrix4f rotationMatrix = transform.quaternion.toRotationMatrix().homogeneous();
+			// OpenGL‚ª—ñ—Dæ‚Ì‚½‚ßA“]’u‚ª•K—v
+			Eigen::Matrix4f rotationMatrixTransposed = rotationMatrix.transpose();
+			// Eigen‚Ìs—ñ‚ğOpenGL‚Åg—p‰Â”\‚ÈŒ`®‚É•ÏŠ·
+			glMultMatrixf(rotationMatrixTransposed.data());
 			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // dS‚ÌˆÊ’u‚ÉˆÚ“®
+			/*ƒIƒCƒ‰[Šp
+			glRotatef(transform.rotation[2], 0.0f, 0.0f, 1.0f); // Z²ü‚è‚Ì‰ñ“]
+			glRotatef(transform.rotation[1], 0.0f, 1.0f, 0.0f); // Y²ü‚è‚Ì‰ñ“]
+			glRotatef(transform.rotation[0], 1.0f, 0.0f, 0.0f); // X²ü‚è‚Ì‰ñ“]
+			*/
 		}
 		glEnable(GL_NORMALIZE);
 		//‰º–Ê

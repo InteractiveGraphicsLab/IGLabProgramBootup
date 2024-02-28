@@ -7,7 +7,7 @@
 struct Transform
 {
 	EVec3f position;//重心の位置
-	EVec3f rotation;//姿勢
+	Eigen::Quaternionf quaternion;
 	EVec3f linearVelocity;//並進速度
 	EVec3f rotateVelocity;//回転速度
 };

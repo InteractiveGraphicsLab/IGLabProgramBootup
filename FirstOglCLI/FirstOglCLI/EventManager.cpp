@@ -35,32 +35,32 @@ EventManager::EventManager()
 	hitPos = EVec3f::Zero();
 	rayDir = EVec3f::Zero();
 	//いらないゴミを配置しないと、座標変換が効かない?
-	objects.push_back(std::make_unique<Floor>(0.01,0.01,0.01));
+	objects.push_back(std::make_unique<Box>(0.01,0.01,0.01));
 	//机の配置
-	auto leg1 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg1 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg1->SetPosition(0,0, BOARD_TALL/2);
 	//leg1->SetColor(brown);
-	auto leg2 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg2 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg2->SetPosition(BOARD_WIDTH,0, BOARD_TALL / 2);
 	//leg2->SetColor(brown);
-	auto leg3 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg3 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg3->SetPosition(BOARD_WIDTH,BOARD_HEIGHT, BOARD_TALL / 2);
 	//leg3->SetColor(brown);
-	auto leg4 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg4 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg4->SetPosition(0,BOARD_HEIGHT, BOARD_TALL / 2);
 	//leg4->SetColor(brown);
-	auto board = std::make_unique<Floor>(BOARD_WIDTH, BOARD_HEIGHT, BOARD_THIN);
+	auto board = std::make_unique<Box>(BOARD_WIDTH, BOARD_HEIGHT, BOARD_THIN);
 	board->SetPosition(BOARD_WIDTH/2,BOARD_HEIGHT/2,BOARD_TALL);
 	board->rigidbody.e = 0.25;
 	//WIDTHの壁
-	auto board_part1 = std::make_unique<Floor>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN*2);
+	auto board_part1 = std::make_unique<Box>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN*2);
 	board_part1->SetPosition(BOARD_WIDTH/2, 0, BOARD_TALL + BOARD_THIN);
-	auto board_part2 = std::make_unique<Floor>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN*2);
+	auto board_part2 = std::make_unique<Box>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN*2);
 	board_part2->SetPosition(BOARD_WIDTH / 2, BOARD_HEIGHT, BOARD_TALL + BOARD_THIN);
 	//HEIGHTの壁
-	auto board_part3 = std::make_unique<Floor>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN*2);
+	auto board_part3 = std::make_unique<Box>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN*2);
 	board_part3->SetPosition(BOARD_WIDTH , BOARD_HEIGHT / 2, BOARD_TALL + BOARD_THIN);
-	auto board_part4 = std::make_unique<Floor>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN*2);
+	auto board_part4 = std::make_unique<Box>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN*2);
 	board_part4->SetPosition(0, BOARD_HEIGHT / 2, BOARD_TALL + BOARD_THIN);
 	objects.push_back(std::move(leg1));
 	objects.push_back(std::move(leg2));
@@ -175,9 +175,12 @@ void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 	  EVec3f tmpforce = hitPos - releasePos;
 	  //z軸方向の力は0にする
 	  EVec3f force = EVec3f(tmpforce[0], tmpforce[1], 0);
+	  EVec3f r = hitPos - objects[graspedBallIdx]->transform.position;
 	  force *= 30;
-	  std::cout << force << std::endl;
-	  pipeLine.AdaptForce(objects[graspedBallIdx]->transform, objects[graspedBallIdx]->rigidbody,force, 0.2);
+	  EVec3f torque = r.cross(force);
+
+
+	  pipeLine.AdaptForce(objects[graspedBallIdx]->transform, objects[graspedBallIdx]->rigidbody,force,torque ,0.2);
 	  graspedBallIdx = -1;
   }
 }
@@ -214,6 +217,8 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 }
 
 
+
+
 /// <summary>
 /// ボタン1を押したら全てのオブジェクトに外力を加える
 /// </summary>
@@ -226,32 +231,32 @@ void EventManager::Restart()
 {
 	objects.clear();
 	//いらないゴミを配置しないと、座標変換が効かない?
-	objects.push_back(std::make_unique<Floor>(0.01, 0.01, 0.01));
+	objects.push_back(std::make_unique<Box>(0.01, 0.01, 0.01));
 	//机の配置
-	auto leg1 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg1 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg1->SetPosition(0, 0, BOARD_TALL / 2);
 	//leg1->SetColor(brown);
-	auto leg2 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg2 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg2->SetPosition(BOARD_WIDTH, 0, BOARD_TALL / 2);
 	//leg2->SetColor(brown);
-	auto leg3 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg3 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg3->SetPosition(BOARD_WIDTH, BOARD_HEIGHT, BOARD_TALL / 2);
 	//leg3->SetColor(brown);
-	auto leg4 = std::make_unique<Floor>(1, 1, BOARD_TALL);
+	auto leg4 = std::make_unique<Box>(1, 1, BOARD_TALL);
 	leg4->SetPosition(0, BOARD_HEIGHT, BOARD_TALL / 2);
 	//leg4->SetColor(brown);
-	auto board = std::make_unique<Floor>(BOARD_WIDTH, BOARD_HEIGHT, BOARD_THIN);
+	auto board = std::make_unique<Box>(BOARD_WIDTH, BOARD_HEIGHT, BOARD_THIN);
 	board->SetPosition(BOARD_WIDTH / 2, BOARD_HEIGHT / 2, BOARD_TALL);
 	board->rigidbody.e = 0.25;
 	//WIDTHの壁
-	auto board_part1 = std::make_unique<Floor>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN * 2);
+	auto board_part1 = std::make_unique<Box>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN * 2);
 	board_part1->SetPosition(BOARD_WIDTH / 2, 0, BOARD_TALL + BOARD_THIN);
-	auto board_part2 = std::make_unique<Floor>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN * 2);
+	auto board_part2 = std::make_unique<Box>(BOARD_WIDTH, BOARD_THIN, BOARD_THIN * 2);
 	board_part2->SetPosition(BOARD_WIDTH / 2, BOARD_HEIGHT, BOARD_TALL + BOARD_THIN);
 	//HEIGHTの壁
-	auto board_part3 = std::make_unique<Floor>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN * 2);
+	auto board_part3 = std::make_unique<Box>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN * 2);
 	board_part3->SetPosition(BOARD_WIDTH, BOARD_HEIGHT / 2, BOARD_TALL + BOARD_THIN);
-	auto board_part4 = std::make_unique<Floor>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN * 2);
+	auto board_part4 = std::make_unique<Box>(BOARD_THIN, BOARD_HEIGHT, BOARD_THIN * 2);
 	board_part4->SetPosition(0, BOARD_HEIGHT / 2, BOARD_TALL + BOARD_THIN);
 	objects.push_back(std::move(leg1));
 	objects.push_back(std::move(leg2));
@@ -300,11 +305,11 @@ void EventManager::Restart()
 /// </summary>
 void EventManager::OnButton2Click()
 {
-	EVec3f power = { 15,0,0 };
 	for (auto& object : objects)
 	{
-		pipeLine.AdaptForce(object->transform, object->rigidbody, power, 0.2);
-	}
+		Eige
+		//object->transform.rotation += EVec3f(0, 10, 0);
+	}	
 }
 
 /// <summary>
@@ -315,7 +320,8 @@ void EventManager::OnButton3Click()
 	auto ball = std::make_unique<Ball>();
 	ball->SetPosition(BOARD_WIDTH / 2 + 10 + random(-3,3), BOARD_HEIGHT / 2 + random(-3,3), BOARD_TALL + BOARD_THIN + 2);
 	EVec3f power = {0,-50,-100 };
-	pipeLine.AdaptForce(ball->transform, ball->rigidbody, power, 0.2);
+	EVec3f torque(0);
+	pipeLine.AdaptForce(ball->transform, ball->rigidbody, power,torque, 0.2);
 	objects.push_back(std::move(ball));
 }
 
@@ -326,10 +332,11 @@ void EventManager::Step()
 {
 	
 	//重力
-	static EVec3f gravity = { 0,0,0 };
+	static EVec3f gravity = { 0,0,-9.8 };
+	EVec3f torque(0);
 	for (auto& object : objects)
 	{
-		pipeLine.AdaptForce(object->transform, object->rigidbody, gravity, 0.2);
+		pipeLine.AdaptForce(object->transform, object->rigidbody, gravity,torque, 0.2);
 	}
 	pipeLine.DetectCollisions(objects);
 	//TODO拘束ソルバー必須
