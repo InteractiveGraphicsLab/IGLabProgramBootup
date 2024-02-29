@@ -5,12 +5,18 @@
 class Ball
 {
 private:
-    EVec3f _pos, _rot;
-    float _velo, _veloangle, _radi;
+    EVec3f _pos, _rot, _velo;
+    float _veloangle, _radi;
     
 public:
-    Ball(float radi, EVec3f& pos, EVec3f& rot, EVec3f& velo, EVec3f& veloangle);
+    Ball(EVec3f& pos, EVec3f& rot, EVec3f& velo, float veloangle, float radi);
     Ball(const Ball& src);
+    EVec3f GetPos();
+    EVec3f GetVelo();
+    float GetRadi();
+    void SetPos(const EVec3f& pos);
+    void SetVelo(const EVec3f& velo);
     void Step();
     void Draw();
+    void DrawSphere();
 };
