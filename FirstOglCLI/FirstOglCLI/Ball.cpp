@@ -2,7 +2,7 @@
 #include "EventManager.h"
 #include "Ball.h"
 
-Ball::Ball(EVec3f& pos, EVec3f& rot, EVec3f& velo, float veloangle, float radi)
+Ball::Ball(const EVec3f& pos, const EVec3f& rot, const EVec3f& velo, const EVec3f& veloangle, float radi)
 {
     _pos = pos;
     _rot = rot;

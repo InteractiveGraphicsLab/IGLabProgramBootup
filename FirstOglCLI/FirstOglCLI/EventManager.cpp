@@ -5,7 +5,7 @@ EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
 
-  _balls.push_back(Ball(EVec3f(0.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), 0.0f, 0.5f));
+  _balls.push_back(Ball(EVec3f(0.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), EVec3f(1.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), 0.5f));
 }
 
 void EventManager::DrawScene()
