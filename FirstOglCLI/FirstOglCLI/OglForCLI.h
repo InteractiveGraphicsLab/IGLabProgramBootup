@@ -25,7 +25,7 @@ public:
   {
     m_pos = EVec3f(0, 0, 10);
     m_cnt = EVec3f(0, 0, 0 );
-    m_up  = EVec3f(0, 1, 0 );
+    m_up  = EVec3f(0, 2, 0 );
   }
 
   OglCameraParam( const OglCameraParam &src) 

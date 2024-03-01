@@ -2,13 +2,15 @@
 
 #pragma unmanaged
 #include "OglForCLI.h"
+#include "Ball.h"
 
 class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
+  int N = 100;
   EventManager();
-
+  std::vector<Ball> _balls;
 public:
   //シングルトンクラス（see デザインパターン, シングルトン）
   static EventManager* GetInst() {
@@ -16,12 +18,12 @@ public:
     return &p;
   }
   void DrawScene();
-  void LBtnDown(int x, int y, OglForCLI* ogl);
-  void MBtnDown(int x, int y, OglForCLI* ogl);
-  void RBtnDown(int x, int y, OglForCLI* ogl);
-  void LBtnUp(int x, int y, OglForCLI* ogl);
-  void MBtnUp(int x, int y, OglForCLI* ogl);
-  void RBtnUp(int x, int y, OglForCLI* ogl);
+  void LBtnDown (int x, int y, OglForCLI* ogl);
+  void MBtnDown (int x, int y, OglForCLI* ogl);
+  void RBtnDown (int x, int y, OglForCLI* ogl);
+  void LBtnUp   (int x, int y, OglForCLI* ogl);
+  void MBtnUp   (int x, int y, OglForCLI* ogl);
+  void RBtnUp   (int x, int y, OglForCLI* ogl);
   void MouseMove(int x, int y, OglForCLI* ogl);
 
   void Step();

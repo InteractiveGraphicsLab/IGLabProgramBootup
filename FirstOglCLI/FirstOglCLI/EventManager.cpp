@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "EventManager.h"
+#include "ball.h"
 
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
+  _balls.push_back(Ball(EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0.1, 0, 0), 0.0f, 2));
 }
 
 void EventManager::DrawScene()
@@ -17,6 +19,9 @@ void EventManager::DrawScene()
   glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
+
+  _balls[0].Draw();
+  //
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
@@ -64,5 +69,8 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 
 void EventManager::Step()
 {
-
+	for (int i = 0; i < _balls.size(); i++)
+	{
+		_balls[i].Step();
+	}
 }
