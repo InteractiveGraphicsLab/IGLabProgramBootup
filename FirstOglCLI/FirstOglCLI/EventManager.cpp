@@ -178,8 +178,8 @@ void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 	  EVec3f r = hitPos - objects[graspedBallIdx]->transform.position;
 	  force *= 30;
 	  EVec3f torque = r.cross(force);
-
-
+	  torque *= 30;
+	  std::cout << torque;
 	  pipeLine.AdaptForce(objects[graspedBallIdx]->transform, objects[graspedBallIdx]->rigidbody,force,torque ,0.2);
 	  graspedBallIdx = -1;
   }
@@ -307,8 +307,8 @@ void EventManager::OnButton2Click()
 {
 	for (auto& object : objects)
 	{
-		Eige
-		//object->transform.rotation += EVec3f(0, 10, 0);
+		//object->transform.euler += EVec3f(0, 10, 0);
+		pipeLine.AdaptForce(object->transform,object->rigidbody,EVec3f{0,100,0},EVec3f{0,0,0},0.2);
 	}	
 }
 
@@ -330,7 +330,6 @@ void EventManager::OnButton3Click()
 /// </summary>
 void EventManager::Step()
 {
-	
 	//èdóÕ
 	static EVec3f gravity = { 0,0,-9.8 };
 	EVec3f torque(0);

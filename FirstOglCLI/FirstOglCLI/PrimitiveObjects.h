@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "Rigidbody.h"
 
+const float PI = 3.1415;
 
 /// <summary>
 /// プリミティブオブジェクトの基底クラス
@@ -16,10 +17,9 @@ public:
 	Rigidbody rigidbody;
 	int shapeType;
 	//color2 c;
-	void SetTransform(EVec3f position, Eigen::Quaternionf quaternion, EVec3f linearVelocity, EVec3f rotateVelocity)
+	void SetTransform(EVec3f position,EVec3f linearVelocity, EVec3f rotateVelocity)
 	{
 		transform.position = position;
-		transform.quaternion = quaternion;
 		transform.linearVelocity = linearVelocity;
 		transform.rotateVelocity = rotateVelocity;
 	}
@@ -35,6 +35,19 @@ public:
 		EVec3f position = { x,y,z };
 		transform.position = position;
 	}
+
+	/// <summary>
+	/// 方向ベクトル(x,y,z)を回転軸として、角度thetaだけ回転
+	/// </summary>
+	/*
+	void SetQuaternion(float x,float y,float z,float theta)
+	{
+		transform.quaternion[0] = x * sinf(theta / 2);
+		transform.quaternion[0] = y * sinf(theta / 2);
+		transform.quaternion[0] = z * sinf(theta / 2);
+		transform.quaternion[0] = cosf(theta / 2);
+	}
+	*/
 
 	/// <summary>
 	/// rigidbodyの設定
@@ -63,19 +76,19 @@ private:
 	const float M = 10; //質量
 	const int N = 50; //分割数
 	const EVec3f firstPosition = {0,0,0};//球体の中心(重心の位置)
-	const Eigen::Quaternionf firstRotation = Eigen::Quaternionf{0,0,0,0};//姿勢(元の状態からの回転)
+	const EVec3f firstEuler = EVec3f{0,0,0};//姿勢(元の状態からの回転)
 	const EVec3f firstLinearVelocity = {0,0,0};//姿勢(元の状態からの回転)
 	const EVec3f firstRotateVelocity = {0,0,0};//姿勢(元の状態からの回転)
 public:
 	const float R = 0.57 / 2;
 	Ball()
 	{
-		SetTransform(firstPosition,firstRotation,firstLinearVelocity,firstRotateVelocity);
+		SetTransform(firstPosition,firstLinearVelocity,firstRotateVelocity);
 		SetRigidbody(M,0.9,1);
+		transform.euler = firstEuler;
 		shapeType = 0;
 		rigidbody.moment = EMat3f({{M*R*R*2/5,0,0},{0,M * R * R * 2 / 5,0},{0,0,M * R * R * 2 / 5}});
 		//SetColor(white);
-
 	};
 
 	bool IsHit(EVec3f& rayPos, EVec3f& rayDir)
@@ -112,13 +125,10 @@ public:
 		glColor3f(1.000, 0.980, 0.980);
 		glPushMatrix(); // 現在の変換行列を保存
 		{
-			//ここに回転処理も追加
 			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
-			/*オイラー角度
-			glRotatef(transform.rotation[2], 0.0f, 0.0f, 1.0f); // Z軸周りの回転
-			glRotatef(transform.rotation[1], 0.0f, 1.0f, 0.0f); // Y軸周りの回転
-			glRotatef(transform.rotation[0], 1.0f, 0.0f, 0.0f); // X軸周りの回転
-			*/
+			glRotatef(transform.euler[2], 0.0f, 0.0f, 1.0f); // Z軸周りの回転
+			glRotatef(transform.euler[1], 0.0f, 1.0f, 0.0f); // Y軸周りの回転
+			glRotatef(transform.euler[0], 1.0f, 0.0f, 0.0f); // X軸周りの回転
 			//glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
 		}
 		glBegin(GL_TRIANGLES);
@@ -151,7 +161,7 @@ class Box:public PrimitiveObject
 {
 	const float M = 2;
 	const EVec3f firstPosition = { 0,0,0 };//球体の中心(重心の位置)
-	const Eigen::Quaternionf firstRotation = Eigen::Quaternionf{ 0,0,0,0 };//姿勢(元の状態からの回転)
+	const EVec3f firstRotation = EVec3f{ 0,0,0};//姿勢(元の状態からの回転)
 	const EVec3f firstLinearVelocity = { 0,0,0 };//姿勢(元の状態からの回転)
 	const EVec3f firstRotateVelocity = { 0,0,0 };//姿勢(元の状態からの回転)
 public:
@@ -160,7 +170,8 @@ public:
 	const float depth;
 	Box(float width,float height,float depth) : width(width), height(height), depth(depth)
 	{
-		SetTransform(firstPosition, firstRotation, firstLinearVelocity, firstRotateVelocity);
+		SetTransform(firstPosition,firstLinearVelocity, firstRotateVelocity);
+		transform.euler = firstRotation;
 		SetRigidbody(M,0.9,0);
 		shapeType = 1;
 		//SetColor(brown);
@@ -174,17 +185,38 @@ public:
 		glColor3f(0.180, 0.545, 0.341);
 		glPushMatrix(); // 現在の変換行列を保存
 		{
-			Eigen::Matrix4f rotationMatrix = transform.quaternion.toRotationMatrix().homogeneous();
-			// OpenGLが列優先のため、転置が必要
-			Eigen::Matrix4f rotationMatrixTransposed = rotationMatrix.transpose();
-			// Eigenの行列をOpenGLで使用可能な形式に変換
-			glMultMatrixf(rotationMatrixTransposed.data());
-			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
-			/*オイラー角
-			glRotatef(transform.rotation[2], 0.0f, 0.0f, 1.0f); // Z軸周りの回転
-			glRotatef(transform.rotation[1], 0.0f, 1.0f, 0.0f); // Y軸周りの回転
-			glRotatef(transform.rotation[0], 1.0f, 0.0f, 0.0f); // X軸周りの回転
+			/*
+			//glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
+			auto q0 = transform.quaternion[0];
+			auto q1 = transform.quaternion[1];
+			auto q2 = transform.quaternion[2];
+			auto q3 = transform.quaternion[3];
+			float R0 = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
+			auto R1 = 2 * (q1 * q2 + q0 * q3);
+			auto R2 = 2 * (q1 * q3 - q0 * q2);
+			auto R3 = 0;
+			auto R4 = 2 * (q1 * q2 - q0 * q3);
+			auto R5 = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
+			auto R6 = 2 * (q2 * q3 + q0 * q1);
+			auto R7 = 0;
+			auto R8 = 2 * (q1 * q3 + q0 * q2);
+			auto R9 = 2 * (q2 * q3 - q0 * q1);
+			auto R10 = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+			auto R11 = 0;
+			auto R12 = 0;
+			auto R13 = 0;
+			auto R14 = 0;
+			auto R15 = 1;
+			float m[16] =
+			{
+				R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15
+			};
+			glMultMatrixf(m);//現在の行列に任意の行列を乗算する、16パラを与える、順番に注意
 			*/
+			glTranslatef(transform.position[0], transform.position[1], transform.position[2]); // 重心の位置に移動
+			glRotatef(transform.euler[2], 0.0f, 0.0f, 1.0f); // Z軸周りの回転
+			glRotatef(transform.euler[1], 0.0f, 1.0f, 0.0f); // Y軸周りの回転
+			glRotatef(transform.euler[0], 1.0f, 0.0f, 0.0f); // X軸周りの回転
 		}
 		glEnable(GL_NORMALIZE);
 		//下面

@@ -14,16 +14,10 @@ public:
 		if (rigidbody.type == 0)//ˆÚ“®‚µ‚È‚¢ƒ‚[ƒh‚Ìê‡‚Í‘Å‚¿Ø‚è
 			return;
 		EVec3f accel = externalForce * (1 / rigidbody.mass);
-		EMat3f inverseMoment = rigidbody.moment.inverse();
+		EMat3f inverseMoment = rigidbody.moment.inverse() / 1000000;
 		EVec3f angleAccel = inverseMoment * externalTorque;
 		transform.linearVelocity += deltaTime * accel;
 		transform.rotateVelocity += angleAccel * deltaTime;
-		//‰ñ“]‚ÌÀ‘•
-		/*
-		EVec3f angleAccel = EVec3f{ (0.57 / 2) * (0.57 / 2),(0.57 / 2) * (0.57 / 2),(0.57 / 2) * (0.57 / 2) } / (rigidbody.mass * (0.57/2) *(0.57/2));
-		transform.rotateVelocity += angleAccel * deltaTime;
-		*/
-
 	}
 	void DetectCollisions(std::vector<std::unique_ptr<PrimitiveObject>>& objects)
 	{
@@ -39,7 +33,7 @@ public:
 	void Integrate(std::vector<std::unique_ptr<PrimitiveObject>>& objects, float deltaTime) {
 		for (auto& object : objects) {
 			object->transform.position += object->transform.linearVelocity * deltaTime;
-			//object->transform.rotation += object->transform.rotateVelocity * deltaTime;
+			object->transform.euler += object->transform.rotateVelocity * deltaTime;
 		}
 	}
 
