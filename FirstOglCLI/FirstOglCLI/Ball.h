@@ -10,9 +10,14 @@ private:
 	EVec3f rot_;
 	float  radi_;
 
+
+
 public:
 	Ball(const EVec3f& pos, const EVec3f& velo, const EVec3f& rot, float radi);
 	Ball(const Ball& src);
+
+	void Step();
+	void Draw() const;
 
 	void SetPos(EVec3f& pos);
 	void SetVelo(EVec3f& velo);
@@ -23,8 +28,5 @@ public:
 	EVec3f GetVelo() const;
 	EVec3f GetRot() const;
 	float  GetRadi() const;
-
-	void Step();
-	void Draw() const;
 };
 
