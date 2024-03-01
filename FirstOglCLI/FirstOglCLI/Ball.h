@@ -5,13 +5,26 @@
 class Ball
 {
 private:
-	EVec3f _pos;
-	float _theta_x, _theta_y, _theta_z;
-	Ball();
+	EVec3f pos_;
+	EVec3f velo_;
+	EVec3f rot_;
+	float  radi_;
 
 public:
-	void step();
-	void draw();
+	Ball(const EVec3f& pos, const EVec3f& velo, const EVec3f& rot, float radi);
+	Ball(const Ball& src);
 
+	void SetPos(EVec3f& pos);
+	void SetVelo(EVec3f& velo);
+	void SetRot(EVec3f& rot);
+	void SetRadi(float radi);
+
+	EVec3f GetPos() const;
+	EVec3f GetVelo() const;
+	EVec3f GetRot() const;
+	float  GetRadi() const;
+
+	void Step();
+	void Draw() const;
 };
 
