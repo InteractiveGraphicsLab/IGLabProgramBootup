@@ -104,10 +104,10 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 void EventManager::Step()
 {
 	b1_.setVelocity(b1_.CalcVelocity(b1_.getVelocity())); // ‹…‚P‚Ì‘¬“x‚ğXV
-	b2_.setVelocity(b2_.CalcVelocity(b2_.getVelocity()));
-	b3_.setVelocity(b3_.CalcVelocity(b3_.getVelocity()));
+	b2_.setVelocity(b2_.CalcVelocity(b2_.getVelocity())); // ‹…‚Q
+	b3_.setVelocity(b3_.CalcVelocity(b3_.getVelocity())); // ‹…‚R
 
 	b1_.Step();//‹…‚P‚ÌˆÊ’u‚ğXV
-	b2_.Step();
-	b3_.Step();
+	b2_.Step();//‹…‚Q
+	b3_.Step();//‹…‚R
 }
