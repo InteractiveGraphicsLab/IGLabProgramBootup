@@ -4,7 +4,7 @@
 
 Box::Box()
 {
-	min_ = { 0, 0, 0 };
+
 }
 
 Box::~Box()
@@ -15,6 +15,11 @@ Box::~Box()
 void Box::setMax(EVec3d max)
 {
 	max_ = max;
+}
+
+void Box::setMin(EVec3d min)
+{
+	min_ = min;
 }
 
 EVec3d Box::getMax()

@@ -11,6 +11,7 @@ public:
 	~Box();
 	//void setPos(EVec3d pos);
 	void setMax(EVec3d max); //　端っこをセット
+	void setMin(EVec3d min);
 	EVec3d getMax();
 	EVec3d getMin();         // とりあえず(0, 0, 0)で実装
 	void Draw();

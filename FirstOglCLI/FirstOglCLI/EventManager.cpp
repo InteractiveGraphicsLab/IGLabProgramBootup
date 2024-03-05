@@ -8,8 +8,9 @@ EventManager::EventManager()
   m_isL = m_isR = m_isM = false;
 
   //箱の大きさを設定
-  EVec3d max1 = { 20.0f, 8.0f, 20.0f };
+  EVec3d max1 = { 20.0f, 8.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
   box1_.setMax(max1);
+  box1_.setMin(min1);
 
   //球の初期位置をセット
   EVec3d pos1 = { 1.0f, 2.0f, 3.0f }, pos2 = { 2.0f, 3.0f, 4.0f }, pos3 = { 3.0f, 4.0f, 5.0f };
@@ -96,6 +97,7 @@ EVec3d EventManager::isCollision3()
 	else {
 		isCollision3[0] = 0;
 	}
+
 	// y座標の衝突判定
 	if ((b3_.getPos()[1] - box1_.getMin()[1] <= R && b3_.getVelocity()[1] < 0) || (box1_.getMax()[1] - b3_.getPos()[1] <= R)) { // (下面で衝突 || 上面で衝突)
 		isCollision3[1] = 1;
@@ -103,6 +105,7 @@ EVec3d EventManager::isCollision3()
 	else {
 		isCollision3[1] = 0;
 	}
+
 	// z座標の衝突判定
 	if ((b3_.getPos()[2] - box1_.getMin()[2] <= R && b3_.getVelocity()[2] < 0) || (box1_.getMax()[2] - b3_.getPos()[2] <= R)) { // (奥面で衝突 || 手前面で衝突)
 		isCollision3[2] = 1;
