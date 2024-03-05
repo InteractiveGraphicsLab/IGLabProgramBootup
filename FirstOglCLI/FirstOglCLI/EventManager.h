@@ -2,11 +2,15 @@
 
 #pragma unmanaged
 #include "OglForCLI.h"
+#include "Ball.h"
+#include "Box.h"
 
 class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
+  Ball b1_, b2_, b3_;       //球を３つ生成
+  Box  box1_;               //箱を生成
   EventManager();
 
 public:
