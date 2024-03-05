@@ -5,6 +5,13 @@
 #include "Ball.h"
 #include "Box.h"
 
+#define N 20.0f       //‹…‚ğ‘‚­Û‚Ì•ªŠ„”
+#define M_PI 3.141592 //‰~ü—¦
+#define R 2.0f        //‹…‚Ì”¼Œa
+#define DT 0.01f      //step‚Ì1ƒtƒŒ[ƒ€‚ ‚½‚è‚ÌŠÔ‚ğ‰¼’è
+#define G -9.8f       //d—Í‰Á‘¬“x
+#define E 0.99f        // ”½”­ŒW”
+
 class EventManager
 {
 private:
@@ -27,6 +34,10 @@ public:
   void MBtnUp(int x, int y, OglForCLI* ogl);
   void RBtnUp(int x, int y, OglForCLI* ogl);
   void MouseMove(int x, int y, OglForCLI* ogl);
+
+  EVec3d isCollision1();  //‹…‚P‚Æ•Ç‚ÌÕ“Ë”»’è
+  EVec3d isCollision2();  //‹…‚Q‚Æ•Ç
+  EVec3d isCollision3();  //‹…‚R‚Æ•Ç
 
   void Step();
 };

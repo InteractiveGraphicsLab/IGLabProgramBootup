@@ -2,12 +2,12 @@
 #include "Ball.h"
 #include "OglForCLI.h"
 #include "EventManager.h"
-#define N 20.0f       //球を書く際の分割数
+/*#define N 20.0f       //球を書く際の分割数
 #define M_PI 3.141592 //円周率
 #define R 0.2f        //球の半径
 #define DT 0.01f      //stepの1フレームあたりの時間を仮定
-#define G -9.8f       //重力加速度
-#define E 0.8f        // 反発係数
+#define G -9.8f       //重力加速度 
+#define E 0.8f        // 反発係数 */
 
 Ball::Ball() {
 }
@@ -33,11 +33,11 @@ EVec3d Ball::CalcVelocity(EVec3d v)
 {
 	//v[0] = v[0];
 	v[1] += G * DT; // vyに重力加速度を考慮
-	//v[2] = 
+	//v[2] = v[2];
 
-	if (v[1] < 0 && getPos()[1] <= R ) { // 床との衝突判定 (Vy下向きのみ適応)
+	/*if (v[1] < 0 && getPos()[1] <= R) { // 床との衝突判定 (Vy下向きのみ適応)
 		v[1] *= -E; // 速度を逆向きe倍に
-	}
+	}*/
 
 	return v;
 }
