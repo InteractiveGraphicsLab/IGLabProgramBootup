@@ -8,15 +8,17 @@ private:
     EVec3f pos_;
     EVec3f rot_;
     EVec3f vel_;
-    EVec3f rad_vel_;
+    float  rad_vel_;
+    float  ang_;
 
 public:
     Ball(const EVec3f& p)
     {
         pos_ = p;               //‹…‚ÌˆÊ’u
-        rot_ << 1, 0, 0;;       //‰ñ“]Ž²
         vel_ << 0.5, 0, 0;;     //‘¬“x
-        rad_vel_ << 0, 0, 0;;   //Šp‘¬“x
+        rot_ << 0, 0, -1;;       //‰ñ“]Ž²
+        rad_vel_ = 50;;   //Šp‘¬“x
+        ang_ = 0;
     };
 
     void Draw();

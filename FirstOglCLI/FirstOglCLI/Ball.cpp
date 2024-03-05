@@ -7,8 +7,8 @@
 void Ball::Draw()
 {
     glPushMatrix();
-    //glRotated(30, rot_[0], rot_[1], rot_[2]);
     glTranslated(pos_[0], pos_[1], pos_[2]);
+    glRotated(ang_, rot_[0], rot_[1], rot_[2]);
     DrawSphere();
     glPopMatrix();
 }
@@ -49,8 +49,9 @@ void Ball::DrawSphere()  //‹…‚ð•`‚­‚¾‚¯
 }
 
 
-void Ball::Step(float time)
+void Ball::Step(float dt)
 {
-    pos_ = pos_ + (vel_ * time);
+    pos_ += vel_ * dt;
+    ang_ += rad_vel_ * dt;
     Draw();
 }

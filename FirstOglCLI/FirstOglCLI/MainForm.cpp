@@ -20,7 +20,7 @@ static void CALLBACK MyTimerProc(
   DWORD dwTime         // system time
 )
 {
-  std::cout << "timerが呼ばれた\n";   //コメントを表示して
+  //std::cout << "timerが呼ばれた\n";   //コメントを表示して
   EventManager::GetInst()->Step();    //Step関数を読んで
   MainForm::GetInst()->RedrawPanel(); //Redrawする
 }
@@ -70,19 +70,19 @@ System::Void MainForm::m_panel_MouseUp(System::Object^ sender, System::Windows::
 
 System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
-  std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
+  //std::cout << "マウスが動いた　" << e->X << " " << e->Y << "\n";
   EventManager::GetInst()->MouseMove(e->X, e->Y, m_ogl);
   RedrawPanel(); //再描画！!
 }
 
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)
 {
-  std::cout << "ボタン1が押された\n";
+  //std::cout << "ボタン1が押された\n";
 }
 
 System::Void MainForm::m_button2_Click(System::Object^ sender, System::EventArgs^ e)
 {
-  std::cout << "ボタン2が押された\n";
+  //std::cout << "ボタン2が押された\n";
 }
 
 
