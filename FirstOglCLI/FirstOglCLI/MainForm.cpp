@@ -13,6 +13,7 @@ using namespace FirstOglCLI;
 #pragma comment( lib, "User32.lib"   )
 
 
+
 static void CALLBACK MyTimerProc(
   HWND hWnd,           // handle of CWnd that called SetTimer
   UINT nMsg,           // WM_TIMER
