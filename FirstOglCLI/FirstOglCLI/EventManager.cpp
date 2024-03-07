@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "EventManager.h"
 #include "Ball.h"
+#include "Stage.h"
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include "math.h"
 
 EventManager::EventManager()
 {
     isL_ = isR_ = isM_ = false;
+    isHit_ = false;
 
     balls_.push_back(Ball(EVec3f(0, 0, 0)));
 }
@@ -38,15 +40,31 @@ void EventManager::DrawScene()
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
-    
 
+    if (isL_ && isHit_)
+    {
+        EVec3f ball_pos = balls_[0].GetPos();
+        glLineWidth(2.0f);
+        glBegin(GL_LINES);
+        glColor3d(1, 0, 0); glVertex3i(ball_pos[0], 0, ball_pos[1]); glVertex3i(cur_pos_[0], 0, cur_pos_[1]);
+        glEnd();
+    }
+    
+    balls_[0].SetVelo(end_pos_);
     balls_[0].Draw();
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     isL_ = true;
-    ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
+    if (isHit_)
+    {
+        str_pos_ = EVec2i(x, y);
+    }
+    else
+    {
+        ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
+    }
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -64,6 +82,7 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
     isL_ = false;
+    end_pos_ = EVec2i(x, y);
     ogl->BtnUp();
 }
 
@@ -82,7 +101,13 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
     if (!isL_ && !isR_ && !isM_) return;
+    cur_pos_ = EVec2i(x, y);
     ogl->MouseMove(EVec2i(x, y));
+}
+
+void EventManager::SetMode(const bool& f)
+{
+    isHit_ = f;
 }
 
 

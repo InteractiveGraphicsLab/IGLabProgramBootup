@@ -1,30 +1,38 @@
 #pragma once
 
 #include "OglForCLI.h"
+#include "math.h"
 
 class Ball
 {
 private:
-    EVec3f pos_;
-    EVec3f rot_;
-    EVec3f vel_;
-    float  rad_vel_;
-    float  ang_;
+    EVec3f pos_;        //ãÖÇÃà íu
+    EVec3f rot_;        //âÒì]é≤
+    EVec3f vel_;        //ë¨ìx
+    float  ang_;        //âÒì]äpìx
+    float  rad_;        //îºåa(cm)
+    float  rad_vel_;    //äpë¨ìx
+    float  wgh_;        //èdÇ≥(g)
 
 public:
     Ball(const EVec3f& p)
     {
-        pos_ = p;               //ãÖÇÃà íu
-        vel_ << 0.5, 0, 0;;     //ë¨ìx
-        rot_ << 0, 0, -1;;       //âÒì]é≤
-        rad_vel_ = 50;;   //äpë¨ìx
+        pos_ = p;               
+        rot_ << 0, 0, -1;;
+        vel_ << 0.5f, 0, 0;;
         ang_ = 0;
+        rad_ = 0.5f;
+        wgh_ = 170;
+
+        float sum = pow(vel_[0], 2) + pow(vel_[1], 2) + pow(vel_[2], 2);
+        rad_vel_ = sqrt(sum) / rad_;;
     };
 
     void Draw();
     void DrawSphere();
     void Step(float t);
-    /*EVec3f GetPos();
+    void SetVelo(const EVec2i& e);
+    EVec3f GetPos();
     EVec3f GetVelo();
-    EVec3f SetPos();*/
+    EVec3f SetPos();
 };
