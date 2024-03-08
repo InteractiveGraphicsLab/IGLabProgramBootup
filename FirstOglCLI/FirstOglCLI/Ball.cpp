@@ -72,7 +72,7 @@ void Ball::Draw() {
 			glVertex3d(radius_ * cos(t1) * cos(p2) + pos_[0], radius_ * sin(t1) * cos(p2) + pos_[1], radius_ * sin(p2) + pos_[2]);
 			glVertex3d(radius_ * cos(t1) * cos(p1) + pos_[0], radius_ * sin(t1) * cos(p1) + pos_[1], radius_ * sin(p1) + pos_[2]);
 			//ŽOŠpŒ`‚Q‚Â–Ú
-			glNormal3d(cos(t1) * cos(p1), sin(t1) * cos(p1), sin(p1));
+			//glNormal3d(cos(t1) * cos(p1), sin(t1) * cos(p1), sin(p1));
 			glVertex3d(radius_ * cos(t1) * cos(p2) + pos_[0], radius_ * sin(t1) * cos(p2) + pos_[1], radius_ * sin(p2) + pos_[2]);
 			glVertex3d(radius_ * cos(t2) * cos(p1) + pos_[0], radius_ * sin(t2) * cos(p1) + pos_[1], radius_ * sin(p1) + pos_[2]);
 			glVertex3d(radius_ * cos(t2) * cos(p2) + pos_[0], radius_ * sin(t2) * cos(p2) + pos_[1], radius_ * sin(p2) + pos_[2]);
