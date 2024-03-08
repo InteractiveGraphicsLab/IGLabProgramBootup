@@ -169,15 +169,13 @@ void EventManager::Step()
 
 	
 	//ãÖÇPÇ™ï«Ç∆è’ìÀ
-	EVec3f distance1 = b1_.getPos() - box1_.getMin();
+	EVec3f distance1 = b1_.getPos() - box1_.getMin(); // ñºëOïœÇ¶ÇΩÇ¢...
 	EVec3f distance2 = box1_.getMax() - b1_.getPos();
 	EVec3f v1 = b1_.getVelocity();
-
-	// ãÖÇPÇ∆ï«
 	if ((distance1[0] <= b1_.getRadius() && v1[0] < 0) || (distance2[0] <= b1_.getRadius() && v1[0] > 0)) {
 		v1[0] *= -E;
 	}
-	if ((distance1[1] <= b1_.getRadius() && v1[1] < 0)) { // ìVà‰ÇÕñ≥Ç≠ÇµÇΩ
+	if ((distance1[1] <= b1_.getRadius() && v1[1] < 0)) { // ìVà‰Ç∆ÇÃè’ìÀÇÕñ≥Ç≠ÇµÇΩ
 		v1[1] *= -E;
 	}
 	if ((distance1[2] <= b1_.getRadius() && v1[2] < 0) || (distance2[2] <= b1_.getRadius() && v1[2] > 0)) {
@@ -185,10 +183,10 @@ void EventManager::Step()
 	}
 	b1_.setVelocity(v1);
 
+	// ãÖÇQÇ∆ï«
 	EVec3f distance3 = b2_.getPos() - box1_.getMin();
 	EVec3f distance4 = box1_.getMax() - b2_.getPos();
 	EVec3f v2 = b2_.getVelocity();
-	// ãÖÇQÇ∆ï«
 	if ((distance3[0] <= b2_.getRadius() && v2[0] < 0) || (distance4[0] <= b2_.getRadius() && v2[0] > 0)) {
 		v2[0] *= -E;
 	}
@@ -200,10 +198,10 @@ void EventManager::Step()
 	}
 	b2_.setVelocity(v2);
 
+	// ãÖÇRÇ∆ï«
 	EVec3f distance5 = b3_.getPos() - box1_.getMin();
 	EVec3f distance6 = box1_.getMax() - b3_.getPos();
 	EVec3f v3 = b3_.getVelocity();
-	// ãÖÇRÇ∆ï«
 	if ((distance5[0] <= b3_.getRadius() && v3[0] < 0) || (distance6[0] <= b3_.getRadius() && v3[0] > 0)) {
 		v3[0] *= -E;
 	}
