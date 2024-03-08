@@ -13,7 +13,9 @@
 
 class EventManager
 {
+
 private:
+    EVec3f rayp_, rayd_;
     bool m_isL, m_isR, m_isM; //マウスボタンの状態
     Ball b1_, b2_, b3_;       //球を３つ生成
     Box  box1_;               //箱を生成

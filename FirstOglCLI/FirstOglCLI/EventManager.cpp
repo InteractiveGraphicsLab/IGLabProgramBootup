@@ -9,7 +9,7 @@ EventManager::EventManager()
 	m_isL = m_isR = m_isM = false;
 
 	//箱の大きさを設定
-	EVec3f max1 = { 20.0f, 8.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
+	EVec3f max1 = { 20.0f, 30.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
 	box1_.setMax(max1);
 	box1_.setMin(min1);
 
@@ -20,7 +20,7 @@ EventManager::EventManager()
 	b3_.setPos(pos3);
 
 	//球の初速をセット
-	EVec3f v1 = { 20.0f, 20.0f, 20.0f }, v2 = { 30.0f, 30.0f, 30.0f }, v3 = { 40.0f, 40.0f, 40.0f };
+	EVec3f v1 = { 5.0f, 5.0f, 5.0f }, v2 = { 6.0f, 6.0f, 6.0f }, v3 = { 7.0f, 7.0f, 7.0f };
 	b1_.setVelocity(v1);
 	b2_.setVelocity(v2);
 	b3_.setVelocity(v3);
@@ -29,8 +29,15 @@ EventManager::EventManager()
 
 void EventManager::DrawScene()
 {
+	glEnable(GL_DEPTH_TEST);
 	//箱を書く
 	box1_.Draw();
+
+	glBegin(GL_LINES);
+		glVertex3fv(rayp_.data()); //glVertex3f(rayp_[0], rayp_[1], rayp_[2]);
+		EVec3f tmp = rayp_ + 10.0f * rayd_;
+		glVertex3fv(tmp.data());
+	glEnd();
 
 	/* 座標軸（必要に応じてコメントアウト）
 	//x:red, y:green, z:blue 
@@ -64,12 +71,19 @@ void EventManager::DrawScene()
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
+	// クリックでレイを飛ばす
+	EVec3f p, d;
+	ogl->GetCursorRay(EVec2i(x, y), p, d);
+	rayp_ = p;
+	rayd_ = d;
+
 	m_isL = true;
 	ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
 {
+	
 	m_isM = true;
 	ogl->BtnDown_Zoom(EVec2i(x, y));
 }
@@ -104,9 +118,115 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 	ogl->MouseMove(EVec2i(x, y));
 }
 
+
+
+//球同士の衝突判定
+bool isCollision(const Ball& b1, const Ball& b2)
+{
+	float t = b1.getRadius() + b2.getRadius();
+	if ((b1.getPos() - b2.getPos()).norm() <= t) {
+		return true; // 衝突する
+	}
+	else {
+		return false; // 衝突しない
+	}
+}
+
+/*
+//球同士の衝突判定
+bool isCollision(Ball &b1, Ball &b2)
+{
+	float t = b1.getRadius() + b2.getRadius();
+	if ((b1.getPos() - b2.getPos()).norm() <= t && b1.getCollision() == false && b2.getCollision() == false) {
+		b1.setCollision(true);
+		b2.setCollision(true);
+		return true; // 衝突する
+	}
+	else if ((b1.getPos() - b2.getPos()).norm() <= t && (b1.getCollision() == true || b2.getCollision() == true)) {
+		return false;
+	}
+	else { //離れたら
+		b1.setCollision(false);
+		b2.setCollision(false);
+		return false; // 衝突しない
+	}
+}
+*/
+
+// 衝突時の速度を更新
+void UpdateVelocity(EVec3f& v1, EVec3f& v2)
+{
+	v1 = (1.0f - E) / 2.0f * v1 + (1.0f + E) / 2.0f * v2;
+	v2 = (1.0f + E) / 2.0f * v1 + (1.0f - E) / 2.0f * v2;
+}
+
+void EventManager::Step()
+{
+	float dt = 0.01f;
+	b1_.Step(dt);
+	b2_.Step(dt);
+	b3_.Step(dt);
+
+	
+	//球１が壁と衝突
+	EVec3f distance1 = b1_.getPos() - box1_.getMin();
+	EVec3f distance2 = box1_.getMax() - b1_.getPos();
+	EVec3f v1 = b1_.getVelocity();
+
+	// 球１と壁
+	if ((distance1[0] <= b1_.getRadius() && v1[0] < 0) || (distance2[0] <= b1_.getRadius() && v1[0] > 0)) {
+		v1[0] *= -E;
+	}
+	if ((distance1[1] <= b1_.getRadius() && v1[1] < 0)) { // 天井は無くした
+		v1[1] *= -E;
+	}
+	if ((distance1[2] <= b1_.getRadius() && v1[2] < 0) || (distance2[2] <= b1_.getRadius() && v1[2] > 0)) {
+		v1[2] *= -E;
+	}
+	b1_.setVelocity(v1);
+
+	EVec3f distance3 = b2_.getPos() - box1_.getMin();
+	EVec3f distance4 = box1_.getMax() - b2_.getPos();
+	EVec3f v2 = b2_.getVelocity();
+	// 球２と壁
+	if ((distance3[0] <= b2_.getRadius() && v2[0] < 0) || (distance4[0] <= b2_.getRadius() && v2[0] > 0)) {
+		v2[0] *= -E;
+	}
+	if ((distance3[1] <= b2_.getRadius() && v2[1] < 0)) {
+		v2[1] *= -E;
+	}
+	if ((distance3[2] <= b2_.getRadius() && v2[2] < 0) || (distance4[2] <= b2_.getRadius() && v2[2] > 0)) {
+		v2[2] *= -E;
+	}
+	b2_.setVelocity(v2);
+
+	EVec3f distance5 = b3_.getPos() - box1_.getMin();
+	EVec3f distance6 = box1_.getMax() - b3_.getPos();
+	EVec3f v3 = b3_.getVelocity();
+	// 球３と壁
+	if ((distance5[0] <= b3_.getRadius() && v3[0] < 0) || (distance6[0] <= b3_.getRadius() && v3[0] > 0)) {
+		v3[0] *= -E;
+	}
+	if ((distance5[1] <= b3_.getRadius() && v3[1] < 0)) {
+		v3[1] *= -E;
+	}
+	if ((distance5[2] <= b3_.getRadius() && v3[2] < 0) || (distance6[2] <= b3_.getRadius() && v3[2] > 0)) {
+		v3[2] *= -E;
+	}
+	b3_.setVelocity(v3);
+	
+
+	//球同士の衝突
+	if (isCollision(b1_, b2_) == true) {
+		UpdateVelocity(v1, v2);
+		b1_.setVelocity(v1);
+		b2_.setVelocity(v2);
+	}
+}
+
 /*
 
-//球がYZ平面の壁と衝突するかを判定 
+//球がYZ平面の壁と衝突するかを判定
 bool isCollisionWallYZ(const Ball& b1, const Box& box1)
 {
 	// yz平面の衝突判定
@@ -118,7 +238,7 @@ bool isCollisionWallYZ(const Ball& b1, const Box& box1)
 	}
 }
 
-//球がXZ平面の壁と衝突するかを判定 
+//球がXZ平面の壁と衝突するかを判定
 bool isCollisionWallXZ(const Ball& b1, const Box& box1)
 {
 	// xz平面の衝突判定
@@ -141,70 +261,37 @@ bool isCollisionWallXY(const Ball& b1, const Box& box1) {
 }
 */
 
-
-//球同士の衝突判定
-bool isCollision(const Ball &b1, const Ball &b2)
-{
-	float t = b1.getRadius() + b2.getRadius();
-	if ((b1.getPos() - b2.getPos()).norm() <= t) {
-		return true; // 衝突する
-	}
-	else {
-		return false; // 衝突しない
+/*
+//球１が壁と衝突
+EVec3f distance1 = b1_.getPos() - box1_.getMin();
+EVec3f distance2 = box1_.getMax() - b1_.getPos();
+EVec3f v1 = b1_.getVelocity();
+for (int i = 0; i < 3; i++) {
+	if ((distance1[i] <= b1_.getRadius() && v1[i] < 0) || (distance2[i] <= b1_.getRadius() && v1[i] > 0)) {
+		v1[i] *= -E;
 	}
 }
+b1_.setVelocity(v1);
 
-// 衝突時の速度を更新
-void UpdateVelocity(EVec3f& v1, EVec3f& v2)
-{
-	v1 = (1.0f - E) / 2.0f * v1 + (1.0f + E) / 2.0f * v2;
-	v2 = (1.0f + E) / 2.0f * v1 + (1.0f - E) / 2.0f * v2;
-}
-
-void EventManager::Step()
-{
-	float dt = 0.01f;
-	b1_.Step(dt);
-	b2_.Step(dt);
-	b3_.Step(dt);
-	
-	//球１が壁と衝突
-	EVec3f distance1 = b1_.getPos() - box1_.getMin();
-	EVec3f distance2 = box1_.getMax() - b1_.getPos();
-	EVec3f v1 = b1_.getVelocity();
-	for (int i = 0; i < 3; i++) {
-		if ((distance1[i] <= b1_.getRadius() && v1[i] < 0) || (distance2[i] <= b1_.getRadius() && v1[i] > 0)) {
-			v1[i] *= -E;
-		}
-	}
-	b1_.setVelocity(v1);
-
-	//球２が壁と衝突
-	EVec3f distance3 = b2_.getPos() - box1_.getMin();
-	EVec3f distance4 = box1_.getMax() - b2_.getPos();
-	EVec3f v2 = b2_.getVelocity();
-	for (int i = 0; i < 3; i++) {
-		if ((distance3[i] <= b2_.getRadius() && v2[i] < 0) || (distance4[i] <= b2_.getRadius() && v2[i] > 0)) {
-			v2[i] *= -E;
-		}
-	}
-	b2_.setVelocity(v2);
-
-	//球３が壁と衝突
-	EVec3f distance5 = b3_.getPos() - box1_.getMin();
-	EVec3f distance6 = box1_.getMax() - b3_.getPos();
-	EVec3f v3 = b3_.getVelocity();
-	for (int i = 0; i < 3; i++) {
-		if ((distance5[i] <= b3_.getRadius() && v3[i] < 0) || (distance6[i] <= b3_.getRadius() && v3[i] > 0)) {
-			v3[i] *= -E;
-		}
-	}
-	b3_.setVelocity(v3);
-
-	if (isCollision(b1_, b2_) == true) {
-		UpdateVelocity(v1, v2);
-		b1_.setVelocity(v1);
-		b2_.setVelocity(v2);
+//球２が壁と衝突
+EVec3f distance3 = b2_.getPos() - box1_.getMin();
+EVec3f distance4 = box1_.getMax() - b2_.getPos();
+EVec3f v2 = b2_.getVelocity();
+for (int i = 0; i < 3; i++) {
+	if ((distance3[i] <= b2_.getRadius() && v2[i] < 0) || (distance4[i] <= b2_.getRadius() && v2[i] > 0)) {
+		v2[i] *= -E;
 	}
 }
+b2_.setVelocity(v2);
 
+//球３が壁と衝突
+EVec3f distance5 = b3_.getPos() - box1_.getMin();
+EVec3f distance6 = box1_.getMax() - b3_.getPos();
+EVec3f v3 = b3_.getVelocity();
+for (int i = 0; i < 3; i++) {
+	if ((distance5[i] <= b3_.getRadius() && v3[i] < 0) || (distance6[i] <= b3_.getRadius() && v3[i] > 0)) {
+		v3[i] *= -E;
+	}
+}
+b3_.setVelocity(v3);
+*/
