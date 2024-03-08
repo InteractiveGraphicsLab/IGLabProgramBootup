@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "EventManager.h"
 
+
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
+  m_balls.push_back(Ball(EVec3f(0,0,0), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(EVec3f(10,0,0), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  m_balls.push_back(Ball(EVec3f(0,10,0), EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
 }
 
 void EventManager::DrawScene()
@@ -13,11 +17,11 @@ void EventManager::DrawScene()
   glDisable(GL_LIGHTING);//ìdãCÇè¡Ç∑
 
   //OpenGLÇ≈3ñ{ÇÃíºê¸Çï`Ç≠
-  glBegin(GL_LINES);
-  glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
-  glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
-  glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
-  glEnd();
+  //glBegin(GL_LINES);
+  //glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
+  //glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
+  //glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
+  //glEnd();
 
   //glBegin(GL_TRIANGLES);
   //glColor3d(1, 0, 0); glVertex3d(0, 0, 0); glVertex3d(10, 0, 0);
@@ -29,28 +33,11 @@ void EventManager::DrawScene()
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHT2);
 
-  const int N = 30;
-  glPointSize(3);
-  glBegin(GL_TRIANGLES);
-  for (int t = 0; t < N; t++)
-  {
-	  for (int p = 0; p < N; p++)
-	  {
-		  float t1 = t / (float)N * 2 * 3.141592;
-		  float t2 = (t + 1) / (float)N * 2 * 3.141592;
-		  float p1 = p / ((float)N - 0.5f) * 3.141592;
-		  float p2 = (p + 1) / ((float)N - 0.5f) * 3.141592;
-		  glNormal3d(cos(p1) * cos(t1), cos(p1) * sin(t1), sin(p1));
-		  glVertex3d(2 * cos(p1) * cos(t1), 2 * cos(p1) * sin(t1), 2 * sin(p1));
-		  glVertex3d(2 * cos(p2) * cos(t1), 2 * cos(p2) * sin(t1), 2 * sin(p2));
-		  glVertex3d(2 * cos(p2) * cos(t2), 2 * cos(p2) * sin(t2), 2 * sin(p2));
-		  glVertex3d(2 * cos(p1) * cos(t1), 2 * cos(p1) * sin(t1), 2 * sin(p1));
-		  glVertex3d(2 * cos(p2) * cos(t2), 2 * cos(p2) * sin(t2), 2 * sin(p2));
-		  glVertex3d(2 * cos(p1) * cos(t2), 2 * cos(p1) * sin(t2), 2 * sin(p1));
+  m_balls[0].Draw();
+  m_balls[1].Draw();
+  m_balls[2].Draw();
+  
 
-	  }
-  }
-  glEnd();
 
 }
 
