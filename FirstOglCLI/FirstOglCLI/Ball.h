@@ -13,6 +13,9 @@ public:
     Ball(const EVec3f& pos, const EVec3f& vel);
     Ball(const Ball& src);
     EVec3f GetPos() const;
+    void SetPos(const EVec3f& pos);
+    EVec3f GetVel() const;
+    void SetVel(const EVec3f& vel);
     void Draw();
     void Step(float dt);
 };

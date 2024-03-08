@@ -29,6 +29,7 @@ public:
   void RBtnUp(int x, int y, OglForCLI* ogl);
   void MouseMove(int x, int y, OglForCLI* ogl);
 
+  void Collision(const int& i, const int& j);
   void Step();
 };
 

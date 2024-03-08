@@ -6,7 +6,7 @@ Ball::Ball(const EVec3f& pos, const EVec3f& vel)
 {
 	pos_ = pos;
 	vel_ = vel;
-	radius_ = 1.0f;
+	radius_ = 0.1f;
 }
 
 Ball::Ball(const Ball& src)
@@ -19,6 +19,21 @@ Ball::Ball(const Ball& src)
 EVec3f Ball::GetPos() const
 {
 	return pos_;
+}
+
+void Ball::SetPos(const EVec3f& pos)
+{
+	pos_ = pos;
+}
+
+EVec3f Ball::GetVel() const
+{
+	return vel_;
+}
+
+void Ball::SetVel(const EVec3f& vel)
+{
+	vel_ = vel;
 }
 
 void Ball::Draw()
