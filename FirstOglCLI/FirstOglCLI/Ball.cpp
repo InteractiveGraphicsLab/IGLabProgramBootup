@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Ball.h"
 #define _USE_MATH_DEFINES
+#define e 1.0
 #include <math.h>
+#include <cmath>
 
 
 void Ball::Draw()
@@ -48,9 +50,25 @@ void Ball::DrawSphere()  //‹…‚ð•`‚­‚¾‚¯
     glEnd();
 }
 
-void Ball::SetVelo(const EVec2i& e)
+void Ball::WallCollision()
 {
-    float dist = sqrt(pow(pos_[0] - e[0], 2) + pow(pos_[1] - e[1], 2));
+    float left_point   = Stage::GetInst()->GetLeftPoint();
+    float right_point  = Stage::GetInst()->GetRightPoint();
+    float Top_point    = Stage::GetInst()->GetTopPoint();
+    float Bottom_point = Stage::GetInst()->GetBottomPoint();
+    if ((left_point - pos_[0]) >= -1 * rad_ || (right_point - pos_[0]) <= rad_)       //¶‰E‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
+        vel_[0] = -1 * e * vel_[0];
+    if ((Top_point - pos_[2]) >= -1 * rad_ || (Bottom_point - pos_[2]) <= rad_)       //ã‰º‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
+        vel_[2] = -1 * e * vel_[2];
+}
+
+void Ball::BallCollision()
+{
+}
+
+void Ball::SetVelo(const EVec3f& p)
+{
+    float dist = sqrt(pow(pos_[0] - p[0], 2) + pow(pos_[1] - p[1], 2));
     vel_ = EVec3f(dist, 0, 0);
 }
 
@@ -62,7 +80,9 @@ EVec3f Ball::GetPos()
 
 void Ball::Step(float dt)
 {
+    WallCollision();
     pos_ += vel_ * dt;
+    vel_ *= 0.99f;
     ang_ += rad_vel_ * dt;
     Draw();
 }

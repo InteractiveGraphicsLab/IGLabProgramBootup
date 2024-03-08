@@ -10,7 +10,7 @@ EventManager::EventManager()
     isL_ = isR_ = isM_ = false;
     isHit_ = false;
 
-    balls_.push_back(Ball(EVec3f(0, 0, 0)));
+    balls_.push_back(Ball(EVec3f(0, 0.5f, 0)));
 }
 
 void EventManager::DrawScene()
@@ -24,6 +24,14 @@ void EventManager::DrawScene()
     glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
     glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
     glEnd();
+
+    //” •`‰æ
+    glColor3d(1, 0, 1);
+    //stage.DrawFloor();
+    Stage::GetInst()->DrawLeftWall();
+    Stage::GetInst()->DrawRightWall();
+    Stage::GetInst()->DrawTopWall();
+    Stage::GetInst()->DrawBottomWall();
 
     glEnable(GL_DEPTH_TEST);
     //Material 
@@ -41,16 +49,16 @@ void EventManager::DrawScene()
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
 
-    if (isL_ && isHit_)
+    /*if (isL_ && isHit_)
     {
         EVec3f ball_pos = balls_[0].GetPos();
         glLineWidth(2.0f);
         glBegin(GL_LINES);
         glColor3d(1, 0, 0); glVertex3i(ball_pos[0], 0, ball_pos[1]); glVertex3i(cur_pos_[0], 0, cur_pos_[1]);
         glEnd();
-    }
+    }*/
     
-    balls_[0].SetVelo(end_pos_);
+    //balls_[0].SetVelo(end_pos_);
     balls_[0].Draw();
 }
 
@@ -105,10 +113,12 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
     ogl->MouseMove(EVec2i(x, y));
 }
 
-void EventManager::SetMode(const bool& f)
-{
-    isHit_ = f;
-}
+
+
+//void EventManager::SetMode(const bool& f)
+//{
+//    isHit_ = f;
+//}
 
 
 void EventManager::Step()

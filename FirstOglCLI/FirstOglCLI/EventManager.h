@@ -3,6 +3,7 @@
 #pragma unmanaged
 #include "OglForCLI.h"
 #include "Ball.h"
+#include <vector>
 
 class EventManager
 {
@@ -23,7 +24,7 @@ public:
     return &p;
   }
 
-  void SetMode(const bool& f);
+  //void SetMode(const bool& f);
 
   void DrawScene();
   void LBtnDown(int x, int y, OglForCLI* ogl);
