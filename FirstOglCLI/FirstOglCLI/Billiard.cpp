@@ -4,13 +4,42 @@
 Billiard::Billiard() 
 {
 	_pos   = EVec3f(0, 0, 0);
-	_size  = EVec3f(10, 3, 20);
+	_size  = EVec3f(10, 3, 15);
+	_leftPos  = _pos[0] - _size[0] / 2.0f;
+	_rightPos = _pos[0] + _size[0] / 2.0f;
+	_frontPos = _pos[2] - _size[2] / 2.0f;
+	_backPos  = _pos[2] + _size[2] / 2.0f;
+	_floorPos = _pos[1];
 }
 
 
 void Billiard::Draw() 
 {
 	DrawBilliardBord();
+}
+
+
+float Billiard::GetLeftWallPos() 
+{
+	return _leftPos;
+}
+
+
+float Billiard::GetRightWallPos()
+{
+	return _rightPos;
+}
+
+
+float Billiard::GetFrontWallPos()
+{
+	return _frontPos;
+}
+
+
+float Billiard::GetBackWallPos()
+{
+	return _backPos;
 }
 
 
@@ -33,15 +62,15 @@ void Billiard::DrawBilliardBord()
 	glEnable(GL_LIGHT2);
 
 	//頂点
-	EVec3f p1 = { _pos[0] + _size[0] / 2, 0 , _pos[2] + _size[2] / 2 }; //右下
-	EVec3f p2 = { _pos[0] + _size[0] / 2, 0 , _pos[2] - _size[2] / 2 }; //右上
-	EVec3f p3 = { _pos[0] - _size[0] / 2, 0 , _pos[2] - _size[2] / 2 }; //左上
-	EVec3f p4 = { _pos[0] - _size[0] / 2, 0 , _pos[2] + _size[2] / 2 }; //左下
+	EVec3f p1 = { _pos[0] + _size[0] / 2.0f, 0 , _pos[2] + _size[2] / 2.f }; //右下
+	EVec3f p2 = { _pos[0] + _size[0] / 2.0f, 0 , _pos[2] - _size[2] / 2.f }; //右上
+	EVec3f p3 = { _pos[0] - _size[0] / 2.f, 0 , _pos[2] - _size[2] / 2.f }; //左上
+	EVec3f p4 = { _pos[0] - _size[0] / 2.f, 0 , _pos[2] + _size[2] / 2.f }; //左下
 	
-	EVec3f p5 = { _pos[0] + _size[0] / 2, _size[1] , _pos[2] + _size[2] / 2 }; //右下
-	EVec3f p6 = { _pos[0] + _size[0] / 2, _size[1] , _pos[2] - _size[2] / 2 }; //右上
-	EVec3f p7 = { _pos[0] - _size[0] / 2, _size[1] , _pos[2] - _size[2] / 2 }; //左上
-	EVec3f p8 = { _pos[0] - _size[0] / 2, _size[1] , _pos[2] + _size[2] / 2 }; //左下
+	EVec3f p5 = { _pos[0] + _size[0] / 2.f, _size[1] , _pos[2] + _size[2] / 2.f }; //右下
+	EVec3f p6 = { _pos[0] + _size[0] / 2.f, _size[1] , _pos[2] - _size[2] / 2.f }; //右上
+	EVec3f p7 = { _pos[0] - _size[0] / 2.f, _size[1] , _pos[2] - _size[2] / 2.f }; //左上
+	EVec3f p8 = { _pos[0] - _size[0] / 2.f, _size[1] , _pos[2] + _size[2] / 2.f }; //左下
 
 	glBegin(GL_TRIANGLES);
 	

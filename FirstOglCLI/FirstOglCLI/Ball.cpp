@@ -1,14 +1,16 @@
 #include "pch.h"
 #include "EventManager.h"
 #include "Ball.h"
+#include <cmath>
+
+#include "Billiard.h"
 
 
 
 
 
 
-
-Ball::Ball(const EVec3f& pos, const EVec3f& rot, const EVec3f &velo, const float &acc, const float &r)
+Ball::Ball(const EVec3f& pos, const EVec3f& rot, const EVec3f &velo, const EVec3f&acc, const float &r)
 {
 	_pos  = pos;
 	_rot  = rot;
@@ -77,12 +79,43 @@ void Ball::DrawSphere()
 }
 
 
+void Ball::CalcPos()
+{
+	float deltaTime = 0.33f; //‚½‚Ô‚ñ‚Ç‚Á‚©‚©‚çŽ‚Á‚Ä‚±‚ê‚é‚ÆŽv‚¤
+	_velo = _velo + _acc * deltaTime;
+	_pos = _pos + _velo * deltaTime;
+}
 
 
+void Ball::WallCollision()
+{
+	if (std::abs(_pos[0] - Billiard::GetInst()->GetLeftWallPos()) <= _r)
+	{
+		float tempX = -1.0f * _velo[0] * E;
+		_velo = { tempX, _velo[1], _velo[2] };
+	}
+	else if (std::abs(_pos[0] - Billiard::GetInst()->GetRightWallPos()) <= _r)
+	{
+		float tempX = -1.0f * _velo[0] * E;
+		_velo = { tempX, _velo[1], _velo[2] };
+	}
+	else if (std::abs(_pos[2] - Billiard::GetInst()->GetFrontWallPos()) <= _r)
+	{
+		float tempZ = -1.0f * _velo[2] * E;
+		_velo = { _velo[0], _velo[1], tempZ};
+	}
+	else if (std::abs(_pos[2] - Billiard::GetInst()->GetBackWallPos()) <= _r)
+	{
+		float tempZ = -1.0f * _velo[2] * E;
+		_velo = { _velo[0], _velo[1], tempZ };
+	}
+}
 
 void Ball::Step()
 {
-	float deltaTime = 0.33f;
-	_pos = _pos + _velo * deltaTime;
+	WallCollision();
+	CalcPos();
 }
+
+
 

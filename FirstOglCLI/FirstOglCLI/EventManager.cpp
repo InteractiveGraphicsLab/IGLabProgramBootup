@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "EventManager.h"
 #include "ball.h"
+#include "Billiard.h"
 
 EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
-  _balls.push_back(Ball(EVec3f(0, 0, 0), EVec3f(0, 0, 0), EVec3f(0.1, 0, 0), 0.0f, 2));
+  _balls.push_back(Ball(EVec3f(0, 0.5, 0), EVec3f(0, 0, 0), EVec3f(0.3, 0, 0.5), EVec3f(0, 0, 0), 0.5));
 }
 
 void EventManager::DrawScene()
@@ -20,6 +21,7 @@ void EventManager::DrawScene()
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
 
+  Billiard::GetInst()->Draw();
   _balls[0].Draw();
   //
 }
