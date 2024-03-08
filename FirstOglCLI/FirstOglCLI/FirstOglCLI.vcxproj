@@ -133,11 +133,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="Billiard.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="pltObject.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Value.h" />
@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Billiard.cpp" />
     <ClCompile Include="FirstOglCLI.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="pch.cpp">

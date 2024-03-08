@@ -16,12 +16,12 @@ Ball::Ball(const Ball& src)
 	radius_ = src.radius_;
 }
 
-EVec3f Ball::getPos() const
+EVec3f Ball::GetPos() const
 {
 	return pos_;
 }
 
-void Ball::draw()
+void Ball::Draw()
 {
 	glBegin(GL_TRIANGLES);
 	glColor3d(1, 1, 1);

@@ -5,6 +5,7 @@ EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
   m_balls.push_back(Ball(EVec3f(0, 0, 0), EVec3f(0, 0, 0)));
+  billiard_ = Billiard();
 }
 
 void EventManager::DrawScene()
@@ -15,7 +16,11 @@ void EventManager::DrawScene()
 
 	glEnable(GL_LIGHT0);
 
-	m_balls[0].draw();
+	glEnable(GL_LIGHT1);
+
+	m_balls[0].Draw();
+
+	billiard_.DrawTable();
 
 	glDisable(GL_LIGHTING);//ìdãCÇè¡Ç∑
 }

@@ -12,7 +12,7 @@ private:
 public:
     Ball(const EVec3f& pos, const EVec3f& vel);
     Ball(const Ball& src);
-    EVec3f getPos() const;
-    void draw();
+    EVec3f GetPos() const;
+    void Draw();
     void Step(float dt);
 };
