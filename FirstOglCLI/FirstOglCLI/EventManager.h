@@ -2,11 +2,14 @@
 
 #pragma unmanaged
 #include "OglForCLI.h"
+#include "Ball.h"
+#include <vector>
 
 class EventManager
 {
 private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
+  std::vector<Ball> m_balls;
   EventManager();
 
 public:
@@ -26,4 +29,5 @@ public:
 
   void Step();
 };
+
 #pragma managed
