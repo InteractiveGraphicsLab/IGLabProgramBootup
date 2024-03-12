@@ -11,7 +11,7 @@ private:
   bool m_isL, m_isR, m_isM; //マウスボタンの状態
   EventManager();
   void Collision();
-  std::vector<Ball> _balls;
+  std::vector<Ball> balls_;
 
 public:
   //シングルトンクラス（see デザインパターン, シングルトン）

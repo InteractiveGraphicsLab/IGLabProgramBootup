@@ -4,59 +4,59 @@
 
 Ball::Ball(const EVec3f& pos, const EVec3f& rot, const EVec3f& velo, const EVec3f& veloangle, float radi)
 {
-    _pos = pos;
-    _rot = rot;
-    _velo = velo;
-    _veloangle = veloangle;
-    _radi = radi;
+    pos_ = pos;
+    rot_ = rot;
+    velo_ = velo;
+    veloangle_ = veloangle;
+    radi_ = radi;
 }
 
 Ball::Ball(const Ball& src)
 {
-    _pos = src._pos;
-    _rot = src._rot;
-    _velo = src._velo;
-    _veloangle = src._veloangle;
-    _radi = src._radi;
+    pos_ = src.pos_;
+    rot_ = src.rot_;
+    velo_ = src.velo_;
+    veloangle_ = src.veloangle_;
+    radi_ = src.radi_;
 }
 
 EVec3f Ball::GetPos()
 {
-    return _pos;
+    return pos_;
 }
 
 EVec3f Ball::GetVelo()
 {
-    return _velo;
+    return velo_;
 }
 
 float Ball::GetRadi()
 {
-    return _radi;
+    return radi_;
 }
 
 void Ball::SetPos(const EVec3f& pos)
 {
-    _pos = pos;
+    pos_ = pos;
 }
 
 void Ball::SetVelo(const EVec3f& velo)
 {
-    _pos = velo;
+    pos_ = velo;
 }
 
 void Ball::Step()
 {
     float dt = 0.33f;
     //_velo += EVec3f(0.0f, -1.0f, 0.0f) * dt;
-    _pos += _velo * dt;
+    pos_ += velo_ * dt;
 }
 
 void Ball::Draw()
 {
     glPushMatrix();
     //glMultMatrix();
-    glTranslated(_pos[0], _pos[1], _pos[2]);
+    glTranslated(pos_[0], pos_[1], pos_[2]);
     DrawSphere();
     glPopMatrix();
 }
@@ -64,7 +64,7 @@ void Ball::Draw()
 void Ball::DrawSphere()
 {
     const int N = 20;
-    const double _PI = 3.141562;
+    const double PI = 3.141562;
 
     glEnable(GL_DEPTH_TEST);
     //Material 
@@ -87,24 +87,24 @@ void Ball::DrawSphere()
     {
         for (int x = 0; x < N; x++)
         {
-            double t1 = (x) / (double)N * 2.0 * _PI;
-            double t2 = (x + 1) / (double)N * 2.0 * _PI;
-            double p1 = (y) / (double)N * 1.0 * _PI - 0.5 * _PI;
-            double p2 = (y + 1) / (double)N * 1.0 * _PI - 0.5 * _PI;
+            double t1 = (x) / (double)N * 2.0 * PI;
+            double t2 = (x + 1) / (double)N * 2.0 * PI;
+            double p1 = (y) / (double)N * 1.0 * PI - 0.5 * PI;
+            double p2 = (y + 1) / (double)N * 1.0 * PI - 0.5 * PI;
 
             glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
-            glVertex3d(cos(t1) * cos(p1) * _radi, sin(p1) * _radi, sin(t1) * cos(p1) * _radi);
+            glVertex3d(cos(t1) * cos(p1) * radi_, sin(p1) * radi_, sin(t1) * cos(p1) * radi_);
             glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
-            glVertex3d(cos(t2) * cos(p2) * _radi, sin(p2) * _radi, sin(t2) * cos(p2) * _radi);
+            glVertex3d(cos(t2) * cos(p2) * radi_, sin(p2) * radi_, sin(t2) * cos(p2) * radi_);
             glNormal3d(cos(t2) * cos(p1), sin(p1), sin(t2) * cos(p1));
-            glVertex3d(cos(t2) * cos(p1) * _radi, sin(p1) * _radi, sin(t2) * cos(p1) * _radi);
+            glVertex3d(cos(t2) * cos(p1) * radi_, sin(p1) * radi_, sin(t2) * cos(p1) * radi_);
 
             glNormal3d(cos(t1) * cos(p1), sin(p1), sin(t1) * cos(p1));
-            glVertex3d(cos(t1) * cos(p1) * _radi, sin(p1) * _radi, sin(t1) * cos(p1) * _radi);
+            glVertex3d(cos(t1) * cos(p1) * radi_, sin(p1) * radi_, sin(t1) * cos(p1) * radi_);
             glNormal3d(cos(t1) * cos(p2), sin(p2), sin(t1) * cos(p2));
-            glVertex3d(cos(t1) * cos(p2) * _radi, sin(p2) * _radi, sin(t1) * cos(p2) * _radi);
+            glVertex3d(cos(t1) * cos(p2) * radi_, sin(p2) * radi_, sin(t1) * cos(p2) * radi_);
             glNormal3d(cos(t2) * cos(p2), sin(p2), sin(t2) * cos(p2));
-            glVertex3d(cos(t2) * cos(p2) * _radi, sin(p2) * _radi, sin(t2) * cos(p2) * _radi);
+            glVertex3d(cos(t2) * cos(p2) * radi_, sin(p2) * radi_, sin(t2) * cos(p2) * radi_);
 
         }
     }

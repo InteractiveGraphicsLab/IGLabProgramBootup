@@ -5,7 +5,7 @@ EventManager::EventManager()
 {
   m_isL = m_isR = m_isM = false;
 
-  _balls.push_back(Ball(EVec3f(0.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), EVec3f(1.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), 0.5f));
+  balls_.push_back(Ball(EVec3f(0.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), EVec3f(1.0f, 0.0f, 0.0f), EVec3f(0.0f, 0.0f, 0.0f), 0.5f));
 }
 
 void EventManager::DrawScene()
@@ -24,34 +24,34 @@ void EventManager::DrawScene()
   glColor3d(0, 0, 1); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   glEnd();
 
-  for (int i = 0; i < _balls.size(); i++)
+  for (int i = 0; i < balls_.size(); i++)
   {
-      _balls[i].Draw();
+      balls_[i].Draw();
   }
 }
 
 void EventManager::Collision()
 {
-    for (int i = 0; i < _balls.size(); i++)
+    for (int i = 0; i < balls_.size(); i++)
     {
-        for (int j = i+1; j < _balls.size(); j++)
+        for (int j = i+1; j < balls_.size(); j++)
         {
-            EVec3f d = _balls[j].GetPos() - _balls[i].GetPos();
+            EVec3f d = balls_[j].GetPos() - balls_[i].GetPos();
             EVec3f dn = d.normalized();
-            float radi = _balls[i].GetRadi() + _balls[j].GetRadi();
+            float radi = balls_[i].GetRadi() + balls_[j].GetRadi();
 
             if (d.norm() > radi) continue;
 
-            EVec3f vec_par1 = _balls[i].GetVelo().dot(dn) * dn;
-            EVec3f vec_ver1 = _balls[i].GetVelo() - vec_par1;
-            EVec3f vec_par2 = _balls[j].GetVelo().dot(dn) * dn;
-            EVec3f vec_ver2 = _balls[j].GetVelo() - vec_par2;
-            _balls[i].SetVelo(vec_par2 + vec_ver1);
-            _balls[j].SetVelo(vec_par1 + vec_ver2);
+            EVec3f vec_par1 = balls_[i].GetVelo().dot(dn) * dn;
+            EVec3f vec_ver1 = balls_[i].GetVelo() - vec_par1;
+            EVec3f vec_par2 = balls_[j].GetVelo().dot(dn) * dn;
+            EVec3f vec_ver2 = balls_[j].GetVelo() - vec_par2;
+            balls_[i].SetVelo(vec_par2 + vec_ver1);
+            balls_[j].SetVelo(vec_par1 + vec_ver2);
 
             float distance = (radi - d.norm()) / 2.0f;
-            _balls[i].SetPos(_balls[i].GetPos() - dn * distance);
-            _balls[j].SetPos(_balls[j].GetPos() + dn * distance);
+            balls_[i].SetPos(balls_[i].GetPos() - dn * distance);
+            balls_[j].SetPos(balls_[j].GetPos() + dn * distance);
         }
     }
 }
@@ -101,9 +101,9 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 
 void EventManager::Step()
 {
-    for (int i = 0; i < _balls.size(); i++)
+    for (int i = 0; i < balls_.size(); i++)
     {
-        _balls[i].Step();
+        balls_[i].Step();
     }
     Collision();
 }

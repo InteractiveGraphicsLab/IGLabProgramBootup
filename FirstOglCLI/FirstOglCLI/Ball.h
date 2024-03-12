@@ -5,8 +5,8 @@
 class Ball
 {
 private:
-    EVec3f _pos, _rot, _velo, _veloangle;
-    float _radi;
+    EVec3f pos_, rot_, velo_, veloangle_;
+    float radi_;
     
 public:
     Ball(const EVec3f& pos, const EVec3f& rot, const EVec3f& velo, const EVec3f& veloangle, float radi);
