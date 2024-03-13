@@ -5,11 +5,11 @@
 #include "Ball.h"
 #include "Box.h"
 
-#define M_PI 3.141592 //‰~ü—¦
+//#define M_PI 3.141592 //‰~ü—¦
 //#define R 2.0f        //‹…‚Ì”¼Œa
 //#define DT 0.01f      //step‚Ì1ƒtƒŒ[ƒ€‚ ‚½‚è‚ÌŠÔ‚ğ‰¼’è
-#define G -9.8f       //d—Í‰Á‘¬“x
-#define E 0.99f        // ”½”­ŒW”
+//#define G -9.8f       //d—Í‰Á‘¬“x
+//#define E 0.99f        // ”½”­ŒW”
 
 class EventManager
 {

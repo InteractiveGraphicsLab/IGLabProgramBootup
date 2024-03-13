@@ -55,6 +55,7 @@ bool Ball::getCollision() const
 
 void Ball::Draw() {
 	const int N = 10;
+	float M_PI = 3.141592f;
 	glBegin(GL_TRIANGLES);
 	for (int j = 0; j < N; j++)
 	{

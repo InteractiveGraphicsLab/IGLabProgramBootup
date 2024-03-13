@@ -9,18 +9,18 @@ EventManager::EventManager()
 	m_isL = m_isR = m_isM = false;
 
 	//箱の大きさを設定
-	EVec3f max1 = { 20.0f, 30.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
+	EVec3f max1 = { 20.0f, 10.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
 	box1_.setMax(max1);
 	box1_.setMin(min1);
 
 	//球の初期位置をセット
-	EVec3f pos1 = { 1.0f, 2.0f, 3.0f }, pos2 = { 6.0f, 7.0f, 8.0f }, pos3 = { 11.0f, 12.0f, 13.0f };
+	EVec3f pos1 = { 1.0f, 0.0f, 3.0f }, pos2 = { 6.0f, 0.0f, 8.0f }, pos3 = { 11.0f, 0.0f, 13.0f };
 	b1_.setPos(pos1);
 	b2_.setPos(pos2);
 	b3_.setPos(pos3);
 
 	//球の初速をセット
-	EVec3f v1 = { 5.0f, 5.0f, 5.0f }, v2 = { 6.0f, 6.0f, 6.0f }, v3 = { 7.0f, 7.0f, 7.0f };
+	EVec3f v1 = { -5.0f, 0.0f, -85.0f }, v2 = { 26.0f, 0.0f, 26.0f }, v3 = { -70.0f, 0.0f, 50.0f };
 	b1_.setVelocity(v1);
 	b2_.setVelocity(v2);
 	b3_.setVelocity(v3);
@@ -106,7 +106,7 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 }
 
 
-
+/*
 //球同士の衝突判定
 bool isCollision(const Ball& b1, const Ball& b2)
 {
@@ -118,8 +118,9 @@ bool isCollision(const Ball& b1, const Ball& b2)
 		return false; // 衝突しない
 	}
 }
+*/
 
-/*
+
 //球同士の衝突判定
 bool isCollision(Ball &b1, Ball &b2)
 {
@@ -129,7 +130,7 @@ bool isCollision(Ball &b1, Ball &b2)
 		b2.setCollision(true);
 		return true; // 衝突する
 	}
-	else if ((b1.getPos() - b2.getPos()).norm() <= t && (b1.getCollision() == true || b2.getCollision() == true)) {
+	else if ((b1.getPos() - b2.getPos()).norm() <= t && (b1.getCollision() == true || b2.getCollision() == true)) { // 接触中に接触
 		return false;
 	}
 	else { //離れたら
@@ -138,13 +139,15 @@ bool isCollision(Ball &b1, Ball &b2)
 		return false; // 衝突しない
 	}
 }
-*/
+
 
 // 衝突時の速度を更新
 void UpdateVelocity(EVec3f& v1, EVec3f& v2)
 {
-	v1 = (1.0f - E) / 2.0f * v1 + (1.0f + E) / 2.0f * v2;
-	v2 = (1.0f + E) / 2.0f * v1 + (1.0f - E) / 2.0f * v2;
+	float E = 0.99f;
+	EVec3f temp_v1 = v1, temp_v2 = v2;
+	v1 = (1.0f - E) / 2.0f * temp_v1 + (1.0f + E) / 2.0f * temp_v2;
+	v2 = (1.0f + E) / 2.0f * temp_v1 + (1.0f - E) / 2.0f * temp_v2; 
 }
 
 void EventManager::Step()
@@ -156,6 +159,7 @@ void EventManager::Step()
 
 	
 	//球１が壁と衝突
+	float E = 0.99f;
 	EVec3f distance1 = b1_.getPos() - box1_.getMin(); // 名前変えたい...
 	EVec3f distance2 = box1_.getMax() - b1_.getPos();
 	EVec3f v1 = b1_.getVelocity();
@@ -206,6 +210,16 @@ void EventManager::Step()
 		UpdateVelocity(v1, v2);
 		b1_.setVelocity(v1);
 		b2_.setVelocity(v2);
+	}
+	if (isCollision(b2_, b3_) == true) {
+		UpdateVelocity(v2, v3);
+		b2_.setVelocity(v2);
+		b3_.setVelocity(v3);
+	}
+	if (isCollision(b3_, b1_) == true) {
+		UpdateVelocity(v3, v1);
+		b3_.setVelocity(v3);
+		b1_.setVelocity(v1);
 	}
 }
 
@@ -296,3 +310,24 @@ for (int i = 0; i < 3; i++) {
 }
 b3_.setVelocity(v3);
 */
+
+/*
+//球同士の衝突
+	if (isCollision(b1_, b2_) == true) {
+		EVec3f temp_v1 = b1_.getVelocity(), temp_v2 = b2_.getVelocity();
+		UpdateVelocity(temp_v1, temp_v2);
+		b1_.setVelocity(temp_v1);
+		b2_.setVelocity(temp_v2);
+	}
+	if (isCollision(b2_, b3_) == true) {
+		EVec3f temp_v2 = b2_.getVelocity(), temp_v3 = b3_.getVelocity();
+		UpdateVelocity(temp_v2, temp_v3);
+		b1_.setVelocity(temp_v2);
+		b2_.setVelocity(temp_v3);
+	}
+	if (isCollision(b3_, b1_) == true) {
+		EVec3f temp_v3 = b3_.getVelocity(), temp_v1 = b1_.getVelocity();
+		UpdateVelocity(temp_v3, temp_v1);
+		b1_.setVelocity(temp_v3);
+		b2_.setVelocity(temp_v1);
+	}*/
