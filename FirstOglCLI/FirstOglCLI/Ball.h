@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OglForCLI.h"
+#include "EventManager.h"
 
 class Ball
 {

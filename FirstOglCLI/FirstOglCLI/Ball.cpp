@@ -42,14 +42,20 @@ void Ball::SetPos(const EVec3f& pos)
 
 void Ball::SetVelo(const EVec3f& velo)
 {
-    pos_ = velo;
+    velo_ = velo;
 }
 
 void Ball::Step()
 {
     float dt = 0.33f;
-    //_velo += EVec3f(0.0f, -1.0f, 0.0f) * dt;
+    velo_ += EVec3f(0.0f, -1.0f, 0.0f) * dt;
     pos_ += velo_ * dt;
+
+    if (pos_[1] < radi_)
+    {
+        pos_[1] = radi_ + 0.0001f;
+        velo_[1] *= -0.98f;
+    }
 }
 
 void Ball::Draw()
