@@ -29,6 +29,8 @@ void EventManager::DrawScene()
 
 void EventManager::Collision()
 {
+    const float E = 1.0;
+
     for (int i = 0; i < balls_.size(); i++)
     {
         for (int j = i+1; j < balls_.size(); j++)

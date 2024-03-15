@@ -20,17 +20,17 @@ Ball::Ball(const Ball& src)
     radi_ = src.radi_;
 }
 
-EVec3f Ball::GetPos()
+EVec3f Ball::GetPos() const
 {
     return pos_;
 }
 
-EVec3f Ball::GetVelo()
+EVec3f Ball::GetVelo() const
 {
     return velo_;
 }
 
-float Ball::GetRadi()
+float Ball::GetRadi() const
 {
     return radi_;
 }
@@ -58,7 +58,7 @@ void Ball::Step()
     }
 }
 
-void Ball::Draw()
+void Ball::Draw() const
 {
     glPushMatrix();
     //glMultMatrix();
@@ -67,7 +67,7 @@ void Ball::Draw()
     glPopMatrix();
 }
 
-void Ball::DrawSphere()
+void Ball::DrawSphere() const
 {
     const int N = 20;
     const double PI = 3.141562;
