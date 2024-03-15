@@ -6,7 +6,7 @@ Ball::Ball(const EVec3f& pos, const EVec3f& vel)
 {
 	pos_ = pos;
 	vel_ = vel;
-	radius_ = 0.1f;
+	radius_ = radius;
 }
 
 Ball::Ball(const Ball& src)
@@ -40,7 +40,7 @@ void Ball::Draw()
 {
 	glBegin(GL_TRIANGLES);
 	glColor3d(1, 1, 1);
-	const int N = 15;
+	const int N = 25;
 	for (int t = 0; t < N; t++)
 	{
 		for (int p = 0; p < N; p++)
@@ -67,4 +67,5 @@ void Ball::Step(float dt)
 {
 	vel_ += grav_ * dt;
 	pos_ += vel_ * dt;
+
 }

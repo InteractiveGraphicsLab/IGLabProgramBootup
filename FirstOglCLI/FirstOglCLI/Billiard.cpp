@@ -11,7 +11,7 @@ Billiard::Billiard() {
 void Billiard::DrawTable()
 {
 	glBegin(GL_TRIANGLES);
-	glColor3d(1, 1, 1);
+	glColor3d(0, 1, 0);
 
 	glVertex3d(m_vertices[0][0], m_vertices[0][1], m_vertices[0][2]);
 	glVertex3d(m_vertices[1][0], m_vertices[1][1], m_vertices[1][2]);
