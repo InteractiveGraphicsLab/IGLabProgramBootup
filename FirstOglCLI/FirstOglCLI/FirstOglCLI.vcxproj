@@ -133,17 +133,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="BilliardTable.h" />
+    <ClInclude Include="Cuboid.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="EventManager.h" />
-    <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="BilliardTable.cpp" />
+    <ClCompile Include="Cuboid.cpp" />
     <ClCompile Include="FirstOglCLI.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="pch.cpp">
@@ -153,7 +156,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />

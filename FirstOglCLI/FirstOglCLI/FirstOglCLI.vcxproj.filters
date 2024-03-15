@@ -35,7 +35,10 @@
     <ClInclude Include="Ball.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Table.h">
+    <ClInclude Include="Cuboid.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BilliardTable.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -58,7 +61,10 @@
     <ClCompile Include="Ball.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Table.cpp">
+    <ClCompile Include="Cuboid.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="BilliardTable.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
