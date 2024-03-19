@@ -14,5 +14,6 @@ public:
 		static BilliardsTable p;
 		return &p;
 	}
+	void Draw() const;
 };
 

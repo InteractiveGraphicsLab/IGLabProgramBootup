@@ -25,6 +25,17 @@ void EventManager::DrawScene()
     {
         balls_[i].Draw();
     }
+    BilliardsTable::GetInst()->Draw();
+}
+
+void EventManager::CollideBall()
+{
+    return;
+}
+
+void EventManager::CollideTable()
+{
+    return;
 }
 
 void EventManager::Collision()
@@ -45,8 +56,8 @@ void EventManager::Collision()
             EVec3f vec_ver1 = balls_[i].GetVelo() - vec_par1;
             EVec3f vec_par2 = balls_[j].GetVelo().dot(dn) * dn;
             EVec3f vec_ver2 = balls_[j].GetVelo() - vec_par2;
-            balls_[i].SetVelo(vec_par2 + vec_ver2);
-            balls_[j].SetVelo(vec_par1 + vec_ver1);
+            balls_[i].SetVelo(vec_par2 + vec_ver1);
+            balls_[j].SetVelo(vec_par1 + vec_ver2);
 
             float distance = (radi - d.norm()) / 2.0f;
             balls_[i].SetPos(balls_[i].GetPos() - dn * distance);
