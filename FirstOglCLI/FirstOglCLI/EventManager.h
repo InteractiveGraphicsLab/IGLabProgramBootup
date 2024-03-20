@@ -31,11 +31,12 @@ public:
 
   void Step();
 
-  bool IsCollisionWithBalls(const Ball& ball) const;
-  void ProcessCollisionWithBalls(const Ball& ball);
+  bool CheckCollisionWithBalls(const Ball& ball) const;
+  void DoCollisionWithBalls(const Ball& ball);
+  int* GetCollisionList() const;
 
-  bool IsCollisionWithBilliardTable(const Ball& ball) const;
-  void ProcessCollisionWithBilliardTable(const Ball& ball);
+  bool CheckCollisionWithBilliardTable(const Ball& ball) const;
+  void DoCollisionWithBilliardTable(const Ball& ball);
 
   //‘S‚Ä‚ÌÕ“Ëˆ—“à‚ÌˆÚ“®‚ğÅŒã‚ÉXV‚·‚éŠÖ”(Todo) UpdatePos(‰¼)
 };

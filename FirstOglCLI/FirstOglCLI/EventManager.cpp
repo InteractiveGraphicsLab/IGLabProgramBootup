@@ -10,7 +10,7 @@ EventManager::EventManager()
 
 void EventManager::DrawScene()
 {
-  for (const auto& b : balls_) {
+  for (const Ball& b : balls_) {
     b.Draw();
   }
 
@@ -62,11 +62,11 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 
 void EventManager::Step()
 {
-  for (auto& b : balls_) {
+  for (Ball& b : balls_) {
     b.Step();
   }
 
-  /*for (auto& b : balls_) {
+  /*for (Ball& b : balls_) {
     if (IsCollisionWithBalls(b))
     {
       ProcessCollisionWithBalls(b);
@@ -98,3 +98,35 @@ void EventManager::Step()
 //{
 //  return; //Todo
 //}
+
+int* EventManager::GetCollisionList() const
+{
+  const float bounce = 1.0f;
+
+  for (const Ball& b1 : balls_) {
+    for (const Ball& b2 : balls_) {
+      EVec3f b1_pos  = b1.GetPos();
+      EVec3f b2_pos  = b2.GetPos();
+      float  b1_radi = b1.GetRadi();
+      float  b2_radi = b2.GetRadi();
+      EVec3f b1_velo = b1.GetVelo();
+      EVec3f b2_velo = b2.GetVelo();
+
+      EVec3f q = b1_pos - b2_pos;
+      EVec3f u = b1_velo - b2_velo;
+
+      float discri = powf(q.dot(u), 2.0f) - u.squaredNorm() * (q.squaredNorm() - powf(b1_radi + b2_radi, 2.0f));
+
+      if (discri > 0.0f && u.norm() > 0.0f)
+      {
+        float C = (-q.dot(u) - sqrtf(discri)) / u.squaredNorm();
+        std::cout << C << std::endl;
+        if (C >= 0.0f && C <= t)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+};
