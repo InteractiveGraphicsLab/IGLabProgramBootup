@@ -27,26 +27,54 @@ void Cuboid::Draw() const
 
 void Cuboid::DrawCuboid() const
 {
+  EVec3f vertex[] = {
+    {EVec3f(-width_, -height_, -depth_)},
+    {EVec3f(-width_, -height_,  depth_)},
+    {EVec3f(-width_,  height_, -depth_)},
+    {EVec3f(-width_,  height_,  depth_)},
+    {EVec3f( width_, -height_, -depth_)},
+    {EVec3f( width_, -height_,  depth_)},
+    {EVec3f( width_,  height_, -depth_)},
+    {EVec3f( width_,  height_,  depth_)}
+  };
+
+  int face[][3] = {
+    {0, 1, 2},
+    {1, 2, 3},
+    {0, 1, 4},
+    {1, 4, 5},
+    {0, 2, 4},
+    {2, 4, 6},
+    {4, 5, 6},
+    {5, 6, 7},
+    {2, 3, 6},
+    {3, 6, 7},
+    {1, 3, 5},
+    {3, 5, 7}
+  };
+
+  EVec3f normal[] = {
+    {EVec3f(-1.0,  0.0,  0.0)},
+    {EVec3f(-1.0,  0.0,  0.0)},
+    {EVec3f( 0.0, -1.0,  0.0)},
+    {EVec3f( 0.0, -1.0,  0.0)},
+    {EVec3f( 0.0,  0.0, -1.0)},
+    {EVec3f( 0.0,  0.0, -1.0)},
+    {EVec3f( 1.0,  0.0,  0.0)},
+    {EVec3f( 1.0,  0.0,  0.0)},
+    {EVec3f( 0.0,  1.0,  0.0)},
+    {EVec3f( 0.0,  1.0,  0.0)},
+    {EVec3f( 0.0,  0.0,  1.0)},
+    {EVec3f( 0.0,  0.0,  1.0)}
+  };
+
   glEnable(GL_LIGHTING);
   glBegin(GL_TRIANGLES);
 
-  EVec3f twoPos[2];
-  twoPos[0] = pos_ - EVec3f(width_, height_, depth_);
-  twoPos[1] = pos_ + EVec3f(width_, height_, depth_);
-
-  for (int x = 0; x < 2; x++) {
-    for (int y = 0; y < 2; y++) {
-      glVertex3f(twoPos[x][0], twoPos[y][1], twoPos[y][2]);
-      glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[y][2]);
-      glVertex3f(twoPos[x][0], twoPos[1 - y][1], twoPos[1 - y][2]);
-
-      glVertex3f(twoPos[y][0], twoPos[x][1], twoPos[y][2]);
-      glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[y][2]);
-      glVertex3f(twoPos[1 - y][0], twoPos[x][1], twoPos[1 - y][2]);
-
-      glVertex3f(twoPos[y][0], twoPos[y][1], twoPos[x][2]);
-      glVertex3f(twoPos[1 - y][0], twoPos[y][1], twoPos[x][2]);
-      glVertex3f(twoPos[1 - y][0], twoPos[1 - y][1], twoPos[x][2]);
+  for (int i = 0; i < 12; ++i) {
+    glNormal3fv(normal[i].data()); //法線ベクトルの指定
+    for (int j = 0; j < 3; ++j) {
+      glVertex3fv(vertex[face[i][j]].data());
     }
   }
   glEnd();

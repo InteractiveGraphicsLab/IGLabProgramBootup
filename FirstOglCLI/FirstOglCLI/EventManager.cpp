@@ -66,7 +66,7 @@ void EventManager::Step()
     b.Step();
   }
 
-  for (auto& b : balls_) {
+  /*for (auto& b : balls_) {
     if (IsCollisionWithBalls(b))
     {
       ProcessCollisionWithBalls(b);
@@ -76,25 +76,25 @@ void EventManager::Step()
     {
       ProcessCollisionWithBilliardTable(b);
     }
-  }
+  }*/
 }
 
-bool EventManager::IsCollisionWithBalls(const Ball& ball) const
-{
-  return; //Todo
-}
-
-void EventManager::ProcessCollisionWithBalls(const Ball& ball)
-{
-  return; //Todo
-}
-
-bool EventManager::IsCollisionWithBilliardTable(const Ball& ball) const
-{
-  return; //Todo
-}
-
-void EventManager::ProcessCollisionWithBilliardTable(const Ball& ball)
-{
-  return; //Todo
-}
+//bool EventManager::IsCollisionWithBalls(const Ball& ball) const
+//{
+//  return; //Todo
+//}
+//
+//void EventManager::ProcessCollisionWithBalls(const Ball& ball)
+//{
+//  return; //Todo
+//}
+//
+//bool EventManager::IsCollisionWithBilliardTable(const Ball& ball) const
+//{
+//  return; //Todo
+//}
+//
+//void EventManager::ProcessCollisionWithBilliardTable(const Ball& ball)
+//{
+//  return; //Todo
+//}
