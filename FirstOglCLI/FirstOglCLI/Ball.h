@@ -16,11 +16,11 @@ private:
     float  wgh_;        //重さ(g)
 
 public:
-    Ball(const EVec3f& p)
+    Ball(const EVec3f& p, const EVec3f& v)
     {
         pos_ = p;               
         rot_ << 0, 0, -1;;          //速度に対して垂直な軸になるように変更する必要あり
-        vel_ << 1.0f, 0, 1.0f;;
+        vel_ = v;;
         ang_ = 0;
         rad_ = 0.5f;
         wgh_ = 170;
@@ -44,9 +44,9 @@ public:
     void DrawSphere();
     void Step(float t);
     void WallCollision();
-    void BallCollision();
+    void BallCollision(Ball& b);
 
-    void SetVelo(const EVec3f& p);
+    void SetVelo(const EVec3f& v);
     EVec3f GetVelo();
     void SetPos();
     EVec3f GetPos();

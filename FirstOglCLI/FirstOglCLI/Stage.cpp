@@ -4,14 +4,17 @@
 
 Stage::Stage()
 {
-	point0_ = EVec3f(-10, 3, -5);
-	point1_ = EVec3f(10, 3, -5);
-	point2_ = EVec3f(-10, 3, 5);
-	point3_ = EVec3f(10, 3, 5);
-	point4_ = EVec3f(-10, 0, -5);
-	point5_ = EVec3f(10, 0, -5);
-	point6_ = EVec3f(-10, 0, 5);
-	point7_ = EVec3f(10, 0, 5);
+	length_ = 20.0f;
+	width_  = 40.0f;
+	height_ = 1.0f;
+	point0_ = EVec3f(     0, height_,       0);
+	point1_ = EVec3f(width_, height_,		0);
+	point2_ = EVec3f(     0, height_, length_);
+	point3_ = EVec3f(width_, height_, length_);
+	point4_ = EVec3f(	  0,	   0,	    0);
+	point5_ = EVec3f(width_,       0,		0);
+	point6_ = EVec3f(     0,	   0, length_);
+	point7_ = EVec3f(width_,       0, length_);
 };
 
 void Stage::DrawFloor()

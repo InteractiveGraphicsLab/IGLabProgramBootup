@@ -5,6 +5,9 @@
 class Stage
 {
 private:
+	float length_;
+	float width_;
+	float height_;
 	EVec3f point0_;
 	EVec3f point1_;
 	EVec3f point2_;

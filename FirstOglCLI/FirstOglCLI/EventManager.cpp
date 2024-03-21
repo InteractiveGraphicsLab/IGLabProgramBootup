@@ -10,7 +10,9 @@ EventManager::EventManager()
     isL_ = isR_ = isM_ = false;
     isHit_ = false;
 
-    balls_.push_back(Ball(EVec3f(0, 0.5f, 0)));
+    balls_.push_back(Ball(EVec3f(1.0f, 0.5f, 3.0f), EVec3f(2.0f, 0, 1.0f)));
+    balls_.push_back(Ball(EVec3f(12.0f, 0.5f, 5.0f), EVec3f(-1.5f, 0, 0.5f)));
+    balls_.push_back(Ball(EVec3f(5.0f, 0.5f, 8.0f), EVec3f(-1.5f, 0, -1.0f)));
 }
 
 void EventManager::DrawScene()
@@ -26,7 +28,7 @@ void EventManager::DrawScene()
     glEnd();
 
     //” •`‰æ
-    glColor3d(1, 0, 1);
+    glColor3d(0, 0.5, 0);
     //stage.DrawFloor();
     Stage::GetInst()->DrawLeftWall();
     Stage::GetInst()->DrawRightWall();
@@ -46,8 +48,8 @@ void EventManager::DrawScene()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);
+    /*glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);*/
 
     /*if (isL_ && isHit_)
     {
@@ -59,7 +61,10 @@ void EventManager::DrawScene()
     }*/
     
     //balls_[0].SetVelo(end_pos_);
-    balls_[0].Draw();
+    for (int i = 0; i < balls_.size(); i++)
+    {
+        balls_[i].Draw();
+    }
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
@@ -125,6 +130,10 @@ void EventManager::Step()
 {
     for (int i = 0; i < balls_.size(); i++)
     {
+        for (int j = i + 1; j < balls_.size(); j++)
+        {
+            balls_[i].BallCollision(balls_[j]);
+        }
         balls_[i].Step(0.33f);
     }
 }

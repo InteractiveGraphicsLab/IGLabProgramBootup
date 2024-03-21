@@ -2,8 +2,8 @@
 #include "Ball.h"
 #define _USE_MATH_DEFINES
 #define e 1.0
+#define offset 0.1f
 #include <math.h>
-#include <cmath>
 
 
 void Ball::Draw()
@@ -56,20 +56,31 @@ void Ball::WallCollision()
     float right_point  = Stage::GetInst()->GetRightPoint();
     float Top_point    = Stage::GetInst()->GetTopPoint();
     float Bottom_point = Stage::GetInst()->GetBottomPoint();
-    if ((left_point - pos_[0]) >= -1 * rad_ || (right_point - pos_[0]) <= rad_)       //¶‰E‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
+    if ((left_point - pos_[0]) >= -1 * (rad_ + offset) || (right_point - pos_[0]) <= (rad_ + offset))       //¶‰E‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
         vel_[0] = -1 * e * vel_[0];
-    if ((Top_point - pos_[2]) >= -1 * rad_ || (Bottom_point - pos_[2]) <= rad_)       //ã‰º‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
+    if ((Top_point - pos_[2]) >= -1 * (rad_ + offset) || (Bottom_point - pos_[2]) <= (rad_ + offset))       //ã‰º‚Ì•Ç‚Æ‚ÌÕ“Ë”»’è
         vel_[2] = -1 * e * vel_[2];
 }
 
-void Ball::BallCollision()
+void Ball::BallCollision(Ball& b)
 {
+    float center_dist = sqrt(pow(pos_[0] - b.pos_[0], 2) + pow(pos_[2] - b.pos_[2], 2));
+    if (center_dist <= 2 * (rad_ + offset))
+    {
+        EVec3f temp = vel_;
+        vel_ = b.vel_;
+        b.vel_ = temp;
+    }
 }
 
-void Ball::SetVelo(const EVec3f& p)
+void Ball::SetVelo(const EVec3f& v)
 {
-    float dist = sqrt(pow(pos_[0] - p[0], 2) + pow(pos_[1] - p[1], 2));
-    vel_ = EVec3f(dist, 0, 0);
+    vel_ = EVec3f(v);
+}
+
+EVec3f Ball::GetVelo()
+{
+    return vel_;
 }
 
 EVec3f Ball::GetPos()
@@ -82,7 +93,7 @@ void Ball::Step(float dt)
 {
     WallCollision();
     pos_ += vel_ * dt;
-    vel_ *= 0.99f;
+    //vel_ *= 0.99f;
     ang_ += rad_vel_ * dt;
     Draw();
 }
