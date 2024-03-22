@@ -4,6 +4,7 @@
 #include "OglForCLI.h"
 #include "Ball.h"
 #include "LoadObject.h"
+#include "BilliardTable.h"
 
 
 class EventManager
@@ -16,6 +17,7 @@ private:
   EventManager();
 
   std::vector<Ball> m_balls;
+  BilliardTable table;
   LoadObject Lobj;
   Object obj;
 

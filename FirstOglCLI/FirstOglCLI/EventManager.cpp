@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "EventManager.h"
 #include "Ball.h"
+#include "BilliardTable.h"
 #include "math.h"
 
 EventManager::EventManager()
@@ -26,6 +27,8 @@ void EventManager::DrawScene()
   //glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 10, 0);
   //glColor3d(0, 1, 0); glVertex3d(0, 0, 0); glVertex3d(0, 0, 10);
   //glEnd();
+
+  table.GenerateBilliardTable();
 
   //int pointSize = 1;
   float t = 0.01;
