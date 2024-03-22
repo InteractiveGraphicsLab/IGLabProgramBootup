@@ -31,6 +31,7 @@ public:
     void MBtnUp(int x, int y, OglForCLI* ogl);
     void RBtnUp(int x, int y, OglForCLI* ogl);
     void MouseMove(int x, int y, OglForCLI* ogl);
+    void MouseForce(int x, int y, OglForCLI* ogl);
     void Step();
     void Init();
 };

@@ -43,6 +43,6 @@ void Cuboid::DrawCuboid() const
 	EVec3f ver2 = pos_ + EVec3f(width_, height_, depth_);
 
 	glBegin(GL_TRIANGLES);
-    
+	
     glEnd();
 }

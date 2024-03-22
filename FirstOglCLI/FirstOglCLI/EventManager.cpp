@@ -64,48 +64,58 @@ void EventManager::Collision()
             balls_[j].SetPos(balls_[j].GetPos() + dn * distance);
         }
     }
+
+    /*
+    for (int i = 0; i < balls_.size(); i++)
+    {
+        for (int j = 0; j < cuboids_.size(); j++)
+        {
+
+        }
+    }
+    */
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isL = true;
-  ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
+    m_isL = true;
+    ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isM = true;
-  ogl->BtnDown_Zoom(EVec2i(x, y));
+    m_isM = true;
+    ogl->BtnDown_Zoom(EVec2i(x, y));
 }
 
 void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 {
-  m_isR = true;
-  ogl->BtnDown_Rot(EVec2i(x, y));
+    m_isR = true;
+    ogl->BtnDown_Rot(EVec2i(x, y));
 }
 
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isL = false;
-  ogl->BtnUp();
+    m_isL = false;
+    ogl->BtnUp();
 }
 
 void EventManager::MBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isM = false;
-  ogl->BtnUp();
+    m_isM = false;
+    ogl->BtnUp();
 }
 
 void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 {
-  m_isR = false;
-  ogl->BtnUp();
+    m_isR = false;
+    ogl->BtnUp();
 }
 
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
-  if (!m_isL && !m_isR && !m_isM) return;
-  ogl->MouseMove(EVec2i(x, y));
+    if (!m_isL && !m_isR && !m_isM) return;
+    ogl->MouseMove(EVec2i(x, y));
 }
 
 
@@ -116,4 +126,12 @@ void EventManager::Step()
         balls_[i].Step();
     }
     Collision();
+}
+
+void EventManager::MouseForce(int x, int y, OglForCLI* ogl) 
+{
+    EVec3f ray_pos, ray_dir;
+    if (!m_isL && !m_isR && !m_isM) return;
+    ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+    std::cout << x << " " << y << " " << ray_pos << " " << ray_dir;
 }

@@ -15,5 +15,6 @@ public:
 		return &p;
 	}
 	void Draw() const;
+	 
 };
 

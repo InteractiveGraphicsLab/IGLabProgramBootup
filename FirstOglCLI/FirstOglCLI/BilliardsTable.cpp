@@ -3,7 +3,7 @@
 
 BilliardsTable::BilliardsTable()
 {
-	cuboids_.push_back(Cuboid(EVec3f(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, 0.0f));
+	cuboids_.push_back(Cuboid(EVec3f(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f));
 }
 
 void BilliardsTable::Draw() const
@@ -12,4 +12,5 @@ void BilliardsTable::Draw() const
 	{
 		cuboids_[i].DrawCuboid();
 	}
+	std::cout << "aaaaa";
 }
