@@ -3,8 +3,13 @@
 #include "OglForCLI.h"
 #include "EventManager.h"
 
-
 Ball::Ball() {
+
+}
+
+Ball::Ball(const EVec3f& pos, const EVec3f& v) {
+	pos_ = pos;
+	v_ = v;
 	radius_ = 2.0f;
 	collision_ = true;
 }
@@ -13,13 +18,13 @@ Ball::~Ball() {
 
 }
 
-void Ball::setPos(const EVec3f &pos)
+void Ball::setPos(const EVec3f& pos)
 {
 	pos_ = pos;
 }
 
 
-void Ball::setVelocity(const EVec3f &v)
+void Ball::setVelocity(const EVec3f& v)
 {
 	v_ = v;
 }

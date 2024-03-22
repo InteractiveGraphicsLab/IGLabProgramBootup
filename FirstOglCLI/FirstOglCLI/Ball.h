@@ -11,10 +11,11 @@ private:
 	bool collision_;
 public:
 	Ball();
+	Ball(const EVec3f& pos, const EVec3f& v);
 	~Ball();
-	void setPos(const EVec3f &pos); 
+	void setPos(const EVec3f& pos); 
 	void setVelocity(const EVec3f &v); 
-	void setCollision(const bool &collision);
+	void setCollision(const bool& collision);
 	EVec3f getPos() const; 
 	EVec3f getVelocity() const; 
 	float getRadius() const;
