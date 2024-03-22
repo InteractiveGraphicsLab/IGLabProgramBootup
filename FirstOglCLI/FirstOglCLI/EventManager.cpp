@@ -8,11 +8,10 @@
 EventManager::EventManager()
 {
     isL_ = isR_ = isM_ = false;
-    isHit_ = false;
 
-    balls_.push_back(Ball(EVec3f(1.0f, 0.5f, 3.0f), EVec3f(2.0f, 0, 1.0f)));
-    balls_.push_back(Ball(EVec3f(12.0f, 0.5f, 5.0f), EVec3f(-1.5f, 0, 0.5f)));
-    balls_.push_back(Ball(EVec3f(5.0f, 0.5f, 8.0f), EVec3f(-1.5f, 0, -1.0f)));
+    balls_.push_back(Ball(EVec3f(10.0f, 0.5f, 10.0f), EVec3f(0.0f, 0, 0.0f)));
+    balls_.push_back(Ball(EVec3f(30.0f, 0.5f, 10.0f), EVec3f(0.0f, 0, 0.0f)));
+    //balls_.push_back(Ball(EVec3f(5.0f, 0.5f, 8.0f), EVec3f(-1.5f, 0, -1.0f)));
 }
 
 void EventManager::DrawScene()
@@ -35,6 +34,15 @@ void EventManager::DrawScene()
     Stage::GetInst()->DrawTopWall();
     Stage::GetInst()->DrawBottomWall();
 
+    glColor3d(0.5, 0.5, 0);
+    glBegin(GL_LINES);
+    EVec3f p0 = std::get<0>(ray_);
+    EVec3f p1 = std::get<1>(ray_);
+    float t = 5.0f;
+    glVertex3f(p0[0], p0[1], p0[2]);
+    glVertex3f(p0[0] + t * p1[0], p0[1] + t * p1[1], p0[2] + t * p1[2]);
+    glEnd();
+
     glEnable(GL_DEPTH_TEST);
     //Material 
     float   shin[1] = { 64 };
@@ -48,17 +56,9 @@ void EventManager::DrawScene()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    /*glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);*/
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
 
-    /*if (isL_ && isHit_)
-    {
-        EVec3f ball_pos = balls_[0].GetPos();
-        glLineWidth(2.0f);
-        glBegin(GL_LINES);
-        glColor3d(1, 0, 0); glVertex3i(ball_pos[0], 0, ball_pos[1]); glVertex3i(cur_pos_[0], 0, cur_pos_[1]);
-        glEnd();
-    }*/
     
     //balls_[0].SetVelo(end_pos_);
     for (int i = 0; i < balls_.size(); i++)
@@ -70,14 +70,11 @@ void EventManager::DrawScene()
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     isL_ = true;
-    if (isHit_)
-    {
-        str_pos_ = EVec2i(x, y);
-    }
-    else
-    {
-        ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
-    }
+    ray_ = ogl->GetCursorRay1(EVec2i(x,y));
+    str_p_ = EVec3f();
+    
+    
+    ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚ÌŽ‹“_‚ð‰ñ“]‚³‚¹‚é€”õ
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -95,7 +92,6 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
 {
     isL_ = false;
-    end_pos_ = EVec2i(x, y);
     ogl->BtnUp();
 }
 
@@ -114,7 +110,7 @@ void EventManager::RBtnUp(int x, int y, OglForCLI* ogl)
 void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 {
     if (!isL_ && !isR_ && !isM_) return;
-    cur_pos_ = EVec2i(x, y);
+    end_p_ = 
     ogl->MouseMove(EVec2i(x, y));
 }
 

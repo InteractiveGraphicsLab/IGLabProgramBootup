@@ -9,10 +9,11 @@ class EventManager
 {
 private:
   bool isL_, isR_, isM_; //マウスボタンの状態
-  bool isHit_;
-  EVec2i str_pos_;       //左クリック押した座標
-  EVec2i end_pos_;       //左クリックを放した座標
-  EVec2i cur_pos_;       //マウスの現在の位置
+  std::tuple<EVec3f, EVec3f> ray_;
+  int ball_index_ = -1;
+  EVec3f str_p_;
+  EVec3f end_p_;
+
   EventManager();
 
   std::vector<Ball> balls_;
