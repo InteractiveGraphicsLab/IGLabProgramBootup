@@ -84,12 +84,12 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 	m_isL = true;
 	ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 
-	// (試作) レイがヒットしたときに
+	// (仮)レイがヒットしたときに
 	EVec3f update_velocity;
 	for (int i = 0; i < m_balls.size(); i++) {
 		EVec3f diff = m_balls[i].getPos() - d;
 		if (diff.norm() <= m_balls[i].getRadius()) {
-			update_velocity += p + 10.0f * d;
+			update_velocity *= 2;//p + 10.0f * d;
 			m_balls[i].setVelocity(update_velocity);
 		}
 	}
@@ -156,12 +156,15 @@ bool isCollision(Ball& b1, Ball& b2)
 
 
 // 衝突時の速度を更新
+// 法線方向だけにしたい
 void UpdateVelocity(EVec3f& v1, EVec3f& v2)
 {
+	/*
 	float E = 0.99f;
 	EVec3f temp_v1 = v1, temp_v2 = v2;
 	v1 = (1.0f - E) / 2.0f * temp_v1 + (1.0f + E) / 2.0f * temp_v2;
 	v2 = (1.0f + E) / 2.0f * temp_v1 + (1.0f - E) / 2.0f * temp_v2; 
+	*/
 }
 
 void EventManager::Step()
@@ -198,7 +201,8 @@ void EventManager::Step()
 			if (isCollision(m_balls[j], m_balls[i]) == true) 
 			{
 				EVec3f j_velocity = m_balls[j].getVelocity(), i_velocity = m_balls[i].getVelocity();
-				UpdateVelocity(j_velocity, i_velocity);
+
+				//UpdateVelocity(j_velocity, i_velocity);///////////
 				m_balls[j].setVelocity(j_velocity);
 				m_balls[i].setVelocity(i_velocity);
 			}
