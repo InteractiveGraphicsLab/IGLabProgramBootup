@@ -12,5 +12,4 @@ void BilliardsTable::Draw() const
 	{
 		cuboids_[i].DrawCuboid();
 	}
-	std::cout << "aaaaa";
 }

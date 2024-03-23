@@ -80,6 +80,11 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     m_isL = true;
     ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGL‚Ì‹“_‚ğ‰ñ“]‚³‚¹‚é€”õ
+
+    for (int i = 0; i < balls_.size(); i++) 
+    {
+        if (isSelectedBall(x, y, ogl, balls_[i])) Stop(balls_[i]);
+    }
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -119,6 +124,14 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 }
 
 
+void EventManager::MouseForce(int x, int y, OglForCLI* ogl) 
+{
+    EVec3f ray_pos, ray_dir;
+    if (!m_isL && !m_isR && !m_isM) return;
+    ogl->GetCursorRay(x, y, ray_pos, ray_dir);
+    std::cout << x << " " << y << " " << ray_pos << " " << ray_dir;
+}
+
 void EventManager::Step()
 {
     for (int i = 0; i < balls_.size(); i++)
@@ -128,10 +141,33 @@ void EventManager::Step()
     Collision();
 }
 
-void EventManager::MouseForce(int x, int y, OglForCLI* ogl) 
+void EventManager::Init()
+{
+
+}
+
+void EventManager::Stop(Ball& ball)
+{
+    ball.SetVelo(EVec3f(0.0f, 0.0f, 0.0f));
+}
+
+bool EventManager::isSelectedBall(int x, int y, OglForCLI* ogl, const Ball& ball)
 {
     EVec3f ray_pos, ray_dir;
-    if (!m_isL && !m_isR && !m_isM) return;
     ogl->GetCursorRay(x, y, ray_pos, ray_dir);
-    std::cout << x << " " << y << " " << ray_pos << " " << ray_dir;
+
+    EVec3f b_pos = ball.GetPos();
+    float b_radi = ball.GetRadi();
+    float a = ray_dir.dot(ray_dir);
+    float b = 2.0f * (ray_pos - b_pos).dot(ray_dir);
+    float c = (ray_pos - b_pos).dot(ray_pos - b_pos) - b_radi * b_radi;
+    float D = b * b - 4.0f * a * c;
+    if (D > 0.0f) 
+    {
+        return true;
+    }
+    else 
+    {
+        return false;
+    }
 }

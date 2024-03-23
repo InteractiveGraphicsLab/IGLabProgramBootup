@@ -34,5 +34,7 @@ public:
     void MouseForce(int x, int y, OglForCLI* ogl);
     void Step();
     void Init();
+    void Stop(Ball& ball);
+    bool isSelectedBall(int x, int y, OglForCLI* ogl, const Ball& ball);
 };
 #pragma managed
