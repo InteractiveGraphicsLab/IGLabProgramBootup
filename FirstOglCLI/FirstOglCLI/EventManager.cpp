@@ -144,15 +144,11 @@ void EventManager::UpdateVelocity(const int& n1, const int& n2)
 	EVec3f v1_before = m_balls[n1].getVelocity();
 	EVec3f v2_before = m_balls[n2].getVelocity();
 	EVec3f v1_parallel_before, v2_parallel_before, v1_vertical, v2_vertical;
-
 	EVec3f p = m_balls[n1].getPos() - m_balls[n2].getPos();
-	//p.normalize();
 
-	//v1_parallel_before = v1_before.dot(p) * p;
-	//v2_parallel_before = v2_before.dot(-p) * (-p);
-
+	// ³Ë‰e‚ğ—p‚¢‚Äv_before‚Ì…•½¬•ª‚ğ‹‚ß‚é
 	v1_parallel_before = v1_before.dot(p) / pow(p.norm(), 2) * p;
-	v2_parallel_before = v2_before.dot(-p) / pow(-p.norm(), 2) * (-p);
+	v2_parallel_before = v2_before.dot(p) / pow(p.norm(), 2) * (p);
 
 	v1_vertical = v1_before - v1_parallel_before;
 	v2_vertical = v2_before - v2_parallel_before;
