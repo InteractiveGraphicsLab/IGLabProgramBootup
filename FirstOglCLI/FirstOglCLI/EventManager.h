@@ -40,8 +40,8 @@ public:
     void MouseMove(int x, int y, OglForCLI* ogl);
 
 
-    // isCollision();
-    //EVec3d isBBCollision(EVec3d pos1, EVec3d pos2, EVec3d pos3);
+    bool isCollision(const int& n1, const int& n2);
+    void UpdateVelocity(const int& n1, const int& n2);
 
     void Step();
 };

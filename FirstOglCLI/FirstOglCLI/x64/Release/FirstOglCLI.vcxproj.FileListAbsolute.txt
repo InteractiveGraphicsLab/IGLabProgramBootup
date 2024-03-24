@@ -9,3 +9,6 @@ C:\Repository\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI
 C:\Users\ig2024\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.AssemblyReference.cache
 C:\Users\ig2024\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
 C:\Users\ig2024\Documents\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache
+C:\Users\lick3\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.AssemblyReference.cache
+C:\Users\lick3\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.MainForm.resources
+C:\Users\lick3\OneDrive\ドキュメント\GitHub\IGLabProgramBootup\FirstOglCLI\FirstOglCLI\x64\Release\FirstOglCLI.vcxproj.GenerateResource.cache
