@@ -11,7 +11,7 @@ Ball::Ball(const EVec3f& pos, const EVec3f& v) {
 	pos_ = pos;
 	v_ = v;
 	radius_ = 2.0f;
-	collision_ = true;
+	//collision_ = true;
 }
 
 Ball::~Ball() {
@@ -28,6 +28,7 @@ void Ball::setVelocity(const EVec3f& v)
 {
 	v_ = v;
 }
+
 
 void Ball::setCollision(const bool& collision)
 {
@@ -50,6 +51,7 @@ float Ball::getRadius() const
 {
 	return radius_;
 }
+
 
 bool Ball::getCollision() const
 {

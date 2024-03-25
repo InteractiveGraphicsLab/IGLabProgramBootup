@@ -10,20 +10,26 @@ EventManager::EventManager()
 {
 	m_isL = m_isR = m_isM = false;
 
-	m_balls.push_back(Ball(EVec3f(5, 2, 5), EVec3f(10, 0, 30)));
-	m_balls.push_back(Ball(EVec3f(5, 2, 15), EVec3f(30, 0, 10)));
-	m_balls.push_back(Ball(EVec3f(15, 2, 10), EVec3f(5, 0, 30)));
-	m_balls.push_back(Ball(EVec3f(15, 2, 15), EVec3f(40, 0, 80)));
-
-	/*m_balls.push_back(Ball(EVec3f(5, 2, 5), EVec3f(0, 0, 30)));
-	m_balls.push_back(Ball(EVec3f(5, 2, 45), EVec3f(0, 0, 80)));
-	m_balls.push_back(Ball(EVec3f(15, 2, 5), EVec3f(0, 0, 40)));
-	m_balls.push_back(Ball(EVec3f(15, 2, 35), EVec3f(0, 0, 70)));*/
-	
+	// 球
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 40.0f), EVec3f(0.0f, 0.0f, 300.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 24.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(14.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(18.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(12.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(20.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(10.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(14.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(18.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(22.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f( 8.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(12.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(20.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(24.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
 
 	//箱の大きさを設定
-	EVec3f max1 = { 20.0f, 10.0f, 20.0f }, min1 = { 0.0f, 0.0f, 0.0f };
-	//EVec3f max1 = { 50.0f, 10.0f, 50.0f }, min1 = { 0.0f, 0.0f, 0.0f };
+	EVec3f max1 = { 31.0f, 10.0f, 46.0f }, min1 = { 0.0f, 0.0f, 0.0f };
 	box1_.setMax(max1);
 	box1_.setMin(min1);
 
@@ -63,19 +69,21 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 	// クリックでレイを飛ばす
 	EVec3f p, d;
 	ogl->GetCursorRay(EVec2i(x, y), p, d);
-	rayp_ = p;
-	rayd_ = d;
+	rayp_ = p; // 始点(視点)pの座標 ?
+	rayd_ = d; // 方向ベクトルd ?
 
 	m_isL = true;
 	ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 
-	// (仮)レイがヒットしたときに
-	EVec3f update_velocity;
+	// レイで外力を加える
+	EVec3f velocity_after;
+	float discriminant; // 判別式
 	for (int i = 0; i < m_balls.size(); i++) {
-		EVec3f diff = m_balls[i].getPos() - d;
-		if (diff.norm() <= m_balls[i].getRadius()) {
-			update_velocity *= 2;//p + 10.0f * d;
-			m_balls[i].setVelocity(update_velocity);
+		// D = (d, p - pos)^2 - (||p - pos||^2 - r^2)　を計算
+		discriminant = pow(d.dot(p - m_balls[i].getPos()), 2) - (pow((p - m_balls[i].getPos()).norm(), 2) - pow(m_balls[i].getRadius(), 2)); 
+		if (discriminant > 0) {
+			velocity_after += 10.0f * d;
+			m_balls[i].setVelocity(velocity_after);
 		}
 	}
 }
@@ -122,6 +130,20 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 bool EventManager::isCollision(const int& n1, const int& n2)
 {
 	float t = m_balls[n1].getRadius() + m_balls[n2].getRadius();
+	if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t) {
+		return true; // 衝突あり
+	}
+	else { 
+		return false; // 衝突なし
+	}
+}
+
+
+/*
+//球同士の衝突判定
+bool EventManager::isCollision(const int& n1, const int& n2)
+{
+	float t = m_balls[n1].getRadius() + m_balls[n2].getRadius();
 	if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t && m_balls[n1].getCollision() == false && m_balls[n2].getCollision() == false) {
 		m_balls[n1].setCollision(true);
 		m_balls[n2].setCollision(true);
@@ -136,6 +158,7 @@ bool EventManager::isCollision(const int& n1, const int& n2)
 		return false; // 衝突しない
 	}
 }
+*/
 
 // 球同士衝突時の速度を更新
 void EventManager::UpdateVelocity(const int& n1, const int& n2)
@@ -143,12 +166,13 @@ void EventManager::UpdateVelocity(const int& n1, const int& n2)
 	float E = 0.99f;
 	EVec3f v1_before = m_balls[n1].getVelocity();
 	EVec3f v2_before = m_balls[n2].getVelocity();
-	EVec3f v1_parallel_before, v2_parallel_before, v1_vertical, v2_vertical;
-	EVec3f p = m_balls[n1].getPos() - m_balls[n2].getPos();
+	EVec3f v1_parallel_before, v2_parallel_before, v1_vertical, v2_vertical; //衝突に対して垂直成分は変化しない
+	EVec3f pos1 = m_balls[n1].getPos(), pos2 = m_balls[n2].getPos();
+	EVec3f p = pos1 - pos2;
 
-	// 正射影を用いてv_beforeの水平成分を求める
+	// 正射影を用いてv_beforeの平行成分を求める
 	v1_parallel_before = v1_before.dot(p) / pow(p.norm(), 2) * p;
-	v2_parallel_before = v2_before.dot(p) / pow(p.norm(), 2) * (p);
+	v2_parallel_before = v2_before.dot(p) / pow(p.norm(), 2) * (p); // p? -p?
 
 	v1_vertical = v1_before - v1_parallel_before;
 	v2_vertical = v2_before - v2_parallel_before;
@@ -156,58 +180,35 @@ void EventManager::UpdateVelocity(const int& n1, const int& n2)
 	EVec3f v1_parallel_after = (1.0f - E) / 2.0f * v1_parallel_before + (1.0f + E) / 2.0f * v2_parallel_before;
 	EVec3f v2_parallel_after = (1.0f + E) / 2.0f * v1_parallel_before + (1.0f - E) / 2.0f * v2_parallel_before;
 
+	// 平行成分と垂直成分を合成
 	EVec3f v1_after = v1_parallel_after + v1_vertical;
 	EVec3f v2_after = v2_parallel_after + v2_vertical;
-
 	m_balls[n1].setVelocity(v1_after);
 	m_balls[n2].setVelocity(v2_after);
 
+	/*
+	// 連続衝突を避けるためにposも更新
+	pos1 += 0.01f * v1_after;
+	pos2 += 0.01f * v2_after;
+	m_balls[n1].setPos(pos1);
+	m_balls[n2].setPos(pos2);
+	*/
 }
-/*
-void UpdateVelocity(Ball& b1, Ball& b2)
-{
-	float E = 0.99f;
-	EVec3f v1_before = b1.getVelocity(), v2_before = b2.getVelocity();
-	EVec3f pos1 = b1.getPos(), pos2 = b2.getPos();
-	pos1[1] -= b1.getRadius();
-	pos2[1] -= b2.getRadius();
 
-	// 垂直成分方向
-	EVec3f oc_vector1 = pos1.cross(pos2);// + pos1;
-	EVec3f oc_vector2 = pos1.cross(pos2);// + pos2;
-
-	// v_beforeの垂直成分(衝突前後で変化しない)
-	EVec3f v1_vertical = v1_before.dot(oc_vector1) / pow(oc_vector1.norm(), 2) * oc_vector1;
-	EVec3f v2_vertical = v2_before.dot(oc_vector2) / pow(oc_vector2.norm(), 2) * oc_vector2;
-	
-	// v_beforeの平行成分(衝突で変化)
-	EVec3f v1_parallel_before = v1_before - v1_vertical;
-	EVec3f v2_parallel_before = v2_before - v2_vertical;
-
-	// v_afterの平行成分(衝突で変化)
-	EVec3f v1_parallel_after = (1.0f - E) / 2.0f * v1_parallel_before + (1.0f + E) / 2.0f * v2_parallel_before;
-	EVec3f v2_parallel_after = (1.0f + E) / 2.0f * v1_parallel_before + (1.0f - E) / 2.0f * v2_parallel_before;
-
-	// 各成分合成
-	EVec3f v1_after = v1_vertical + v1_parallel_after;
-	EVec3f v2_after = v2_vertical + v2_parallel_after; 
-
-	b1.setVelocity(v1_after);
-	b2.setVelocity(v2_after);
-}
-*/
 void EventManager::Step()
 {
 
 	float dt = 0.01f;
+	
+	
 	for (int i = 0; i < m_balls.size(); i++) {
 		m_balls[i].Step();
 	}
-
-
-	//球が壁と衝突
-	float E = 0.99f;
+	
+	
+	float E = 0.9f; //壁の反発係数
 	for (int i = 0; i < m_balls.size(); i++) {
+		//球が壁と衝突
 		EVec3f distance1 = m_balls[i].getPos() - box1_.getMin(); // 球と壁minの距離
 		EVec3f distance2 = box1_.getMax() - m_balls[i].getPos(); // 球と壁maxの距離
 		EVec3f vi = m_balls[i].getVelocity();
@@ -221,20 +222,15 @@ void EventManager::Step()
 			vi[2] *= -E;
 		}
 		m_balls[i].setVelocity(vi);
-	}
 
-	//球同士の衝突
-	for (int j = 0; j < m_balls.size() - 1; j++) 
-	{
-		for (int i = j + 1; i < m_balls.size(); i++) 
+		//球同士の衝突
+		for (int j = i + 1; j < m_balls.size(); j++)
 		{
-			if (isCollision(j, i) == true)
-			{
-				UpdateVelocity(j, i);
-			}
+			if (isCollision(i, j) == true)
+				UpdateVelocity(i, j);
 		}
-	}
 
+	}
 }
 
 
