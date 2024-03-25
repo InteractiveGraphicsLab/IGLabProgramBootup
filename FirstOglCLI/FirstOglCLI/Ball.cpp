@@ -11,7 +11,6 @@ Ball::Ball(const EVec3f& pos, const EVec3f& v) {
 	pos_ = pos;
 	v_ = v;
 	radius_ = 2.0f;
-	//collision_ = true;
 }
 
 Ball::~Ball() {
@@ -29,13 +28,6 @@ void Ball::setVelocity(const EVec3f& v)
 	v_ = v;
 }
 
-
-void Ball::setCollision(const bool& collision)
-{
-	collision_ = collision;
-}
-
-
 EVec3f Ball::getPos() const
 {
 	return pos_;
@@ -47,15 +39,10 @@ EVec3f Ball::getVelocity() const
 	return v_;
 }
 
+
 float Ball::getRadius() const
 {
 	return radius_;
-}
-
-
-bool Ball::getCollision() const
-{
-	return collision_;
 }
 
 
@@ -91,7 +78,14 @@ void Ball::Draw() {
 
 void Ball::Step(float dt)
 {
-	static const EVec3f Grav{ 0, -9.8f, 0 };
-	v_   = v_ + dt * Grav;
+	static const EVec3f Grav{ 0.0f, -9.8f, 0.0f };
+
+	if (getPos()[1] != getRadius()) // 接地していない時 (床の高さが０前提で書いてるから修正必要…)
+	{
+		v_ = v_ + dt * Grav; 
+	}
+	
+	// （接地している時は垂直抗力があるのでGravで変化しない）
+
 	pos_ = pos_ + dt * v_;
 }

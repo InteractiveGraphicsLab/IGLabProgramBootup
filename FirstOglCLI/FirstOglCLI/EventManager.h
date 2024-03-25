@@ -6,11 +6,6 @@
 #include "Box.h"
 #include <vector>
 
-//#define M_PI 3.141592 //円周率
-//#define R 2.0f        //球の半径
-//#define DT 0.01f      //stepの1フレームあたりの時間を仮定
-//#define G -9.8f       //重力加速度
-//#define E 0.99f        // 反発係数
 
 class EventManager
 {
@@ -18,9 +13,8 @@ class EventManager
 private:
     EVec3f rayp_, rayd_;
     bool m_isL, m_isR, m_isM; //マウスボタンの状態
-    Ball b1_, b2_, b3_;       //球を３つ生成
     Box  box1_;               //箱を生成
-    std::vector<Ball> m_balls; //////////////////////////////////////
+    std::vector<Ball> m_balls; //ボールを生成
     
     EventManager();
 

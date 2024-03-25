@@ -11,22 +11,23 @@ EventManager::EventManager()
 	m_isL = m_isR = m_isM = false;
 
 	// 球
-	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 40.0f), EVec3f(0.0f, 0.0f, 300.0f)));
-	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 24.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(14.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(18.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(12.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(20.0f, 2.0f, 16.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(10.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(14.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(18.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(22.0f, 2.0f, 12.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f( 8.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(12.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 42.0f), EVec3f(0.0f, 0.0f,   500.0f)));
+
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 32.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(13.0f, 2.0f, 26.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(19.0f, 2.0f, 26.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(10.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(22.0f, 2.0f, 20.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f( 7.0f, 2.0f, 14.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(13.0f, 2.0f, 14.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(19.0f, 2.0f, 14.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(25.0f, 2.0f, 14.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f( 4.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(10.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
 	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(20.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
-	m_balls.push_back(Ball(EVec3f(24.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(22.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
+	m_balls.push_back(Ball(EVec3f(28.0f, 2.0f,  8.0f), EVec3f(0.0f, 0.0f,   0.0f)));
 
 	//箱の大きさを設定
 	EVec3f max1 = { 31.0f, 10.0f, 46.0f }, min1 = { 0.0f, 0.0f, 0.0f };
@@ -76,15 +77,29 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 	ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLの視点を回転させる準備
 
 	// レイで外力を加える
-	EVec3f velocity_after;
 	float discriminant; // 判別式
+	float t = 20.0f; // 外力の強さ
+	float distance, min_distance = 10000.0f;
+	int min_ball_num = -1; //最もレイに近い球番号
+
 	for (int i = 0; i < m_balls.size(); i++) {
-		// D = (d, p - pos)^2 - (||p - pos||^2 - r^2)　を計算
-		discriminant = pow(d.dot(p - m_balls[i].getPos()), 2) - (pow((p - m_balls[i].getPos()).norm(), 2) - pow(m_balls[i].getRadius(), 2)); 
-		if (discriminant > 0) {
-			velocity_after += 10.0f * d;
-			m_balls[i].setVelocity(velocity_after);
+		discriminant = pow(d.dot(p - m_balls[i].getPos()), 2) - (pow((p - m_balls[i].getPos()).norm(), 2) - pow(m_balls[i].getRadius(), 2)); // D = (d, p - pos)^2 - (||p - pos||^2 - r^2)　で判別式を計算
+		if (discriminant > 0 ) { //レイと球が交差するなら
+			distance = (p - m_balls[i].getPos()).norm(); //始点と球の中心の距離
+			if (distance < min_distance) {
+				min_ball_num = i;
+				min_distance = distance;
+			}
 		}
+	}
+
+	//レイから最も近い球のみ外力を与える
+	// min_ball_num == -1 ⇒ レイとの接触なし
+	/////////////////////////// 外力の向き修正加えたい…
+	if (min_ball_num != -1) {
+		EVec3f velocity = m_balls[min_ball_num].getVelocity();
+		velocity += t * d;
+		m_balls[min_ball_num].setVelocity(velocity);
 	}
 }
 
@@ -130,40 +145,18 @@ void EventManager::MouseMove(int x, int y, OglForCLI* ogl)
 bool EventManager::isCollision(const int& n1, const int& n2)
 {
 	float t = m_balls[n1].getRadius() + m_balls[n2].getRadius();
-	if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t) {
+	if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t)
 		return true; // 衝突あり
-	}
-	else { 
-		return false; // 衝突なし
-	}
+
+	return false; // 衝突なし
 }
 
 
-/*
-//球同士の衝突判定
-bool EventManager::isCollision(const int& n1, const int& n2)
-{
-	float t = m_balls[n1].getRadius() + m_balls[n2].getRadius();
-	if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t && m_balls[n1].getCollision() == false && m_balls[n2].getCollision() == false) {
-		m_balls[n1].setCollision(true);
-		m_balls[n2].setCollision(true);
-		return true; // 衝突する
-	}
-	else if ((m_balls[n1].getPos() - m_balls[n2].getPos()).norm() <= t && (m_balls[n1].getCollision() == true || m_balls[n2].getCollision() == true)) { // 接触中に接触
-		return false;
-	}
-	else { //離れたら
-		m_balls[n1].setCollision(false);
-		m_balls[n2].setCollision(false);
-		return false; // 衝突しない
-	}
-}
-*/
 
 // 球同士衝突時の速度を更新
 void EventManager::UpdateVelocity(const int& n1, const int& n2)
 {
-	float E = 0.99f;
+	float E = 0.8f;
 	EVec3f v1_before = m_balls[n1].getVelocity();
 	EVec3f v2_before = m_balls[n2].getVelocity();
 	EVec3f v1_parallel_before, v2_parallel_before, v1_vertical, v2_vertical; //衝突に対して垂直成分は変化しない
@@ -186,26 +179,19 @@ void EventManager::UpdateVelocity(const int& n1, const int& n2)
 	m_balls[n1].setVelocity(v1_after);
 	m_balls[n2].setVelocity(v2_after);
 
-	/*
+
+
 	// 連続衝突を避けるためにposも更新
-	pos1 += 0.01f * v1_after;
-	pos2 += 0.01f * v2_after;
+	pos1 += 0.011f * v1_after;
+	pos2 += 0.011f * v2_after;
 	m_balls[n1].setPos(pos1);
 	m_balls[n2].setPos(pos2);
-	*/
+	
 }
 
 void EventManager::Step()
 {
 
-	float dt = 0.01f;
-	
-	
-	for (int i = 0; i < m_balls.size(); i++) {
-		m_balls[i].Step();
-	}
-	
-	
 	float E = 0.9f; //壁の反発係数
 	for (int i = 0; i < m_balls.size(); i++) {
 		//球が壁と衝突
@@ -230,6 +216,8 @@ void EventManager::Step()
 				UpdateVelocity(i, j);
 		}
 
+		float dt = 0.01f;
+		m_balls[i].Step(dt);
 	}
 }
 
