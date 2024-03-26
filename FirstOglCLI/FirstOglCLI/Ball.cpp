@@ -85,6 +85,32 @@ void Ball::Draw() {
 	glEnd();
 }
 
+
+void Ball::Step(float dt)
+{
+	static const EVec3f Grav{ 0.0f, -9.8f, 0.0f };
+	static const float mu = 0.4f;
+
+	if (pos_[1] != radius_) // 接地していない時 (床の高さが０前提で書いてるから修正必要…)
+	{
+		v_ = v_ + dt * Grav;
+	}
+	else // （接地している時は垂直抗力があるのでGravで変化しない）
+	{
+		EVec3f friction_unit = -v_ / v_.norm(); // 摩擦の単位ベクトル
+		float friction_modulus; // 摩擦の絶対値
+
+		if (v_.norm() != 0) {
+			friction_modulus = mu * mass_ * Grav.norm();
+			EVec3f friction = friction_modulus * friction_unit;
+
+			v_ = v_ + dt * friction / mass_;
+		}
+	}
+	pos_ = pos_ + dt * v_;
+}
+
+/*
 void Ball::Step(float dt)
 {
 	static const EVec3f Grav{ 0.0f, -9.8f, 0.0f };
@@ -97,3 +123,4 @@ void Ball::Step(float dt)
 	// （接地している時は垂直抗力があるのでGravで変化しない）
 	pos_ = pos_ + dt * v_;
 }
+*/

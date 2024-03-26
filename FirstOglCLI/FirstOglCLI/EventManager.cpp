@@ -11,7 +11,7 @@ EventManager::EventManager()
 	m_isL = m_isR = m_isM = false;
 
 	// ‹…
-	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 42.0f), EVec3f(0.0f, 0.0f,   300.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 42.0f), EVec3f(0.0f, 0.0f,   500.0f)));
 
 	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 32.0f), EVec3f(0.0f, 0.0f,   0.0f)));
 	m_balls.push_back(Ball(EVec3f(13.0f, 2.0f, 26.0f), EVec3f(0.0f, 0.0f,   0.0f)));
@@ -193,8 +193,8 @@ void EventManager::UpdateVelocity(const int& n1, const int& n2)
 
 
 	// ˜A‘±Õ“Ë‚ğ”ğ‚¯‚é‚½‚ß‚Épos‚àXV
-	pos1 += 0.011f * v1_after;
-	pos2 += 0.011f * v2_after;
+	pos1 += 0.01f * v1_after;
+	pos2 += 0.01f * v2_after;
 	m_balls[n1].setPos(pos1);
 	m_balls[n2].setPos(pos2);
 	
