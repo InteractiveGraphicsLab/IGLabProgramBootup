@@ -11,7 +11,7 @@ EventManager::EventManager()
 	m_isL = m_isR = m_isM = false;
 
 	// 球
-	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 42.0f), EVec3f(0.0f, 0.0f,   500.0f)));
+	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 42.0f), EVec3f(0.0f, 0.0f,   300.0f)));
 
 	m_balls.push_back(Ball(EVec3f(16.0f, 2.0f, 32.0f), EVec3f(0.0f, 0.0f,   0.0f)));
 	m_balls.push_back(Ball(EVec3f(13.0f, 2.0f, 26.0f), EVec3f(0.0f, 0.0f,   0.0f)));
@@ -78,7 +78,6 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 
 	// レイで外力を加える
 	float discriminant; // 判別式
-	float t = 20.0f; // 外力の強さ
 	float distance, min_distance = 10000.0f;
 	int min_ball_num = -1; //最もレイに近い球番号
 
@@ -94,18 +93,30 @@ void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 	}
 
 	//レイから最も近い球のみ外力を与える
-	// min_ball_num == -1 ⇒ レイとの接触なし
-	/////////////////////////// 外力の向き修正加えたい…
-	if (min_ball_num != -1) {
+	float dt = 0.02f; //接触時間
+	if (min_ball_num != -1) { // min_ball_num == -1 ⇒ レイとの接触なし
+		discriminant = pow(d.dot(p - m_balls[min_ball_num].getPos()), 2) - (pow((p - m_balls[min_ball_num].getPos()).norm(), 2) - pow(m_balls[min_ball_num].getRadius(), 2)); // D = (d, p - pos)^2 - (||p - pos||^2 - r^2)　で判別式を計算
+		float t1 = -pow(d.dot(p - m_balls[min_ball_num].getPos()), 2) - sqrt(discriminant); // 視点からみて手前の接点
+		float t2 = -pow(d.dot(p - m_balls[min_ball_num].getPos()), 2) + sqrt(discriminant); // 視点からみて奥側の接点
+		EVec3f to_vector; // 接点から球の中心にかけてのベクトル
+		EVec3f force; //レイによる外力
+		EVec3f force_vertical; //外力の垂直成分
+		EVec3f force_parallel; //外力の接線成分
 		EVec3f velocity = m_balls[min_ball_num].getVelocity();
-		velocity += t * d;
+
+		force = 1000.0f * d;
+		to_vector = m_balls[min_ball_num].getPos() - (p + t1 * d); //pos - 接点ベクトル
+		force_vertical = force.dot(to_vector) / pow(to_vector.norm(), 2) * to_vector;
+		force_parallel = force - force_vertical; // 回転で使うかも
+
+		//EVec3f tmp_vector = { 1000.0f, 0.0f, 1000.0f };
+		velocity += dt * force_vertical / m_balls[min_ball_num].getMass(); // 加速度と接触時間から速度を更新
 		m_balls[min_ball_num].setVelocity(velocity);
 	}
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
 {
-	
 	m_isM = true;
 	ogl->BtnDown_Zoom(EVec2i(x, y));
 }

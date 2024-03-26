@@ -11,6 +11,7 @@ Ball::Ball(const EVec3f& pos, const EVec3f& v) {
 	pos_ = pos;
 	v_ = v;
 	radius_ = 2.0f;
+	mass_ = 2.0f;
 }
 
 Ball::~Ball() {
@@ -26,6 +27,11 @@ void Ball::setPos(const EVec3f& pos)
 void Ball::setVelocity(const EVec3f& v)
 {
 	v_ = v;
+}
+
+void Ball::setMass(const float& mass)
+{
+	mass_ = mass;
 }
 
 EVec3f Ball::getPos() const
@@ -45,7 +51,10 @@ float Ball::getRadius() const
 	return radius_;
 }
 
-
+float Ball::getMass() const
+{
+	return mass_;
+}
 
 void Ball::Draw() {
 	const int N = 10;
@@ -80,12 +89,11 @@ void Ball::Step(float dt)
 {
 	static const EVec3f Grav{ 0.0f, -9.8f, 0.0f };
 
-	if (getPos()[1] != getRadius()) // 接地していない時 (床の高さが０前提で書いてるから修正必要…)
+	if (pos_[1] != radius_) // 接地していない時 (床の高さが０前提で書いてるから修正必要…)
 	{
 		v_ = v_ + dt * Grav; 
 	}
 	
 	// （接地している時は垂直抗力があるのでGravで変化しない）
-
 	pos_ = pos_ + dt * v_;
 }
