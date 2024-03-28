@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "EventManager.h"
 
+const float WALL = 7.0f;
+
 EventManager::EventManager()
 {
     m_isL = m_isR = m_isM = false;
@@ -25,7 +27,8 @@ void EventManager::DrawScene()
     {
         balls_[i].Draw();
     }
-    BilliardsTable::GetInst()->Draw();
+    //BilliardsTable::GetInst()->Draw();
+    DrawTable();
 }
 
 void EventManager::CollideBall()
@@ -33,10 +36,10 @@ void EventManager::CollideBall()
     return;
 }
 
-void EventManager::CollideTable()
-{
-    return;
-}
+//void EventManager::CollideTable()
+//{
+//    return;
+//}
 
 void EventManager::Collision()
 {
@@ -64,27 +67,12 @@ void EventManager::Collision()
             balls_[j].SetPos(balls_[j].GetPos() + dn * distance);
         }
     }
-
-    /*
-    for (int i = 0; i < balls_.size(); i++)
-    {
-        for (int j = 0; j < cuboids_.size(); j++)
-        {
-
-        }
-    }
-    */
 }
 
 void EventManager::LBtnDown(int x, int y, OglForCLI* ogl)
 {
     m_isL = true;
     ogl->BtnDown_Trans(EVec2i(x, y)); // OpenGLÇÃéãì_ÇâÒì]Ç≥ÇπÇÈèÄîı
-
-    for (int i = 0; i < balls_.size(); i++) 
-    {
-        if (isSelectedBall(x, y, ogl, balls_[i])) Stop(balls_[i]);
-    }
 }
 
 void EventManager::MBtnDown(int x, int y, OglForCLI* ogl)
@@ -97,6 +85,11 @@ void EventManager::RBtnDown(int x, int y, OglForCLI* ogl)
 {
     m_isR = true;
     ogl->BtnDown_Rot(EVec2i(x, y));
+
+    for (int i = 0; i < balls_.size(); i++)
+    {
+        if (isSelectedBall(x, y, ogl, balls_[i])) Stop(balls_[i]);
+    }
 }
 
 void EventManager::LBtnUp(int x, int y, OglForCLI* ogl)
@@ -139,6 +132,7 @@ void EventManager::Step()
         balls_[i].Step();
     }
     Collision();
+    CollideTable();
 }
 
 void EventManager::Init()
@@ -170,4 +164,60 @@ bool EventManager::isSelectedBall(int x, int y, OglForCLI* ogl, const Ball& ball
     {
         return false;
     }
+}
+
+void EventManager::DrawTable()
+{
+    glBegin(GL_TRIANGLES);
+    glColor3d(0, 0.8, 0);
+                
+    glNormal3d(-WALL, 0, WALL/2);
+    glVertex3d(-WALL, 0, WALL/2);
+    glNormal3d(WALL, 0, WALL/2);
+    glVertex3d(WALL, 0, WALL/2);
+    glNormal3d(WALL, 0, -WALL/2);
+    glVertex3d(WALL, 0, -WALL/2);
+
+    glNormal3d(-WALL, 0, WALL/2);
+    glVertex3d(-WALL, 0, WALL/2);
+    glNormal3d(WALL, 0, -WALL/2);
+    glVertex3d(WALL, 0, -WALL/2);
+    glNormal3d(-WALL, 0, -WALL/2);
+    glVertex3d(-WALL, 0, -WALL/2);
+
+    glEnd();
+}
+
+void EventManager::CollideTable()
+{
+    for (int i = 0; i < balls_.size(); i++)
+    {
+        EVec3f pos = balls_[i].GetPos();
+        EVec3f velo = balls_[i].GetVelo();
+        float radi = balls_[i].GetRadi();
+        if (pos[0] + radi > WALL)
+        {
+            balls_[i].SetVelo(-velo);
+            pos[0] = WALL - 0.00001f - radi;
+            balls_[i].SetPos(pos);
+        }
+        if (pos[0] - radi < -WALL)
+        {
+            balls_[i].SetVelo(-velo);
+            pos[0] = -WALL + 0.00001f + radi;
+            balls_[i].SetPos(pos);
+        }
+        if (pos[2] + radi > WALL)
+        {
+            balls_[i].SetVelo(-velo);
+            pos[2] = WALL - 0.00001f - radi;
+            balls_[i].SetPos(pos);
+        }
+        if (pos[2] - radi < -WALL)
+        {
+            balls_[i].SetVelo(-velo);
+            pos[2] = -WALL + 0.00001f + radi;
+            balls_[i].SetPos(pos);
+        }
+	}
 }

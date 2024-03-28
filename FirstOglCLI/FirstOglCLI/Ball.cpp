@@ -53,7 +53,7 @@ void Ball::Step()
 
     if (pos_[1] < radi_)
     {
-        pos_[1] = radi_ + 0.0001f;
+        pos_[1] = radi_ + 0.00001f;
         velo_[1] *= -0.98f;
     }
 }

@@ -14,7 +14,7 @@ private:
     EventManager();
     void Collision();
     void CollideBall();
-    void CollideTable();
+    //void CollideTable();
     std::vector<Ball> balls_;
 
 public:
@@ -36,5 +36,7 @@ public:
     void Init();
     void Stop(Ball& ball);
     bool isSelectedBall(int x, int y, OglForCLI* ogl, const Ball& ball);
+    void DrawTable();
+    void CollideTable();
 };
 #pragma managed
