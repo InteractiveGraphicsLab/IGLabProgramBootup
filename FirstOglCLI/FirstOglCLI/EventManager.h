@@ -9,10 +9,12 @@ class EventManager
 {
 private:
   bool isL_, isR_, isM_; //マウスボタンの状態
-  std::tuple<EVec3f, EVec3f> ray_;
+  bool isBtn2_;
   int ball_index_ = -1;
   EVec3f str_p_;
   EVec3f end_p_;
+  EVec3f ball_p_;
+  std::tuple<EVec3f, EVec3f> ray_;
 
   EventManager();
 
@@ -25,7 +27,7 @@ public:
     return &p;
   }
 
-  //void SetMode(const bool& f);
+  void SetMode(const bool& b);
 
   void DrawScene();
   void LBtnDown(int x, int y, OglForCLI* ogl);

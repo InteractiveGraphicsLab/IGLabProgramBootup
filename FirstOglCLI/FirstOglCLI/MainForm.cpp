@@ -78,13 +78,13 @@ System::Void MainForm::m_panel_MouseMove(System::Object^ sender, System::Windows
 System::Void MainForm::m_button1_Click(System::Object^ sender, System::EventArgs^ e)
 {
   //std::cout << "ボタン1が押された\n";
-	//EventManager::GetInst()->SetMode(true);
+	EventManager::GetInst()->SetMode(false);
 }
 
 System::Void MainForm::m_button2_Click(System::Object^ sender, System::EventArgs^ e)
 {
   //std::cout << "ボタン2が押された\n";
-	//EventManager::GetInst()->SetMode(false);
+	EventManager::GetInst()->SetMode(true);
 }
 
 
